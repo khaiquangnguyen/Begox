@@ -1,9 +1,11 @@
+var socket = io();
+
+
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 document.body.appendChild(renderer.view);
-
 // create the root of the scene graph
 var stage = new PIXI.Container();
-//var socket = io();
+
 
 stage.interactive = true;
 
@@ -31,5 +33,19 @@ function animate() {
 
     renderer.render(stage);
     requestAnimationFrame( animate );
-    //socket.emit('direction', num);
 }
+
+
+/**
+ * Keyboard input for movemement control
+ * @type {number}
+ */
+var pressedKey = {};
+$(document.body)
+    .on("keydown", function(e) {
+        socket.emit('changeDirection', e.keyCode);
+    })
+    .on("keyup", function(e) {
+        delete pressedKeys[e.keyCode];
+    })
+;

@@ -41,7 +41,9 @@ var player = {
     //the height of the player
     height:0,
     //check if the player can shoot or not
-    canShoot:true
+    canShoot:true,
+    //direction of movement
+    direction: 0
 };
 
 /**
@@ -58,7 +60,9 @@ var missile ={
     //the width of the missile
     width:0,
     //the height of the missile
-    height:0
+    height:0,
+    //direction of movement
+    direction: 0
 }
 
 
