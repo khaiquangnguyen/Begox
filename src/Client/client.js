@@ -3,6 +3,7 @@ document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
+//var socket = io();
 
 stage.interactive = true;
 
@@ -10,6 +11,7 @@ var circle = new PIXI.Graphics();
 
 var x = 400;
 var y = 100;
+var num = 1;
 
 stage.addChild(circle);
 
@@ -17,10 +19,9 @@ stage.addChild(circle);
 animate();
 
 function animate() {
-
-    x = (x + 1) % 800;
-    y = (y + 1) % 600;
-
+    x = (x + num) % 800;
+    y = (y + num) % 600;
+    //num = 0;
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     circle.clear();
     circle.lineStyle(0);
@@ -30,4 +31,5 @@ function animate() {
 
     renderer.render(stage);
     requestAnimationFrame( animate );
+    //socket.emit('direction', num);
 }
