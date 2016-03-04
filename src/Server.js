@@ -25,8 +25,6 @@ app.use(express.static(__dirname + '/Client'));
 //PROTOTYPES
 
 
-
-
 /********************************************************************/
 //GLOBAL VARIABLES
 
