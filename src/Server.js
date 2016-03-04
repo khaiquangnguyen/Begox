@@ -2,6 +2,7 @@
 //IMPORT LIBRARIES
 require('./Queue');
 require('./Prototypes.js');
+require('./Core.js');
 
 //library for collision detection
 var sat = require('sat');
@@ -21,23 +22,6 @@ app.use(express.static(__dirname + '/Client'));
 
 
 /********************************************************************/
-
-//PROTOTYPES
-
-
-/********************************************************************/
-//GLOBAL VARIABLES
-
-//the array of socket
-var sockets = [];
-//the array of players
-var players = [];
-//the array of missiles
-var missiles = [];
-// the queue of input to handle
-var inputQueue = Queue();
-//the array of walls
-
 
 /********************************************************************/
 
@@ -65,6 +49,9 @@ var connectionHandler = function(socket){
     socket.on('changeDirection', changeDirection);
 };
 
-
 //socket.io job
 io.on('connection', connectionHandler);
+
+
+// begin the loop
+gamePhysicsLoop();

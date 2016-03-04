@@ -961,7 +961,7 @@
             push: function (data, callback) {
                 _insert(q, data, false, callback);
             },
-            kill: function () {
+            killSelf: function () {
                 q.drain = noop;
                 q.tasks = [];
             },
@@ -4719,7 +4719,7 @@ module.exports = Object.assign || function (target, source) {
             push: function (data, callback) {
               _insert(q, data, false, callback);
             },
-            kill: function () {
+            killSelf: function () {
               q.drain = null;
               q.tasks = [];
             },
@@ -5400,7 +5400,7 @@ Loader.prototype.reset = function () {
 
     this._numToLoad = 0;
 
-    this._queue.kill();
+    this._queue.killSelf();
     this._queue.started = false;
 
     this.resources = {};
