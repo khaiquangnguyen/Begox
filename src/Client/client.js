@@ -36,16 +36,3 @@ function animate() {
 }
 
 
-/**
- * Keyboard input for movemement control
- * @type {number}
- */
-var pressedKey = {};
-$(document.body)
-    .on("keydown", function(e) {
-        socket.emit('changeDirection', e.keyCode);
-    })
-    .on("keyup", function(e) {
-        delete pressedKeys[e.keyCode];
-    })
-;
