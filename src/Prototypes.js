@@ -11,7 +11,7 @@
  * @param xCenter: the x-coordinate of the center of the Player
  * @param yCenter: the y-coordinate of the center of the Player
  * @param size: the size of the Player
- * @param type: the type of the Player
+ * @param type: the type of the Player, circle, square or triangle.
  * @param canShoot: whether the play can shoot
  * @param direction: the current direction of the Player
  * @param speed: the speed of the Player
@@ -43,6 +43,7 @@ Player.prototype.checkCollision = function(){
  */
 Player.prototype.updatePhysics = function(deltaTime){
     //FINISH WRITING CODE HERE
+    this.move(deltaTime);
 };
 
 /**
@@ -127,6 +128,13 @@ Player.prototype.takeDamage = function(shooter, damage){
     this.updateHP(-damage);
 };
 
+/**
+ * The renderer for the current player
+ */
+Player.prototype.render = function(){
+    //FINISH WRITING CODE HERE
+};
+
 
 /**********************************************************/
 //MISSILE PROTOTYPES
@@ -195,6 +203,12 @@ Missile.prototype.killSelf = function(){
     killMissile(this);
 };
 
+/**
+ * The renderer for the missiles
+ */
+Missile.prototype.render = function(){
+  //FINISH CODE HERE
+};
 /************************************************************/
 //WALL PROTOTYPE
 
@@ -217,6 +231,13 @@ Wall.prototype.updatePhysics = function(deltaTime){
 
 Wall.prototype.killSelf = function(){
     killWall(this);
+};
+
+/**
+ * the renderer for the wall
+ */
+Wall.prototype.render = function(){
+    //FINISH CODE HERE
 };
 
 

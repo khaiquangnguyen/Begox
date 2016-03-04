@@ -32,7 +32,7 @@ function animate() {
     circle.endFill();
 
     renderer.render(stage);
-    requestAnimationFrame( animate );
+    requestAnimationFrame(animate);
 }
 
 

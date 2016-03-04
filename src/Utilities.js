@@ -9,12 +9,23 @@
  * @param array: the array which holds the object
  * @returns {*} object itself if found, otherwise return -1
  */
-var getItemFromArray = function(ID, array){
+var getItemWithIDFromArray = function(ID, array){
     for( let aObject of array){
         if (aObject.id == ID){
             return aObject;
             break;
         }
     }
+    return -1;
+}
+
+/**
+ * remove an item with the id attribute ID from the array
+ * @param ID: the ID attribute of the object
+ * @param array: the array
+ * @returns {number}: -1 if there is nothing to remove, 1 if can remove
+ */
+var removeItemWithIDFromArray = function(ID,array){
+    //TO FINISH
     return -1;
 }

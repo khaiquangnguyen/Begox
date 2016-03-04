@@ -26,12 +26,7 @@ var fps = 60;
 var tickLengthMs = 1000/fps;
 //time of last physics update
 var previousTickPhysicsLoop = Date.now();
-//the number of time server sends world snapshot to clients
-var numUpdate = 25;
-//the time between two server update
-var timeBetweenUpdate = 1000/numUpdate;
-//time of the last server update
-var previousTickServerLoop = Date.now();
+
 
 /**
  * The update function to update the physics in the game
@@ -64,28 +59,6 @@ var gamePhysicsLoop = function () {
     } else {
         setImmediate(gamePhysicsLoop)
     }
-};
-
-/**
- * The game server update loop, which will take a snapshot of the world and sent it to the players.
- */
-var serverUpdateLoop = function(){
-    var now = Date.now();
-    if (previousTickServerLoop + timeBetweenUpdate <= now) {
-        previousTickServerLoop = now;
-        sendWorldSnapshot();
-
-    }
-    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
-        setTimeout(serverUpdateLoop)
-    } else {
-        setImmediate(serverUpdateLoop)
-    }
-};
-
-
-var sendWorldSnapshot = function() {
-    //FINISH CODE HERE
 };
 
 
