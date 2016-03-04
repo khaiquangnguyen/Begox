@@ -3,6 +3,8 @@
 require('./Queue');
 require('./Prototypes.js');
 
+//library for collision detection
+var sat = require('sat');
 //INITIATE SERVER
 var express = require('express');
 var app = require('express')();
