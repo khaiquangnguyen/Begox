@@ -2,20 +2,6 @@
  * Created by khainguyen on 3/4/2016.
  */
 
-//GLOBAL VARIABLES
-
-//the array of socket
-var sockets = [];
-//the array of players
-var players = [];
-//the array of missiles
-var missiles = [];
-// the queue of input to handle
-var inputQueue = new Queue();
-//the array of walls
-var walls = [];
-//the maximum active number of missile a player can have at the same time
-const MAX_NUM_MISSILE  = 4;
 
 
 //SERVER GAME LOOP
@@ -33,6 +19,7 @@ var previousTickPhysicsLoop = Date.now();
  * @param deltaTime: time elapsed from last update, presumably to smooth out movement
  */
 var update = function(deltaTime) {
+    "use strict";
     for(let aPlayer of players){
         aPlayer.updatePhysics(deltaTime);
     }

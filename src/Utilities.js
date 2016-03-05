@@ -2,7 +2,6 @@
  * Created by khainguyen on 3/4/2016.
  */
 
-
 /**
  * Return the object with the ID in the array.
  * @param ID: the ID of the object we are looking for
@@ -10,14 +9,14 @@
  * @returns {*} object itself if found, otherwise return -1
  */
 var getItemWithIDFromArray = function(ID, array){
+    "use strict";
     for( let aObject of array){
         if (aObject.id == ID){
             return aObject;
-            break;
         }
     }
     return -1;
-}
+};
 
 /**
  * remove an item with the id attribute ID from the array
@@ -28,4 +27,5 @@ var getItemWithIDFromArray = function(ID, array){
 var removeItemWithIDFromArray = function(ID,array){
     //TO FINISH
     return -1;
-}
+};
+

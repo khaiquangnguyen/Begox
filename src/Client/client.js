@@ -1,5 +1,12 @@
+//TEST SOCKET
 var socket = io();
-
+socket.emit('clientWantToConnect');
+socket.on('connectionEstablished', function(id){
+    socket.emit('initNewPlayer',{playerID: id,size: 10, type:'triangle',speed:10} );
+});
+socket.on('playerCreated',function(aPlayer){
+    console.log('player created on client side');
+});
 
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
 document.body.appendChild(renderer.view);
