@@ -367,7 +367,7 @@ var connectionHandler = function(socket){
     };
 
 
-    /**
+    /**created
      * When a player disconnect, remove the player from the game
      */
     var disconnect = function(){
