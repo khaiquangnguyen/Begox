@@ -49,14 +49,5 @@ var gamePhysicsLoop = function () {
 };
 
 
-var killPlayer = function(aPlayer){
-    players.splice(indexOf(aPlayer),1);
-    };
-var killMissile = function(aMissile) {
-    missiles.splice(indexOf(aMissile));
-};
-var killWall = function (aWall){
-    walls.splice(indexOf(aWall),1);
-};
 
 

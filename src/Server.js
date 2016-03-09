@@ -1,6 +1,10 @@
 
 var players = [];
 var sockets = [];
+var worldSnapshot = [];
+var missiles = [];
+var walls = [];
+
 //library for collision detection
 var sat = require('sat');
 //INITIATE SERVER
@@ -18,6 +22,8 @@ http.listen(3000, function(){
 
 //fetch the client files back to any client connect to the server through port 3000
 app.use(express.static(__dirname + '/Client'));
+
+
 
 /********************************************************************/
 
@@ -91,6 +97,7 @@ var connectionHandler = function(socket){
         ////remove the socket from socket lists
         utilities.removeItemWithIDFromArray(socket.id,sockets);
         //FINISH REMOVE ALL MISSILES CREATED BY PLAYER WITH ID FROM ARRAY
+        //FINISH REMOVE THE PLAYERS FROM THE GAME
     };
 
     //////////////
@@ -99,8 +106,11 @@ var connectionHandler = function(socket){
     socket.on('clientWantToConnect',tellClientToConnect);
     //When clients want to initiate a new player
     socket.on('initNewPlayer', initNewPlayer);
+    //when clients update their player's direction
     socket.on('updateDirection', updateDirection);
+    //when clients fire
     socket.on('shoot',shoot);
+    //when clients disconnect
     socket.on('disconnect',disconnect);
 };
 
@@ -123,7 +133,6 @@ var serverUpdateLoop = function(){
     if (previousTickServerLoop + timeBetweenUpdate <= now) {
         previousTickServerLoop = now;
         sendWorldSnapshot();
-
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);
@@ -131,8 +140,19 @@ var serverUpdateLoop = function(){
         setImmediate(serverUpdateLoop);
     }
 };
-
 var sendWorldSnapshot = function() {
     //FINISH CODE HERE
 };
+
+
+var killPlayer = function(aPlayer){
+    players.splice(indexOf(aPlayer),1);
+};
+var killMissile = function(aMissile) {
+    missiles.splice(indexOf(aMissile));
+};
+var killWall = function (aWall){
+    walls.splice(indexOf(aWall),1);
+};
+
 
