@@ -240,5 +240,6 @@ Wall.prototype.render = function(){
     //FINISH CODE HERE
 };
 
-
-
+module.exports.Player = Player;
+module.exports.Missile = Missile;
+module.exports.Wall = Wall;
