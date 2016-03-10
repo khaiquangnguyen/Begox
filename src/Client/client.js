@@ -109,10 +109,22 @@ function inputProcessing(){
     thePlayer.velX *= friction;
     thePlayer.xCenter += thePlayer.velX;
 
-    if (thePlayer.xCenter > WORLD_WIDTH) thePlayer.xCenter = WORLD_HEIGHT;
-    else if (thePlayer.xCenter < 0) thePlayer.xCenter = 0;
-    if (thePlayer.yCenter > WORLD_HEIGHT) thePlayer.yCenter = WORLD_HEIGHT;
-    else if (thePlayer.yCenter < 0) thePlayer.yCenter = 0;
+    if (thePlayer.xCenter > WORLD_WIDTH) {
+        thePlayer.xCenter = WORLD_HEIGHT;
+        thePlayer.velX = 0;
+    }
+    else if (thePlayer.xCenter < 0) {
+        thePlayer.xCenter = 0;
+        thePlayer.velX = 0;
+    }
+    if (thePlayer.yCenter > WORLD_HEIGHT) {
+        thePlayer.yCenter = WORLD_HEIGHT;
+        thePlayer.velY = 0;
+    }
+    else if (thePlayer.yCenter < 0) {
+        thePlayer.yCenter = 0;
+        thePlayer.velY = 0;
+    }
 }
 
 
