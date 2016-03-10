@@ -47,6 +47,33 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
     this.velY = 0;
 }
 
+/**********************************************************/
+//MISSILE PROTOTYPES
+
+
+/**
+ * The prototype for the Missile object
+ *
+ * @param shooterID: the id of the Player who shoots the Missile
+ * @param id: the id of the Missile
+ * @param xCenter: the x-coordinate of the center of the Missile
+ * @param yCenter: the y-coordinate of the center of the Missile
+ * @param size; the width of the Missile
+ * @param type: the height of the Missile
+ * @param direction: the direction of the Missile's movement
+ * @param speed: the speed of the Player
+ */
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
+    this.shooterID = shooterID;
+    this.id  = id;
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
+    this.size = size;
+    this.type = type;
+    this.direction = direction;
+    this.speed = speed;
+}
+
 /**
  * Draw the main player of the game
  * @param player
@@ -72,6 +99,48 @@ var drawOther = function(other, player) {
     other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
     other.shape.endFill();
 };
+
+OFFSET_P1 = Math.PI * 2 / 3;
+OFFSET_P2 = Math.PI * 4 / 3;
+/**
+ * Draw a triangular kid
+ * @param other
+ * @param player
+ */
+var drawTriangle = function(other, player) {
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color, 0.5);
+    dx1 = other.size * 2.5 * Math.cos(other.direction); dy1 = other.size * 2.5 * Math.sin(other.direction);
+    dx2 = other.size * 2 * Math.cos(other.direction + OFFSET_P1); dy2 = other.size * 2 * Math.sin(other.direction + OFFSET_P1);
+    dx3 = other.size * 2 * Math.cos(other.direction + OFFSET_P2); dy3 = other.size * 2 * Math.sin(other.direction + OFFSET_P2);
+    other.shape.moveTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx2 - player.xCenter + WIDTH / 2, other.yCenter + dy2 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx3 - player.xCenter + WIDTH / 2, other.yCenter + dy3 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.endFill();
+};
+
+OFFSQUARE_P0 = Math.PI * 7 / 4;
+OFFSQUARE_P1 = Math.PI * 1 / 4;
+OFFSQUARE_P2 = Math.PI * 3 / 4;
+OFFSQUARE_P3 = Math.PI * 5 / 4;
+
+var drawSquare = function(other, player) {
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color, 0.5);
+    dx1 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P0); dy1 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P0);
+    dx2 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P1); dy2 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P1);
+    dx3 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P2); dy3 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P2);
+    dx4 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P3); dy4 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P3);
+    other.shape.moveTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx2 - player.xCenter + WIDTH / 2, other.yCenter + dy2 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx3 - player.xCenter + WIDTH / 2, other.yCenter + dy3 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx4 - player.xCenter + WIDTH / 2, other.yCenter + dy4 - player.yCenter + WIDTH / 2);
+    other.shape.lineTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.endFill();
+}
 
 /**
  * Draw all other player in the list
@@ -154,21 +223,10 @@ animate();
 function animate() {
     //update
     update();
-    console.log(nguoiChoi.xCenter, nguoiChoi.yCenter)
 
     //num = 0;
-    drawUser(nguoiChoi);
+    drawSquare(nguoiChoi, nguoiChoi);
     drawOtherList(otherList, nguoiChoi);
-
-    // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    nguoiChoi.shape.clear();
-    nguoiChoi.shape.lineStyle(0);
-    nguoiChoi.shape.beginFill(0xFFFF0B, 0.5);
-    nguoiChoi.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
-    nguoiChoi.shape.endFill();
-
-    console.log(nguoiChoi.xCenter);
-    console.log(nguoiChoi.yCenter);
 
     // Draw shape
     // draw a rounded rectangle
@@ -207,15 +265,35 @@ function update() {
         }
     }
 
+    // Calculate velocity
     nguoiChoi.velY *= friction;
     nguoiChoi.yCenter += nguoiChoi.velY;
     nguoiChoi.velX *= friction;
     nguoiChoi.xCenter += nguoiChoi.velX;
 
-    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
+    // Calculate direction
+    if ((nguoiChoi.velX == 0) && (nguoiChoi.velY == 0));
+    else nguoiChoi.direction = Math.atan2(nguoiChoi.velY,nguoiChoi.velX);
+    console.log(nguoiChoi.direction);
+    console.log("velX: ", nguoiChoi.velX, "velY: ", nguoiChoi.velY);
+
+    // Boundary check
+    if (nguoiChoi.xCenter > WORLD_WIDTH) {
+        nguoiChoi.xCenter = WORLD_WIDTH;
+        nguoiChoi.velX = 0;
+    }
+    else if (nguoiChoi.xCenter < 0) {
+        nguoiChoi.xCenter = 0;
+        nguoiChoi.velX = 0;
+    }
+    if (nguoiChoi.yCenter > WORLD_HEIGHT) {
+        nguoiChoi.yCenter = WORLD_HEIGHT;
+        nguoiChoi.velY = 0;
+    }
+    else if (nguoiChoi.yCenter < 0) {
+        nguoiChoi.yCenter = 0;
+        nguoiChoi.velY = 0;
+    }
 }
 
 document.body.addEventListener("keydown", function (e) {
