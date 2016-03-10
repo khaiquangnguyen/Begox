@@ -1,9 +1,10 @@
 
 var players = [];
 var sockets = [];
-var worldSnapshot = [];
+var worldSnapshots = [];
 var missiles = [];
 var walls = [];
+var inputs = [];
 
 //library for collision detection
 var sat = require('sat');
@@ -40,7 +41,8 @@ var connectionHandler = function(socket){
      * @param id: the id of the sender
      * @param newDirection - the new direction of the player
      */
-    var updateDirection = function(id, newDirection){
+    var updateInputs = function(id, newInput){
+
     };
 
 
@@ -59,7 +61,6 @@ var connectionHandler = function(socket){
         //if the connection doesn't exist yet, then allow the player to connect
         if(utilities.getItemWithIDFromArray(socket.id,sockets) == -1) {
             socket.emit('connectionEstablished', socket.id);
-            sockets.push(socket);
             console.log('Connection established', socket.id);
         }
         else{
@@ -77,8 +78,15 @@ var connectionHandler = function(socket){
     var initNewPlayer = function(info){
         //if no player with such id has been created
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
+            // add socket to socket list
+            sockets.push(socket);
+            //initiate new player
             var aPlayer = new prototypes.Player(info.id,0,0,info.size,info.type,true,-1,info.speed);
             players.push(aPlayer);
+            //initiate new input List
+            var input = new prototypes.Input(info.id);
+            inputs.push(input);
+            //inform the client of the new player
             socket.emit('playerCreated',aPlayer);
             console.log('New player created.');
         }
@@ -96,6 +104,8 @@ var connectionHandler = function(socket){
         console.log("Number of players left:", players.length);
         ////remove the socket from socket lists
         utilities.removeItemWithIDFromArray(socket.id,sockets);
+        //remove input list
+        utilities.removeItemWithIDFromArray(socket.id, inputs);
         //FINISH REMOVE ALL MISSILES CREATED BY PLAYER WITH ID FROM ARRAY
         //FINISH REMOVE THE PLAYERS FROM THE GAME
     };
@@ -107,7 +117,7 @@ var connectionHandler = function(socket){
     //When clients want to initiate a new player
     socket.on('initNewPlayer', initNewPlayer);
     //when clients update their player's direction
-    socket.on('updateDirection', updateDirection);
+    socket.on('updateDirection', updateInputs);
     //when clients fire
     socket.on('shoot',shoot);
     //when clients disconnect
@@ -132,6 +142,7 @@ var serverUpdateLoop = function(){
     var now = Date.now();
     if (previousTickServerLoop + timeBetweenUpdate <= now) {
         previousTickServerLoop = now;
+        takeWorldSnapshot();
         sendWorldSnapshot();
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
@@ -140,10 +151,29 @@ var serverUpdateLoop = function(){
         setImmediate(serverUpdateLoop);
     }
 };
+
 var sendWorldSnapshot = function() {
     //FINISH CODE HERE
 };
 
+/**
+ * The the snapshot of the world
+ */
+var takeWorldSnapshot = function(){
+    var aWorldSnapshot = new prototypes.WorldSnapshot();
+    for (let aPlayer of players){
+        aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));
+    }
+    for (let aMissile of missiles){
+        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(aMissile));
+    }
+    for (let aWall of walls){
+        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(aWall));
+    }
+    worldSnapshots.push(aWorldSnapshot);
+    // maintain the length of worldSnapshots to be 60 only
+    if (worldSnapshots.length > 60) worldSnapshots.shift();
+};
 
 var killPlayer = function(aPlayer){
     players.splice(indexOf(aPlayer),1);
