@@ -1,7 +1,8 @@
-//PROTOTYPES
 /**
  * Created by khainguyen on 3/4/2016.
  */
+
+// REQUIRE STUFFS
 
 //PLAYER PROTOTYPE
 
@@ -18,6 +19,12 @@
  * @param speed: the speed of the Player
  */
 function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
+
+    // Shape
+    this.color = 0xFFFF0B;
+    this.shape = 1;
+
+    // Attributes
     this.id = id;
     this.xCenter = xCenter;
     this.yCenter = yCenter;
@@ -133,7 +140,12 @@ Player.prototype.takeDamage = function(shooter, damage){
  * The renderer for the current player
  */
 Player.prototype.render = function(){
-    //FINISH WRITING CODE HERE
+    console.log("Taisao");
+    this.shape.clear();
+    this.shape.lineStyle(0);
+    this.shape.beginFill(this.color, 0.5);
+    this.shape.drawCircle(this.xCenter, this.yCenter, this.size);
+    this.shape.endFill();
 };
 
 
@@ -245,6 +257,7 @@ Wall.prototype.render = function(){
 
 
 
+
 //GLOBAL VARIABLES
 
 //the array of socket
@@ -290,7 +303,7 @@ var removeItemWithIDFromArray = function(ID,array){
 };
 
 //library for collision detection
-var sat = require('sat');
+//var sat = require('sat');
 //INITIATE SERVER
 var express = require('express');
 var app = require('express')();
@@ -360,10 +373,12 @@ var connectionHandler = function(socket){
         //if no player with such id has been created
         if(getItemWithIDFromArray(info.id,players) == -1){
             var aPlayer = new Player(info.id,0,0,info.size,info.type,true,-1,info.speed);
+            aPlayer.move(10);
             players.push(aPlayer);
             socket.emit('playerCreated',aPlayer);
-            console.log('player created',aPlayer);
-        }
+
+
+    }
     };
 
 
