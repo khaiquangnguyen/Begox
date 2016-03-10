@@ -47,7 +47,10 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
     this.velY = 0;
 }
 
-// Draw User
+/**
+ * Draw the main player of the game
+ * @param player
+ */
 var drawUser = function(player) {
     player.shape.clear();
     player.shape.lineStyle(0);
@@ -56,14 +59,69 @@ var drawUser = function(player) {
     player.shape.endFill();
 };
 
-// Draw Object
+/**
+ * Draw all other players relative to the main player position
+ *
+ * @param other
+ * @param player
+ */
+var drawOther = function(other, player) {
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color, 0.5);
+    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
+    other.shape.endFill();
+};
+
+/**
+ * Draw all other player in the list
+ *
+ * @param otherList
+ */
+var drawOtherList = function(otherList, player) {
+    for (i = 0; i < otherList.length; i++) {
+        drawOther(otherList[i], player);
+    }
+};
+
+/**
+ * Draw some stupid square objects inside the game.
+ * @param shape
+ * @param player
+ */
 var drawStuff = function(shape, player) {
     // draw a rounded rectangle
-    shape.clear()
+    shape.clear();
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 1);
     shape.drawRect(shape.x - player.xCenter + WIDTH / 2, shape.y - player.yCenter + HEIGHT / 2, 100, 100);
 };
+
+/**
+ * Draw the border around the game
+ *
+ * @param shape
+ * @param player
+ */
+var drawBorder = function(shape, player) {
+    // draw a rectangular border
+    shape.clear();
+    shape.lineStyle(2, 0x0000FF, 1);
+    shape.beginFill(0xFF700B, 0.10);
+    shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
+};
+
+var otherList = [];
+
+// Add a bunch of other stupid player doing some dumb things
+
+for (i = 0; i < 20; i++) {
+    newX = Math.floor((Math.random() * WORLD_WIDTH) + 1);
+    newY = Math.floor((Math.random() * WORLD_HEIGHT) + 1);
+    newOther = new Player(12, newX, newY, 30, 'triangle', true, -1, 40);
+    otherList.push(newOther);
+    stage.addChild(newOther.shape)
+}
 
 var nguoiChoi = new Player(12, 200, 200, 30, 'triangle', true, -1, 40);
 
@@ -82,14 +140,13 @@ var rect3 = new PIXI.Graphics();
 rect3.x = 150;
 rect3.y = 211;
 
-var rect4 = new PIXI.Graphics();
-rect4.x = 0;
-rect4.y = 0;
+var border = new PIXI.Graphics();
 
 stage.addChild(nguoiChoi.shape);
 stage.addChild(rect);
 stage.addChild(rect2);
 stage.addChild(rect3);
+stage.addChild(border);
 
 // run the render loop
 animate();
@@ -97,9 +154,11 @@ animate();
 function animate() {
     //update
     update();
+    console.log(nguoiChoi.xCenter, nguoiChoi.yCenter)
 
     //num = 0;
     drawUser(nguoiChoi);
+    drawOtherList(otherList, nguoiChoi);
 
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     nguoiChoi.shape.clear();
@@ -113,6 +172,7 @@ function animate() {
 
     // Draw shape
     // draw a rounded rectangle
+    drawBorder(border, nguoiChoi);
     drawStuff(rect,nguoiChoi);
     drawStuff(rect2,nguoiChoi);
     drawStuff(rect3,nguoiChoi);
@@ -152,9 +212,9 @@ function update() {
     nguoiChoi.velX *= friction;
     nguoiChoi.xCenter += nguoiChoi.velX;
 
-    if (nguoiChoi.xCenter > WIDTH) nguoiChoi.xCenter = WIDTH;
+    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
     else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    if (nguoiChoi.yCenter > HEIGHT) nguoiChoi.yCenter = HEIGHT;
+    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
     else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
 }
 
