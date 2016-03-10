@@ -2,19 +2,21 @@
 //TEST SOCKET
 var socket = io();
 var inputs = [];
-var nguoiChoi;
+var thePlayer;
 socket.emit('clientWantToConnect');
 socket.on('connectionEstablished', function(id){
     socket.emit('initNewPlayer',{id: id,size: 10, type:'triangle',speed:40} );
-    nguoiChoi = new Player(id, 200, 200, 30, 'triangle', true, -1, 40);
-    stage.addChild(nguoiChoi.shape);
-    console.log('nguoi choi created');
+    thePlayer = new Player(id, 200, 200, 30, 'triangle', true, -1, 40);
+    stage.addChild(thePlayer.shape);
+    console.log('player created');
     animate();
+    gamePhysicsLoop();
 });
+
 socket.on('playerCreated',function(){
     console.log('player created on both sides');
 });
-socket.on('input',function(aInputList){
+socket.on('input',function(aInput){
     //if (inputs.length > 1000){
     //    return;
     //}
@@ -24,9 +26,12 @@ socket.on('input',function(aInputList){
     //else{
     //    inputs.concat(aInputList);
     //}
+    inputs.push(aInput);
+
 });
 
-function sendInputToServer(){
+function sendInputToServer(aInput){
+    socket.emit('updateInput',thePlayer.id, aInput);
 }
 
 //the standard fps of the physics loop = 60
@@ -45,15 +50,18 @@ function gamePhysicsLoop() {
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         var delta = (now - previousTickPhysicsLoop) / 1000;
         previousTickPhysicsLoop = now;
+        inputUpdate();
+        inputProcessing();
     }
-    if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
-        setTimeout(gamePhysicsLoop)
-    } else {
-        setImmediate(gamePhysicsLoop)
-    }
+    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+    //    setTimeout(gamePhysicsLoop);
+    //} else {
+    //    process.nextTick(gamePhysicsLoop);
+    //}
+    setTimeout(gamePhysicsLoop);
 }
 
-//gamePhysicsLoop();
+
 
 function inputUpdate() {
     var aInput = 0;
@@ -64,47 +72,47 @@ function inputUpdate() {
     if (keys[39]) aInput += 4;
 
     if (keys[40]) aInput += 8;
-    inputs.push(aInput);
+    if(aInput != 0) sendInputToServer(aInput);
 }
 
 function inputProcessing(){
     var input = inputs.shift();
     if (input >= 8){
-        if (nguoiChoi.velY < nguoiChoi.speed) {
-            nguoiChoi.velY++;
+        if (thePlayer.velY < thePlayer.speed) {
+            thePlayer.velY++;
         }
         input -= 8;
     }
 
     if (input >= 4){
-        if (nguoiChoi.velX < nguoiChoi.speed) {
-            nguoiChoi.velX++;
+        if (thePlayer.velX < thePlayer.speed) {
+            thePlayer.velX++;
         }
         input -= 4;
     }
 
     if (input >= 2){
-        if (nguoiChoi.velY > -nguoiChoi.speed) {
-            nguoiChoi.velY--;
+        if (thePlayer.velY > -thePlayer.speed) {
+            thePlayer.velY--;
         }
         input -= 2;
     }
 
     if (input >= 1){
-        if (nguoiChoi.velX > -nguoiChoi.speed) {
-            nguoiChoi.velX--;
+        if (thePlayer.velX > -thePlayer.speed) {
+            thePlayer.velX--;
         }
     }
 
-    nguoiChoi.velY *= friction;
-    nguoiChoi.yCenter += nguoiChoi.velY;
-    nguoiChoi.velX *= friction;
-    nguoiChoi.xCenter += nguoiChoi.velX;
+    thePlayer.velY *= friction;
+    thePlayer.yCenter += thePlayer.velY;
+    thePlayer.velX *= friction;
+    thePlayer.xCenter += thePlayer.velX;
 
-    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
+    if (thePlayer.xCenter > WORLD_WIDTH) thePlayer.xCenter = WORLD_HEIGHT;
+    else if (thePlayer.xCenter < 0) thePlayer.xCenter = 0;
+    if (thePlayer.yCenter > WORLD_HEIGHT) thePlayer.yCenter = WORLD_HEIGHT;
+    else if (thePlayer.yCenter < 0) thePlayer.yCenter = 0;
 }
 
 
@@ -112,29 +120,25 @@ function inputProcessing(){
 
 function animate() {
     //update
-    inputUpdate();
-    inputProcessing();
+
 
     //num = 0;
-    drawUser(nguoiChoi);
-    drawOtherList(otherList, nguoiChoi);
+    drawUser(thePlayer);
+    drawOtherList(otherList, thePlayer);
 
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    nguoiChoi.shape.clear();
-    nguoiChoi.shape.lineStyle(0);
-    nguoiChoi.shape.beginFill(0xFFFF0B, 0.5);
-    nguoiChoi.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
-    nguoiChoi.shape.endFill();
-
-    console.log(nguoiChoi.xCenter);
-    console.log(nguoiChoi.yCenter);
+    thePlayer.shape.clear();
+    thePlayer.shape.lineStyle(0);
+    thePlayer.shape.beginFill(0xFFFF0B, 0.5);
+    thePlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
+    thePlayer.shape.endFill();
 
     // Draw shape
     // draw a rounded rectangle
-    drawBorder(border, nguoiChoi);
-    drawStuff(rect,nguoiChoi);
-    drawStuff(rect2,nguoiChoi);
-    drawStuff(rect3,nguoiChoi);
+    drawBorder(border, thePlayer);
+    drawStuff(rect,thePlayer);
+    drawStuff(rect2,thePlayer);
+    drawStuff(rect3,thePlayer);
 
     renderer.render(stage);
     window.setTimeout(function() {
@@ -154,8 +158,8 @@ document.body.addEventListener("keyup", function (e) {
 });
 
 
-//var nguoiChoi = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
-//stage.addChild(nguoiChoi.shape);
+//var thePlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
+//stage.addChild(thePlayer.shape);
 
 var WIDTH = 800;
 var HEIGHT = 800;
