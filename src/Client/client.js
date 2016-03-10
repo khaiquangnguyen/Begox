@@ -21,12 +21,39 @@ function Player(aPlayer){
     this.maxSpeed = aPlayer.maxSpeed;
     this.velX = aPlayer.velX;
     this.velY = aPlayer.velY;
+    stage.addChild(this.shape);
 }
 
+function ShadowPlayer(attributes){
+    this.id = attributes.id;
+    this.shape  = new PIXI.Graphics();
+    this.xCenter = attributes.xCenter;
+    this.yCenter = attributes.yCenter;
+    this.direction = attributes.direction;
+    this.color = attributes.color;
+    //TODO. velX and velY can be used for optimization
+    //this.velX = velX;
+    //this.velY = velY;
+}
+
+function Wall(attributes){
+    this.xCenter = attributes.xCenter;
+    this.yCenter = attributes.yCenter;
+    this.direction = attributes.direction;
+}
+function Missile(attributes){
+    this.id = attributes.id;
+    this.yCenter = attributes.yCenter;
+    this.xCenter = attributes.xCenter;
+    this.shape = attributes.shape;
+    this.color = attributes.color;
+}
+/**
+ * Move the main player according to the input stored in the input queue.
+ */
 function inputProcessing(){
     if(inputs.length == 0) return;
     var input = inputs.shift();
-    console.log(input);
     if (input >= 8){
         if (mainPlayer.velY < mainPlayer.maxSpeed) {
             mainPlayer.velY++;
@@ -73,6 +100,9 @@ function inputProcessing(){
     }
 }
 
+/**
+ * Get input from the user and then push it to the input queue.
+ */
 function inputUpdate() {
     var aInput = 0;
     if (keys[37]) aInput += 1;
@@ -85,6 +115,10 @@ function inputUpdate() {
     if(aInput != 0) sendInputToServer(aInput);
 }
 
+/**
+ *  The view port of the game
+ * @returns {{width: *, height: *}}
+ */
 function viewport()
 {
     var e = window
@@ -96,33 +130,55 @@ function viewport()
     }
     WIDTH = e[ a+'Width' ];
     HEIGHT = e[ a+'Height' ];
-    return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
 }
+
+
+
+/****************************************************************************/
+//VARIABLE
+var WIDTH = 0;
+var HEIGHT = 0;
+viewport();
 
 var friction = 0.98;
 
-var WIDTH = 0;
-var HEIGHT = 0;
-//viewport();
-//console.log(WIDTH,HEIGHT);
-
 var WORLD_WIDTH = 1500;
 var WORLD_HEIGHT = 1500;
-
-var otherList = [];
 
 var inputs = [];
 var mainPlayer;
 var otherPlayers = {};
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
-var keys = [];
+var keys = {};
+
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
+
+var worldSnapshots = [];
+
+
+/****************************************************/
+
+
+
+//BASIC SET UP
 document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
 });
 document.body.addEventListener("keyup", function (e) {
     keys[e.keyCode] = false;
 });
+
+
+
+/***********************************************************/
+//maIN CODE
+
 
 
 var socket = io();
@@ -132,11 +188,11 @@ socket.on('connectionEstablished', function(id){
 
 });
 socket.on('playerCreated',function(aPlayer){
+    console.log(aPlayer);
     mainPlayer = new Player(aPlayer);
     console.log('Game begin!!!');
     animate();
     gamePhysicsLoop();
-    stage.addChild(mainPlayer.shape);
 });
 
 socket.on('input',function(aInput){
@@ -144,16 +200,23 @@ socket.on('input',function(aInput){
 
 });
 
+socket.on('worldSnapshot',function(aWorldSnapshot){
+    stage.removeChildren();
+    stage.addChild(mainPlayer.shape);
+    stage.addChild(border);
+    for (let aPlayer of aWorldSnapshot.players){
+        aPlayer.shape = new PIXI.Graphics();
+        stage.addChild(aPlayer.shape);
+    }
+    worldSnapshots.push(aWorldSnapshot);
+
+
+    if (worldSnapshots.length > 60) worldSnapshots.shift();
+});
+
 function sendInputToServer(aInput){
     socket.emit('updateInput',mainPlayer.id, aInput);
 }
-
-//the standard fps of the physics loop = 60
-var fps = 60;
-//time between 2 physics update
-var tickLengthMs = 1000/fps;
-//time of last physics update
-var previousTickPhysicsLoop = Date.now();
 
 
 /**
@@ -172,7 +235,7 @@ function gamePhysicsLoop() {
     //} else {
     //    process.nextTick(gamePhysicsLoop);
     //}
-    setTimeout(gamePhysicsLoop);
+    window.setTimeout(gamePhysicsLoop,16);
 }
 
 // run the render loop
@@ -181,7 +244,7 @@ function animate() {
     //update
     //num = 0;
     drawMainPlayer(mainPlayer);
-    drawOtherPlayers(otherPlayers, mainPlayer);
+    if(worldSnapshots.length >= 1) drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
 
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     mainPlayer.shape.clear();
@@ -195,7 +258,6 @@ function animate() {
     drawStuff(rect,mainPlayer);
     drawStuff(rect2,mainPlayer);
     drawStuff(rect3,mainPlayer);
-
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
@@ -244,7 +306,7 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color, 0.5);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
+    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
     other.shape.endFill();
 };
 
@@ -253,8 +315,10 @@ var drawWithRespectToMainPlayer = function(other, player) {
  *
  * @param otherList
  */
-var drawOtherPlayers = function(otherList, player) {
-    for (var aPlayer in otherList) drawWithRespectToMainPlayer(aPlayer,player);
+var drawOtherPlayers = function(otherPlayers, mainPlayer) {
+    for (var aPlayer of otherPlayers) {
+        drawWithRespectToMainPlayer(aPlayer,mainPlayer);
+    }
 };
 
 
@@ -285,18 +349,7 @@ var drawBorder = function(shape, player) {
     shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
 };
 
-
-
 // Add a bunch of other stupid player doing some dumb things
-
-for (let i = 0; i < 20; i++) {
-    var newX = Math.floor((Math.random() * WORLD_WIDTH) + 1);
-    var newY = Math.floor((Math.random() * WORLD_HEIGHT) + 1);
-    var newOther = new Player(12, newX, newY, 30, 'triangle', true, -1, 40);
-    otherList.push(newOther);
-    stage.addChild(newOther.shape)
-}
-
 
 var rect = new PIXI.Graphics();
 rect.x = 200;
@@ -311,9 +364,9 @@ rect3.x = 150;
 rect3.y = 211;
 
 var border = new PIXI.Graphics();
-
-stage.addChild(rect);
-stage.addChild(rect2);
-stage.addChild(rect3);
+//
+//stage.addChild(rect);
+//stage.addChild(rect2);
+//stage.addChild(rect3);
 stage.addChild(border);
 

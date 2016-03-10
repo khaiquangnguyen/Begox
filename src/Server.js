@@ -78,17 +78,22 @@ var connectionHandler = function(socket){
      */
     var initNewPlayer = function(info){
         //if no player with such id has been created
+        let x = Math.random() * 1000;
+        let y = Math.random() * 1000;
+        console.log(x);
+        console.log(y);
+
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
             switch(info.type){
                 case TRIANGLE_TYPE:
-                    var aPlayer = new prototypes.Player(info.id,200,200,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
                     break;
                 case SQUARE_TYPE:
-                    var aPlayer = new prototypes.Player(info.id,200,200,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
                     break;
                 default:
-                    var aPlayer = new prototypes.Player(info.id,200,200,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
             }
             // add socket to socket dictionary
             sockets[socket.id] = socket;
@@ -153,9 +158,9 @@ var serverUpdateLoop = function(){
     if (previousTickServerLoop + timeBetweenUpdate <= now) {
         previousTickServerLoop = now;
         //takeWorldSnapshot();
-        //sendWorldSnapshot();
+        sendWorldSnapshotToAllClients();
         //for( let aSocket of sockets){
-        //    //sendInputToClient(aSocket);
+        //    //sendInputToAllClients(aSocket);
         //    //console.log('send input to client with ID', aSocket.id);
         //
         //}
@@ -168,35 +173,41 @@ var serverUpdateLoop = function(){
 };
 
 serverUpdateLoop();
-
-var sendInputToClient = function(socket){
+var sendInputToAllClients = function(socket){
     var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
     //Random inputs
     aInputList.inputList = [37,38,39,40];
     socket.emit("input",aInputList.inputList);
 };
 
-var sendWorldSnapshot = function() {
-    //FINISH CODE HERE
+var sendWorldSnapshotToAllClients = function() {
+    var worldSnapshot;
+    for (let keySocket in sockets){
+        worldSnapshot = takeWorldSnapshot(keySocket);
+        sockets[keySocket].emit('worldSnapshot',worldSnapshot);
+    }
 };
 
 /**
  * The the snapshot of the world
  */
-var takeWorldSnapshot = function(){
+var takeWorldSnapshot = function(socketID){
     var aWorldSnapshot = new prototypes.WorldSnapshot();
-    for (let aPlayer of players){
-        aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));
+    for (let playerKey in players){
+        if(playerKey != socketID) {
+            aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(players[playerKey]));
+        }
     }
-    for (let aMissile of missiles){
-        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(aMissile));
+    for (let missileKey in missiles){
+        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(missiles[missileKey]));
     }
-    for (let aWall of walls){
-        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(aWall));
+    for (let wallKey in walls){
+        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(walls[wallKey]));
     }
     worldSnapshots.push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
     if (worldSnapshots.length > 60) worldSnapshots.shift();
+    return aWorldSnapshot;
 };
 
 var killPlayer = function(aPlayer){

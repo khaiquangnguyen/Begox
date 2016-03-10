@@ -20,7 +20,6 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
 
     // Shape
     this.color = 0xFFFF0B;
-
     // Attributes
     this.id = id;
     this.xCenter = xCenter;
@@ -173,6 +172,7 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
     this.type = type;
     this.direction = direction;
     this.speed = speed;
+    this.color = 0xFFFF0B;
 }
 
 /**
@@ -226,11 +226,11 @@ Missile.prototype.render = function(){
 
 
 function Wall(id, xCenter, yCenter, size, type){
-    this.id = id;
     this.xCenter = xCenter;
     this.yCenter = yCenter;
     this.size = size;
     this.type = type;
+    this.color = 0xFFFF0B;
 };
 
 
@@ -272,9 +272,12 @@ function WorldSnapshot(){
  * @constructor
  */
 function PlayerSnapshot(aPlayer){
+    this.id = aPlayer.id;
     this.xCenter = aPlayer.xCenter;
     this.yCenter = aPlayer.yCenter;
     this.direction = aPlayer.direction;
+    this.type = aPlayer.type;
+    this.color = aPlayer.color;
 }
 /**
  * The snapshot of a missile with minimal information
@@ -282,9 +285,12 @@ function PlayerSnapshot(aPlayer){
  * @constructor
  */
 function MissileSnapshot(aMissile){
+    this.id = aMissile.id;
     this.xCenter = aMissile.xCenter;
     this.yCenter = aMissile.yCenter;
     this.direction = aMissile.direction;
+    this.shooterID = aMissile.shooterID;
+
 }
 
 /**
@@ -296,6 +302,8 @@ function WallSnapshot(aWall){
     this.xCenter = aWall.xCenter;
     this.yCenter = aWall.yCenter;
     this.direction = aWall.direction;
+    this.type = aWall.type;
+    this.color = aWall.color;
 }
 
 module.exports.Input = Input;
