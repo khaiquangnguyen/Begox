@@ -17,6 +17,12 @@
  * @param speed: the speed of the Player
  */
 function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
+
+    // Shape
+    this.shape = new PIXI.Graphics();
+    this.color = 0xFFFF0B;
+
+    // Attributes
     this.id = id;
     this.xCenter = xCenter;
     this.yCenter = yCenter;
@@ -132,7 +138,12 @@ Player.prototype.takeDamage = function(shooter, damage){
  * The renderer for the current player
  */
 Player.prototype.render = function(){
-    //FINISH WRITING CODE HERE
+
+    this.shape.clear();
+    this.shape.lineStyle(0);
+    this.shape.beginFill(this.color, 0.5);
+    this.shape.drawCircle(this.xCenter, this.yCenter, this.size);
+    this.shape.endFill();
 };
 
 

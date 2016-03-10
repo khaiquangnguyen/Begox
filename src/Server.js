@@ -5,7 +5,7 @@ var worldSnapshots = [];
 var missiles = [];
 var walls = [];
 var inputs = [];
-
+"use strict";
 //library for collision detection
 var sat = require('sat');
 //INITIATE SERVER
@@ -160,6 +160,7 @@ var sendWorldSnapshot = function() {
  * The the snapshot of the world
  */
 var takeWorldSnapshot = function(){
+    "use strict";
     var aWorldSnapshot = new prototypes.WorldSnapshot();
     for (let aPlayer of players){
         aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));
