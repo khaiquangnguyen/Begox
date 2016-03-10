@@ -251,5 +251,56 @@ Wall.prototype.render = function(){
     //FINISH CODE HERE
 };
 
+function Input(id){
+    this.id = id;
+    this.inputList = [];
+}
 
+function WorldSnapshot(){
+    //the array of players snapshot
+    this.players = [];
+    //the array of missiles snapshot
+    this.missiles = [];
+    //the array of walls snapshot
+    this.walls = [];
+}
 
+/**
+ * The snapshot of a player with minimal information
+ * @param aPlayer
+ * @constructor
+ */
+function PlayerSnapshot(aPlayer){
+    this.xCenter = aPlayer.xCenter;
+    this.yCenter = aPlayer.yCenter;
+    this.direction = aPlayer.direction;
+}
+/**
+ * The snapshot of a missile with minimal information
+ * @param aMissile
+ * @constructor
+ */
+function MissileSnapshot(aMissile){
+    this.xCenter = aMissile.xCenter;
+    this.yCenter = aMissile.yCenter;
+    this.direction = aMissile.direction;
+}
+
+/**
+ * The snapshot of a wall with minimal information
+ * @param aWall
+ * @constructor
+ */
+function WallSnapshot(aWall){
+    this.xCenter = aWall.xCenter;
+    this.yCenter = aWall.yCenter;
+    this.direction = aWall.direction;
+}
+
+module.exports.Input = Input;
+module.exports.Player = Player;
+module.exports.Missile = Missile;
+module.exports.Wall = Wall;
+module.exports.WorldSnapshot = WorldSnapshot;
+module.exports.PlayerSnapshot = PlayerSnapshot;
+module.exports.MissileSnapshot = MissileSnapshot;
