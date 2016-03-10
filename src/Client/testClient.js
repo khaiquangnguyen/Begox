@@ -4,6 +4,10 @@ var HEIGHT = 800;
 var WORLD_WIDTH = 1500;
 var WORLD_HEIGHT = 1500;
 
+var RATIO = 1/2; // Ratio between bullets and tank
+
+var bulletID = 0; // bulletID starts at 0
+
 var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT, { antialias: true });
 document.body.appendChild(renderer.view);
 
@@ -63,7 +67,12 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
  * @param direction: the direction of the Missile's movement
  * @param speed: the speed of the Player
  */
-function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed, color) {
+
+    // Shape of the missle
+    this.shape = new PIXI.Graphics();
+
+    // Other stuffs
     this.shooterID = shooterID;
     this.id  = id;
     this.xCenter = xCenter;
@@ -72,7 +81,32 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
     this.type = type;
     this.direction = direction;
     this.speed = speed;
+    this.color = color;
 }
+
+/**
+ * Draw the missile coming from the players
+ * @param missile
+ * @param player
+ */
+var drawMissile = function(missile, player) {
+    missile.shape.clear();
+    missile.shape.lineStyle(0);
+    missile.shape.beginFill(missile.color, 0.5);
+    missile.shape.drawCircle(missile.xCenter - player.xCenter + WIDTH / 2, missile.yCenter - player.yCenter + HEIGHT / 2, missile.size);
+    missile.shape.endFill();
+};
+
+/**
+ * Draw all the bullets
+ * @param bulletList
+ * @param player
+ */
+var drawBulletList = function(bulletList, player) {
+    for (var key in bulletList) {
+        drawMissile(bulletList[key], nguoiChoi);
+    }
+};
 
 /**
  * Draw the main player of the game
@@ -140,7 +174,7 @@ var drawSquare = function(other, player) {
     other.shape.lineTo(other.xCenter + dx4 - player.xCenter + WIDTH / 2, other.yCenter + dy4 - player.yCenter + WIDTH / 2);
     other.shape.lineTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
     other.shape.endFill();
-}
+};
 
 /**
  * Draw all other player in the list
@@ -181,6 +215,7 @@ var drawBorder = function(shape, player) {
 };
 
 var otherList = [];
+var bulletList = {};
 
 // Add a bunch of other stupid player doing some dumb things
 
@@ -222,11 +257,13 @@ animate();
 
 function animate() {
     //update
-    update();
+    updateMovement();
+    updateBullet();
 
     //num = 0;
     drawSquare(nguoiChoi, nguoiChoi);
     drawOtherList(otherList, nguoiChoi);
+    drawBulletList(bulletList, nguoiChoi);
 
     // Draw shape
     // draw a rounded rectangle
@@ -241,7 +278,7 @@ function animate() {
     }, 10);
 }
 
-function update() {
+function updateMovement() {
 
     if (keys[38]) {
         if (nguoiChoi.velY > -nguoiChoi.speed) {
@@ -296,9 +333,54 @@ function update() {
     }
 }
 
+/**
+ * Check if the bullet is out of bound
+ * @param bullet
+ * @returns {boolean}
+ */
+function bulletOutside(bullet) {
+    if ((bullet.xCenter > WORLD_WIDTH) || (bullet.yCenter < 0)) return true;
+    if ((bullet.yCenter > WORLD_HEIGHT) || (bullet.yCenter < 0)) return true;
+    return false;
+}
+
+/**
+ * Update the position of all bullets
+ */
+function updateBullet() {
+    for (var key in bulletList) {
+        bullet = bulletList[key];
+        if (bulletOutside(bullet)) {
+            stage.removeChild(bullet.shape);
+            delete bulletList[key];
+        }
+        else {
+            bullet.xCenter += bullet.velX;
+            bullet.yCenter += bullet.velY;
+        }
+    }
+};
+
 document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
 });
 document.body.addEventListener("keyup", function (e) {
     keys[e.keyCode] = false;
 });
+document.body.addEventListener("click", click, false);
+
+function click(e) {
+    var xPosition = e.clientX;
+    var yPosition = e.clientY;
+    bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
+    newBullet = new Missile(nguoiChoi.id, bulletID, nguoiChoi.xCenter, nguoiChoi.yCenter, nguoiChoi.size * RATIO, "pellet", bulletAngle, 20, nguoiChoi.color);
+    newBullet.velX = newBullet.speed * Math.cos(bulletAngle);
+    newBullet.velY = newBullet.speed * Math.sin(bulletAngle);
+
+    // Add to bullet list and stage
+    bulletList[bulletID] = newBullet;
+    stage.addChild(newBullet.shape);
+
+    // Increment bullet ID to avoid duplication;
+    bulletID += 1;
+}
