@@ -1,11 +1,11 @@
 
 "use strict";
-var players = [];
-var sockets = [];
+var players ={};
+var sockets = {};
 var worldSnapshots = [];
-var missiles = [];
-var walls = [];
-var inputs = [];
+var missiles = {};
+var walls = {};
+var inputs = {};
 
 //library for collision detection
 //INITIATE SERVER
@@ -15,6 +15,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
+var constants = require('./Client/Constants.js');
 
 //start listening on the server
 http.listen(3000, function(){
@@ -78,16 +79,25 @@ var connectionHandler = function(socket){
     var initNewPlayer = function(info){
         //if no player with such id has been created
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
-            // add socket to socket list
-            sockets.push(socket);
             //initiate new player
-            var aPlayer = new prototypes.Player(info.id,0,0,info.size,info.type,true,-1,info.speed);
-            players.push(aPlayer);
-            //initiate new input List
-            var input = new prototypes.Input(info.id);
-            inputs.push(input);
+            switch(info.type){
+                case TRIANGLE_TYPE:
+                    var aPlayer = new prototypes.Player(info.id,200,200,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
+                    break;
+                case SQUARE_TYPE:
+                    var aPlayer = new prototypes.Player(info.id,200,200,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
+                    break;
+                default:
+                    var aPlayer = new prototypes.Player(info.id,200,200,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
+            }
+            // add socket to socket dictionary
+            sockets[socket.id] = socket;
+            //add player to player dictionary
+            players[socket.id] = aPlayer;
+            //initiate new input list to dictionary
+            inputs[socket.id] = new prototypes.Input(info.id);
             //inform the client of the new player
-            socket.emit('playerCreated');
+            socket.emit('playerCreated',aPlayer);
             console.log('New player created.');
         }
         else{
@@ -101,7 +111,7 @@ var connectionHandler = function(socket){
     var disconnect = function(){
         console.log(socket.id, "disconnected");
         utilities.removeItemWithIDFromArray(socket.id,players);
-        console.log("Number of players left:", players.length);
+        console.log("Number of players left:",Object.keys(players).length);
         ////remove the socket from socket lists
         utilities.removeItemWithIDFromArray(socket.id,sockets);
         //remove input list
@@ -144,11 +154,11 @@ var serverUpdateLoop = function(){
         previousTickServerLoop = now;
         //takeWorldSnapshot();
         //sendWorldSnapshot();
-        for( let aSocket of sockets){
-            //sendInputToClient(aSocket);
-            //console.log('send input to client with ID', aSocket.id);
-
-        }
+        //for( let aSocket of sockets){
+        //    //sendInputToClient(aSocket);
+        //    //console.log('send input to client with ID', aSocket.id);
+        //
+        //}
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);

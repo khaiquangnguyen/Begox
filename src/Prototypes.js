@@ -14,9 +14,9 @@
  * @param type: the type of the Player, circle, square or triangle.
  * @param canShoot: whether the play can shoot
  * @param direction: the current direction of the Player
- * @param speed: the speed of the Player
+ * @param maxSpeed: the speed of the Player
  */
-function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
+function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed){
 
     // Shape
     this.color = 0xFFFF0B;
@@ -29,7 +29,9 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
     this.type = type;
     this.canShoot  = true;
     this.direction = direction;
-    this.speed = speed;
+    this.maxSpeed = maxSpeed;
+    this.velX = 0;
+    this.velY = 0;
     this.missileCount = 0;
     this.lastEnemy = null;
 }

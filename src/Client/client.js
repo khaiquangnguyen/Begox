@@ -1,37 +1,151 @@
+"use strict";
+/**
+ * Client version of player. Add shape attribute
+ * @param aPlayer
+ * @constructor
+ */
+function Player(aPlayer){
+    // Additional variables
+    this.shape = new PIXI.Graphics();
+    this.color = aPlayer.color;
+    // Attributes
+    this.id = aPlayer.id;
+    this.xCenter = aPlayer.xCenter;
+    this.yCenter = aPlayer.yCenter;
+    this.size = aPlayer.size;
+    this.type = aPlayer.type;
+    this.canShoot  = aPlayer.canShoot;
+    this.direction = aPlayer.direction;
+    this.missileCount = aPlayer.missileCount;
+    this.lastEnemy = aPlayer.lastEnemy;
+    this.maxSpeed = aPlayer.maxSpeed;
+    this.velX = aPlayer.velX;
+    this.velY = aPlayer.velY;
+}
 
-//TEST SOCKET
-var socket = io();
+function inputProcessing(){
+    if(inputs.length == 0) return;
+    var input = inputs.shift();
+    console.log(input);
+    if (input >= 8){
+        if (mainPlayer.velY < mainPlayer.maxSpeed) {
+            mainPlayer.velY++;
+        }
+        input -= 8;
+    }
+    if (input >= 4){
+        if (mainPlayer.velX < mainPlayer.maxSpeed) {
+            mainPlayer.velX++;
+        }
+        input -= 4;
+    }
+    if (input >= 2){
+        if (mainPlayer.velY > -mainPlayer.maxSpeed) {
+            mainPlayer.velY--;
+        }
+        input -= 2;
+    }
+    if (input >= 1){
+        if (mainPlayer.velX > -mainPlayer.maxSpeed) {
+            mainPlayer.velX--;
+        }
+    }
+    mainPlayer.velY *= friction;
+    mainPlayer.yCenter += mainPlayer.velY;
+    mainPlayer.velX *= friction;
+    mainPlayer.xCenter += mainPlayer.velX;
+
+    if (mainPlayer.xCenter > WORLD_WIDTH) {
+        mainPlayer.xCenter = WORLD_WIDTH;
+        mainPlayer.velX = 0;
+    }
+    else if (mainPlayer.xCenter < 0) {
+        mainPlayer.xCenter = 0;
+        mainPlayer.velX = 0;
+    }
+    if (mainPlayer.yCenter > WORLD_HEIGHT) {
+        mainPlayer.yCenter = WORLD_HEIGHT;
+        mainPlayer.velY = 0;
+    }
+    else if (mainPlayer.yCenter < 0) {
+        mainPlayer.yCenter = 0;
+        mainPlayer.velY = 0;
+    }
+}
+
+function inputUpdate() {
+    var aInput = 0;
+    if (keys[37]) aInput += 1;
+
+    if (keys[38]) aInput += 2;
+
+    if (keys[39]) aInput += 4;
+
+    if (keys[40]) aInput += 8;
+    if(aInput != 0) sendInputToServer(aInput);
+}
+
+function viewport()
+{
+    var e = window
+        , a = 'inner';
+    if ( !( 'innerWidth' in window ) )
+    {
+        a = 'client';
+        e = document.documentElement || document.body;
+    }
+    WIDTH = e[ a+'Width' ];
+    HEIGHT = e[ a+'Height' ];
+    return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
+}
+
+var friction = 0.98;
+
+var WIDTH = 0;
+var HEIGHT = 0;
+//viewport();
+//console.log(WIDTH,HEIGHT);
+
+var WORLD_WIDTH = 1500;
+var WORLD_HEIGHT = 1500;
+
+var otherList = [];
+
 var inputs = [];
-var thePlayer;
+var mainPlayer;
+var otherPlayers = {};
+//the option, one of triangle, circle or square
+var playerType = TRIANGLE_TYPE;
+var keys = [];
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
+
+
+var socket = io();
 socket.emit('clientWantToConnect');
 socket.on('connectionEstablished', function(id){
-    socket.emit('initNewPlayer',{id: id,size: 10, type:'triangle',speed:40} );
-    thePlayer = new Player(id, 200, 200, 30, 'triangle', true, -1, 40);
-    stage.addChild(thePlayer.shape);
-    console.log('player created');
+    socket.emit('initNewPlayer',{id: id,type:playerType} );
+
+});
+socket.on('playerCreated',function(aPlayer){
+    mainPlayer = new Player(aPlayer);
+    console.log('Game begin!!!');
     animate();
     gamePhysicsLoop();
+    stage.addChild(mainPlayer.shape);
 });
 
-socket.on('playerCreated',function(){
-    console.log('player created on both sides');
-});
 socket.on('input',function(aInput){
-    //if (inputs.length > 1000){
-    //    return;
-    //}
-    //if(inputs.length == 0) {
-    //    inputs = aInputList;
-    //}
-    //else{
-    //    inputs.concat(aInputList);
-    //}
     inputs.push(aInput);
 
 });
 
 function sendInputToServer(aInput){
-    socket.emit('updateInput',thePlayer.id, aInput);
+    socket.emit('updateInput',mainPlayer.id, aInput);
 }
 
 //the standard fps of the physics loop = 60
@@ -61,96 +175,26 @@ function gamePhysicsLoop() {
     setTimeout(gamePhysicsLoop);
 }
 
-
-
-function inputUpdate() {
-    var aInput = 0;
-    if (keys[37]) aInput += 1;
-
-    if (keys[38]) aInput += 2;
-
-    if (keys[39]) aInput += 4;
-
-    if (keys[40]) aInput += 8;
-    if(aInput != 0) sendInputToServer(aInput);
-}
-
-function inputProcessing(){
-    var input = inputs.shift();
-    if (input >= 8){
-        if (thePlayer.velY < thePlayer.speed) {
-            thePlayer.velY++;
-        }
-        input -= 8;
-    }
-
-    if (input >= 4){
-        if (thePlayer.velX < thePlayer.speed) {
-            thePlayer.velX++;
-        }
-        input -= 4;
-    }
-
-    if (input >= 2){
-        if (thePlayer.velY > -thePlayer.speed) {
-            thePlayer.velY--;
-        }
-        input -= 2;
-    }
-
-    if (input >= 1){
-        if (thePlayer.velX > -thePlayer.speed) {
-            thePlayer.velX--;
-        }
-    }
-
-    thePlayer.velY *= friction;
-    thePlayer.yCenter += thePlayer.velY;
-    thePlayer.velX *= friction;
-    thePlayer.xCenter += thePlayer.velX;
-
-    if (thePlayer.xCenter > WORLD_WIDTH) {
-        thePlayer.xCenter = WORLD_HEIGHT;
-        thePlayer.velX = 0;
-    }
-    else if (thePlayer.xCenter < 0) {
-        thePlayer.xCenter = 0;
-        thePlayer.velX = 0;
-    }
-    if (thePlayer.yCenter > WORLD_HEIGHT) {
-        thePlayer.yCenter = WORLD_HEIGHT;
-        thePlayer.velY = 0;
-    }
-    else if (thePlayer.yCenter < 0) {
-        thePlayer.yCenter = 0;
-        thePlayer.velY = 0;
-    }
-}
-
-
 // run the render loop
 
 function animate() {
     //update
-
-
     //num = 0;
-    drawUser(thePlayer);
-    drawOtherList(otherList, thePlayer);
+    drawMainPlayer(mainPlayer);
+    drawOtherPlayers(otherPlayers, mainPlayer);
 
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    thePlayer.shape.clear();
-    thePlayer.shape.lineStyle(0);
-    thePlayer.shape.beginFill(0xFFFF0B, 0.5);
-    thePlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
-    thePlayer.shape.endFill();
+    mainPlayer.shape.clear();
+    mainPlayer.shape.lineStyle(0);
+    mainPlayer.shape.beginFill(0xFFFF0B, 0.5);
+    mainPlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
+    mainPlayer.shape.endFill();
 
-    // Draw shape
     // draw a rounded rectangle
-    drawBorder(border, thePlayer);
-    drawStuff(rect,thePlayer);
-    drawStuff(rect2,thePlayer);
-    drawStuff(rect3,thePlayer);
+    drawBorder(border, mainPlayer);
+    drawStuff(rect,mainPlayer);
+    drawStuff(rect2,mainPlayer);
+    drawStuff(rect3,mainPlayer);
 
     renderer.render(stage);
     window.setTimeout(function() {
@@ -162,22 +206,9 @@ function animate() {
 
 
 
-document.body.addEventListener("keydown", function (e) {
-    keys[e.keyCode] = true;
-});
-document.body.addEventListener("keyup", function (e) {
-    keys[e.keyCode] = false;
-});
 
-
-//var thePlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
-//stage.addChild(thePlayer.shape);
-
-var WIDTH = 800;
-var HEIGHT = 800;
-
-var WORLD_WIDTH = 1500;
-var WORLD_HEIGHT = 1500;
+//var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
+//stage.addChild(mainPlayer.shape);
 
 var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT, { antialias: true });
 document.body.appendChild(renderer.view);
@@ -188,45 +219,14 @@ stage.interactive = true;
 
 var circle = new PIXI.Graphics();
 
-/**
- * The prototype for the Player object
- *
- * @param id: the id of the Player, presumably the id of the socket connection
- * @param xCenter: the x-coordinate of the center of the Player
- * @param yCenter: the y-coordinate of the center of the Player
- * @param size: the size of the Player
- * @param type: the type of the Player, circle, square or triangle.
- * @param canShoot: whether the play can shoot
- * @param direction: the current direction of the Player
- * @param speed: the speed of the Player
- */
-function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
-    // Shape
-    this.shape = new PIXI.Graphics();
-    this.color = 0xFFFF0B;
 
-    // Attributes
-    this.id = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
-    this.size = size;
-    this.type = type;
-    this.canShoot  = true;
-    this.direction = direction;
-    this.speed = speed;
-    this.missileCount = 0;
-    this.lastEnemy = null;
-    // Additional variables
-    this.velX = 0;
-    this.velY = 0;
 
-}
 
 /**
  * Draw the main player of the game
  * @param player
  */
-var drawUser = function(player) {
+var drawMainPlayer = function(player) {
     player.shape.clear();
     player.shape.lineStyle(0);
     player.shape.beginFill(player.color, 0.5);
@@ -240,7 +240,7 @@ var drawUser = function(player) {
  * @param other
  * @param player
  */
-var drawOther = function(other, player) {
+var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color, 0.5);
@@ -253,10 +253,8 @@ var drawOther = function(other, player) {
  *
  * @param otherList
  */
-var drawOtherList = function(otherList, player) {
-    for (var i = 0; i < otherList.length; i++) {
-        drawOther(otherList[i], player);
-    }
+var drawOtherPlayers = function(otherList, player) {
+    for (var aPlayer in otherList) drawWithRespectToMainPlayer(aPlayer,player);
 };
 
 
@@ -287,20 +285,18 @@ var drawBorder = function(shape, player) {
     shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
 };
 
-var otherList = [];
+
 
 // Add a bunch of other stupid player doing some dumb things
 
-for (i = 0; i < 20; i++) {
-    newX = Math.floor((Math.random() * WORLD_WIDTH) + 1);
-    newY = Math.floor((Math.random() * WORLD_HEIGHT) + 1);
-    newOther = new Player(12, newX, newY, 30, 'triangle', true, -1, 40);
+for (let i = 0; i < 20; i++) {
+    var newX = Math.floor((Math.random() * WORLD_WIDTH) + 1);
+    var newY = Math.floor((Math.random() * WORLD_HEIGHT) + 1);
+    var newOther = new Player(12, newX, newY, 30, 'triangle', true, -1, 40);
     otherList.push(newOther);
     stage.addChild(newOther.shape)
 }
 
-var friction = 0.98,
-    keys = [];
 
 var rect = new PIXI.Graphics();
 rect.x = 200;
@@ -315,7 +311,6 @@ rect3.x = 150;
 rect3.y = 211;
 
 var border = new PIXI.Graphics();
-
 
 stage.addChild(rect);
 stage.addChild(rect2);
