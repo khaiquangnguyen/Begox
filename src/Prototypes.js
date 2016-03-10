@@ -19,7 +19,6 @@
 function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
 
     // Shape
-    this.shape = new PIXI.Graphics();
     this.color = 0xFFFF0B;
 
     // Attributes

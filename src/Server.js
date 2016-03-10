@@ -1,4 +1,5 @@
 
+"use strict";
 var players = [];
 var sockets = [];
 var worldSnapshots = [];
@@ -7,7 +8,6 @@ var walls = [];
 var inputs = [];
 "use strict";
 //library for collision detection
-var sat = require('sat');
 //INITIATE SERVER
 var express = require('express');
 var app = require('express')();
@@ -87,7 +87,7 @@ var connectionHandler = function(socket){
             var input = new prototypes.Input(info.id);
             inputs.push(input);
             //inform the client of the new player
-            socket.emit('playerCreated',aPlayer);
+            socket.emit('playerCreated');
             console.log('New player created.');
         }
         else{
@@ -142,14 +142,28 @@ var serverUpdateLoop = function(){
     var now = Date.now();
     if (previousTickServerLoop + timeBetweenUpdate <= now) {
         previousTickServerLoop = now;
-        takeWorldSnapshot();
-        sendWorldSnapshot();
+        //takeWorldSnapshot();
+        //sendWorldSnapshot();
+        for( let aSocket of sockets){
+            sendInputToClient(aSocket);
+            //console.log('send input to client with ID', aSocket.id);
+
+        }
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);
     } else {
         setImmediate(serverUpdateLoop);
     }
+};
+
+serverUpdateLoop();
+
+var sendInputToClient = function(socket){
+    var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
+    //Random inputs
+    aInputList.inputList = [1,2,3,4,5,6,7,8];
+    socket.emit("input",aInputList.inputList);
 };
 
 var sendWorldSnapshot = function() {

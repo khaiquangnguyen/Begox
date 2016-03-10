@@ -4,9 +4,13 @@ socket.emit('clientWantToConnect');
 socket.on('connectionEstablished', function(id){
     socket.emit('initNewPlayer',{id: id,size: 10, type:'triangle',speed:10} );
 });
-socket.on('playerCreated',function(aPlayer){
+socket.on('playerCreated',function(){
     console.log('player created on client side');
 });
+socket.on('input',function(aInputList){
+    console.log(aInputList);
+});
+
 ///////
 
 var renderer = PIXI.autoDetectRenderer(800, 600, { antialias: true });
