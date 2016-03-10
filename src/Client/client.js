@@ -15,16 +15,144 @@ socket.on('playerCreated',function(){
     console.log('player created on both sides');
 });
 socket.on('input',function(aInputList){
-    if (inputs.length > 1000){
-        return;
-    }
-    if(inputs.length == 0) {
-        inputs = aInputList;
-    }
-    else{
-        inputs.concat(aInputList);
-    }
+    //if (inputs.length > 1000){
+    //    return;
+    //}
+    //if(inputs.length == 0) {
+    //    inputs = aInputList;
+    //}
+    //else{
+    //    inputs.concat(aInputList);
+    //}
 });
+
+function sendInputToServer(){
+}
+
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
+
+
+/**
+ * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
+ */
+function gamePhysicsLoop() {
+    var now = Date.now();
+    if (previousTickPhysicsLoop + tickLengthMs <= now) {
+        var delta = (now - previousTickPhysicsLoop) / 1000;
+        previousTickPhysicsLoop = now;
+    }
+    if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+        setTimeout(gamePhysicsLoop)
+    } else {
+        setImmediate(gamePhysicsLoop)
+    }
+}
+
+//gamePhysicsLoop();
+
+function inputUpdate() {
+    var aInput = 0;
+    if (keys[37]) aInput += 1;
+
+    if (keys[38]) aInput += 2;
+
+    if (keys[39]) aInput += 4;
+
+    if (keys[40]) aInput += 8;
+    inputs.push(aInput);
+}
+
+function inputProcessing(){
+    var input = inputs.shift();
+    if (input >= 8){
+        if (nguoiChoi.velY < nguoiChoi.speed) {
+            nguoiChoi.velY++;
+        }
+        input -= 8;
+    }
+
+    if (input >= 4){
+        if (nguoiChoi.velX < nguoiChoi.speed) {
+            nguoiChoi.velX++;
+        }
+        input -= 4;
+    }
+
+    if (input >= 2){
+        if (nguoiChoi.velY > -nguoiChoi.speed) {
+            nguoiChoi.velY--;
+        }
+        input -= 2;
+    }
+
+    if (input >= 1){
+        if (nguoiChoi.velX > -nguoiChoi.speed) {
+            nguoiChoi.velX--;
+        }
+    }
+
+    nguoiChoi.velY *= friction;
+    nguoiChoi.yCenter += nguoiChoi.velY;
+    nguoiChoi.velX *= friction;
+    nguoiChoi.xCenter += nguoiChoi.velX;
+
+    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
+    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
+    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
+    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
+}
+
+
+// run the render loop
+
+function animate() {
+    //update
+    inputUpdate();
+    inputProcessing();
+
+    //num = 0;
+    drawUser(nguoiChoi);
+    drawOtherList(otherList, nguoiChoi);
+
+    // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
+    nguoiChoi.shape.clear();
+    nguoiChoi.shape.lineStyle(0);
+    nguoiChoi.shape.beginFill(0xFFFF0B, 0.5);
+    nguoiChoi.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
+    nguoiChoi.shape.endFill();
+
+    console.log(nguoiChoi.xCenter);
+    console.log(nguoiChoi.yCenter);
+
+    // Draw shape
+    // draw a rounded rectangle
+    drawBorder(border, nguoiChoi);
+    drawStuff(rect,nguoiChoi);
+    drawStuff(rect2,nguoiChoi);
+    drawStuff(rect3,nguoiChoi);
+
+    renderer.render(stage);
+    window.setTimeout(function() {
+        requestAnimationFrame(animate)
+    }, 10);
+}
+
+
+
+
+
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
+
 
 //var nguoiChoi = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
 //stage.addChild(nguoiChoi.shape);
@@ -178,111 +306,3 @@ stage.addChild(rect2);
 stage.addChild(rect3);
 stage.addChild(border);
 
-// run the render loop
-
-function animate() {
-    //update
-    updateWithInputList();
-    console.log(nguoiChoi.xCenter, nguoiChoi.yCenter)
-
-    //num = 0;
-    drawUser(nguoiChoi);
-    drawOtherList(otherList, nguoiChoi);
-
-    // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    nguoiChoi.shape.clear();
-    nguoiChoi.shape.lineStyle(0);
-    nguoiChoi.shape.beginFill(0xFFFF0B, 0.5);
-    nguoiChoi.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
-    nguoiChoi.shape.endFill();
-
-    console.log(nguoiChoi.xCenter);
-    console.log(nguoiChoi.yCenter);
-
-    // Draw shape
-    // draw a rounded rectangle
-    drawBorder(border, nguoiChoi);
-    drawStuff(rect,nguoiChoi);
-    drawStuff(rect2,nguoiChoi);
-    drawStuff(rect3,nguoiChoi);
-
-    renderer.render(stage);
-    window.setTimeout(function() {
-        requestAnimationFrame(animate)
-    }, 10);
-}
-function update() {
-
-    if (keys[38]) {
-        if (nguoiChoi.velY > -nguoiChoi.speed) {
-            nguoiChoi.velY--;
-        }
-    }
-
-    if (keys[40]) {
-        if (nguoiChoi.velY < nguoiChoi.speed) {
-            nguoiChoi.velY++;
-        }
-    }
-    if (keys[39]) {
-        if (nguoiChoi.velX < nguoiChoi.speed) {
-            nguoiChoi.velX++;
-        }
-    }
-    if (keys[37]) {
-        if (nguoiChoi.velX > -nguoiChoi.speed) {
-            nguoiChoi.velX--;
-        }
-    }
-
-    nguoiChoi.velY *= friction;
-    nguoiChoi.yCenter += nguoiChoi.velY;
-    nguoiChoi.velX *= friction;
-    nguoiChoi.xCenter += nguoiChoi.velX;
-
-    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
-}
-
-function updateWithInputList(){
-    var input = inputs.shift();
-    if (input == 38) {
-        if (nguoiChoi.velY > -nguoiChoi.speed) {
-            nguoiChoi.velY--;
-        }
-    }
-
-    if (input == 39) {
-        if (nguoiChoi.velY < nguoiChoi.speed) {
-            nguoiChoi.velY++;
-        }
-    }
-    if (input == 40) {
-        if (nguoiChoi.velX < nguoiChoi.speed) {
-            nguoiChoi.velX++;
-        }
-    }
-    if (input == 41) {
-        if (nguoiChoi.velX > -nguoiChoi.speed) {
-            nguoiChoi.velX--;
-        }
-    }
-
-    nguoiChoi.velY *= friction;
-    nguoiChoi.yCenter += nguoiChoi.velY;
-    nguoiChoi.velX *= friction;
-    nguoiChoi.xCenter += nguoiChoi.velX;
-
-    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
-    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
-}
-document.body.addEventListener("keydown", function (e) {
-    keys[e.keyCode] = true;
-});
-document.body.addEventListener("keyup", function (e) {
-    keys[e.keyCode] = false;
-});
