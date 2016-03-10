@@ -1,3 +1,29 @@
+
+//TEST SOCKET
+var socket = io();
+var inputs = [];
+var nguoiChoi;
+socket.emit('clientWantToConnect');
+socket.on('connectionEstablished', function(id){
+    socket.emit('initNewPlayer',{id: id,size: 10, type:'triangle',speed:40} );
+    nguoiChoi = new Player(id, 200, 200, 30, 'triangle', true, -1, 40);
+    stage.addChild(nguoiChoi.shape);
+    console.log('nguoi choi created');
+    animate();
+});
+socket.on('playerCreated',function(){
+    console.log('player created on both sides');
+});
+socket.on('input',function(aInputList){
+    if (inputs.length > 1000){
+        return;
+    }
+    inputs = aInputList;
+});
+
+//var nguoiChoi = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
+//stage.addChild(nguoiChoi.shape);
+
 var WIDTH = 800;
 var HEIGHT = 800;
 
@@ -41,10 +67,10 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
     this.speed = speed;
     this.missileCount = 0;
     this.lastEnemy = null;
-
     // Additional variables
     this.velX = 0;
     this.velY = 0;
+
 }
 
 /**
@@ -79,10 +105,11 @@ var drawOther = function(other, player) {
  * @param otherList
  */
 var drawOtherList = function(otherList, player) {
-    for (i = 0; i < otherList.length; i++) {
+    for (var i = 0; i < otherList.length; i++) {
         drawOther(otherList[i], player);
     }
 };
+
 
 /**
  * Draw some stupid square objects inside the game.
@@ -123,8 +150,6 @@ for (i = 0; i < 20; i++) {
     stage.addChild(newOther.shape)
 }
 
-var nguoiChoi = new Player(12, 200, 200, 30, 'triangle', true, -1, 40);
-
 var friction = 0.98,
     keys = [];
 
@@ -142,18 +167,17 @@ rect3.y = 211;
 
 var border = new PIXI.Graphics();
 
-stage.addChild(nguoiChoi.shape);
+
 stage.addChild(rect);
 stage.addChild(rect2);
 stage.addChild(rect3);
 stage.addChild(border);
 
 // run the render loop
-animate();
 
 function animate() {
     //update
-    update();
+    updateWithInputList();
     console.log(nguoiChoi.xCenter, nguoiChoi.yCenter)
 
     //num = 0;
@@ -182,7 +206,6 @@ function animate() {
         requestAnimationFrame(animate)
     }, 10);
 }
-
 function update() {
 
     if (keys[38]) {
@@ -218,6 +241,40 @@ function update() {
     else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
 }
 
+function updateWithInputList(){
+    var input = inputs.shift();
+    if (input == 38) {
+        if (nguoiChoi.velY > -nguoiChoi.speed) {
+            nguoiChoi.velY--;
+        }
+    }
+
+    if (input == 39) {
+        if (nguoiChoi.velY < nguoiChoi.speed) {
+            nguoiChoi.velY++;
+        }
+    }
+    if (input == 40) {
+        if (nguoiChoi.velX < nguoiChoi.speed) {
+            nguoiChoi.velX++;
+        }
+    }
+    if (input == 41) {
+        if (nguoiChoi.velX > -nguoiChoi.speed) {
+            nguoiChoi.velX--;
+        }
+    }
+
+    nguoiChoi.velY *= friction;
+    nguoiChoi.yCenter += nguoiChoi.velY;
+    nguoiChoi.velX *= friction;
+    nguoiChoi.xCenter += nguoiChoi.velX;
+
+    if (nguoiChoi.xCenter > WORLD_WIDTH) nguoiChoi.xCenter = WORLD_HEIGHT;
+    else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
+    if (nguoiChoi.yCenter > WORLD_HEIGHT) nguoiChoi.yCenter = WORLD_HEIGHT;
+    else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
+}
 document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
 });

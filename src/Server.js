@@ -6,7 +6,7 @@ var worldSnapshots = [];
 var missiles = [];
 var walls = [];
 var inputs = [];
-"use strict";
+
 //library for collision detection
 //INITIATE SERVER
 var express = require('express');
@@ -162,7 +162,7 @@ serverUpdateLoop();
 var sendInputToClient = function(socket){
     var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
     //Random inputs
-    aInputList.inputList = [1,2,3,4,5,6,7,8];
+    aInputList.inputList = [37,38,39,40];
     socket.emit("input",aInputList.inputList);
 };
 
@@ -174,7 +174,6 @@ var sendWorldSnapshot = function() {
  * The the snapshot of the world
  */
 var takeWorldSnapshot = function(){
-    "use strict";
     var aWorldSnapshot = new prototypes.WorldSnapshot();
     for (let aPlayer of players){
         aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));
