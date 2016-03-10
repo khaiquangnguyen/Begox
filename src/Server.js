@@ -6,7 +6,7 @@ var worldSnapshots = [];
 var missiles = [];
 var walls = [];
 var inputs = [];
-"use strict";
+
 //library for collision detection
 //INITIATE SERVER
 var express = require('express');
@@ -42,7 +42,7 @@ var connectionHandler = function(socket){
      * @param newDirection - the new direction of the player
      */
     var updateInputs = function(id, newInput){
-
+        socket.emit('input',newInput);
     };
 
 
@@ -117,7 +117,7 @@ var connectionHandler = function(socket){
     //When clients want to initiate a new player
     socket.on('initNewPlayer', initNewPlayer);
     //when clients update their player's direction
-    socket.on('updateDirection', updateInputs);
+    socket.on('updateInput', updateInputs);
     //when clients fire
     socket.on('shoot',shoot);
     //when clients disconnect
@@ -145,7 +145,7 @@ var serverUpdateLoop = function(){
         //takeWorldSnapshot();
         //sendWorldSnapshot();
         for( let aSocket of sockets){
-            sendInputToClient(aSocket);
+            //sendInputToClient(aSocket);
             //console.log('send input to client with ID', aSocket.id);
 
         }
@@ -162,7 +162,7 @@ serverUpdateLoop();
 var sendInputToClient = function(socket){
     var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
     //Random inputs
-    aInputList.inputList = [1,2,3,4,5,6,7,8];
+    aInputList.inputList = [37,38,39,40];
     socket.emit("input",aInputList.inputList);
 };
 
@@ -174,7 +174,6 @@ var sendWorldSnapshot = function() {
  * The the snapshot of the world
  */
 var takeWorldSnapshot = function(){
-    "use strict";
     var aWorldSnapshot = new prototypes.WorldSnapshot();
     for (let aPlayer of players){
         aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));

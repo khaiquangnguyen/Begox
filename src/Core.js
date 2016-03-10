@@ -6,12 +6,6 @@
 
 //SERVER GAME LOOP
 
-//the standard fps of the physics loop = 60
-var fps = 60;
-//time between 2 physics update
-var tickLengthMs = 1000/fps;
-//time of last physics update
-var previousTickPhysicsLoop = Date.now();
 
 
 /**
@@ -30,6 +24,16 @@ var update = function(deltaTime) {
         aWall.updatePhysics(deltaTime);
     }
 };
+
+
+
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
+
 
 /**
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
