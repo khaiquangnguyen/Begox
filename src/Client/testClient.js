@@ -84,7 +84,7 @@ rect3.y = 211;
 
 var rect4 = new PIXI.Graphics();
 rect4.x = 0;
-rect5.y = 0;
+rect4.y = 0;
 
 stage.addChild(nguoiChoi.shape);
 stage.addChild(rect);
@@ -154,7 +154,7 @@ function update() {
 
     if (nguoiChoi.xCenter > WIDTH) nguoiChoi.xCenter = WIDTH;
     else if (nguoiChoi.xCenter < 0) nguoiChoi.xCenter = 0;
-    else if (nguoiChoi.yCenter > HEIGHT) nguoiChoi.yCenter = HEIGHT;
+    if (nguoiChoi.yCenter > HEIGHT) nguoiChoi.yCenter = HEIGHT;
     else if (nguoiChoi.yCenter < 0) nguoiChoi.yCenter = 0;
 }
 
