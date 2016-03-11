@@ -16,7 +16,6 @@ var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
-
 //start listening on the server
 http.listen(process.env.PORT || 3000, function(){
     console.log('listening on port!',process.env.PORT || 3000);
@@ -45,8 +44,6 @@ var connectionHandler = function(socket){
     var updateInputs = function(id, newInput){
         socket.emit('input',newInput);
     };
-
-
     /**
      * When receive shoot message
      * @param id: the id of the sender

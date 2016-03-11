@@ -136,9 +136,9 @@ function viewport()
 
 /****************************************************************************/
 //VARIABLE
-var WIDTH = 0;
-var HEIGHT = 0;
-viewport();
+var WIDTH = window.innerWidth;
+var HEIGHT = window.innerHeight;
+//viewport();
 
 var friction = 0.98;
 
@@ -160,6 +160,18 @@ var tickLengthMs = 1000/fps;
 var previousTickPhysicsLoop = Date.now();
 
 var worldSnapshots = [];
+//var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
+//stage.addChild(mainPlayer.shape);
+var canvas = document.getElementById('canvas');
+var renderer = PIXI.autoDetectRenderer(WIDTH,HEIGHT,{view:canvas, antialias: true });
+document.body.appendChild(renderer.view);
+
+// create the root of the scene graph
+var stage = new PIXI.Container();
+stage.interactive = true;
+
+var circle = new PIXI.Graphics();
+
 
 
 /****************************************************/
@@ -268,18 +280,6 @@ function animate() {
 
 
 
-
-//var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
-//stage.addChild(mainPlayer.shape);
-
-var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT, { antialias: true });
-document.body.appendChild(renderer.view);
-
-// create the root of the scene graph
-var stage = new PIXI.Container();
-stage.interactive = true;
-
-var circle = new PIXI.Graphics();
 
 
 
