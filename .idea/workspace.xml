@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
-    </list>
+    <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="" />
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
