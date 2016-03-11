@@ -166,7 +166,6 @@ var canvas = document.getElementById('canvas');
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 var renderer = PIXI.autoDetectRenderer(WIDTH,HEIGHT,{view:canvas,antialias: true });
-document.body.appendChild(renderer.view);
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -249,7 +248,7 @@ function gamePhysicsLoop() {
     //} else {
     //    process.nextTick(gamePhysicsLoop);
     //}
-    window.setTimeout(gamePhysicsLoop,16);
+    window.setTimeout(gamePhysicsLoop);
 }
 
 // run the render loop
