@@ -18,8 +18,8 @@ var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
 
 //start listening on the server
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+http.listen(process.env.PORT || 3000, function(){
+    console.log('listening on port!',process.env.PORT || 3000);
 });
 
 //fetch the client files back to any client connect to the server through port 3000
