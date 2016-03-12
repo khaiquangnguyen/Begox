@@ -191,7 +191,8 @@ gamePhysicsLoop();
 
 var sendMainPlayerLocationToClients = function(){
     for (let keySocket in sockets){
-        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,inputs[keySocket].lastProcess);
+        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,players[keySocket].velX,
+            players[keySocket].velY, inputs[keySocket].lastProcess);
     }
 };
 

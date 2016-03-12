@@ -168,8 +168,9 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     if (worldSnapshots.length > 60) worldSnapshots.shift();
 });
 
-socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
+socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
     //discard until last sequence number
+    console.log(inputs[inputs.length-1].sequenceNumber,'   ', lastSequenceNumber);
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs.shift();
@@ -177,8 +178,13 @@ socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
             break;
         }
     }
+    console.log(inputs);
+    var oldX = mainPlayer.xCenter;
+    var oldY = mainPlayer.yCenter;
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
+    mainPlayer.velX = serverVelX;
+    mainPlayer.velY = serverVelY;
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
     }
@@ -254,12 +260,11 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
+
+    let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputProcessing(aInput);
-    if(aInput != 0) {
-        let inputPackage =  new input(inputSequenceNumber++,aInput);
-        sendInputToServer(inputPackage);
-        inputs.push(inputPackage);
-    }
+    sendInputToServer(inputPackage);
+    inputs.push(inputPackage);
 }
 
 function sendInputToServer(inputPackage){
