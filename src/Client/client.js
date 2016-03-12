@@ -145,8 +145,8 @@ socket.on('playerCreated',function(aPlayer){
     console.log(aPlayer);
     mainPlayer = new Player(aPlayer);
     console.log('Game begin!!!');
-    //animate();
-    gamePhysicsLoop();
+    animate();
+    //gamePhysicsLoop();
 });
 
 socket.on('input',function(aInput){
@@ -169,6 +169,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
+    console.log(inputSequenceNumber, lastSequenceNumber);
     //discard until last sequence number
     while(true){
         if(inputs.length <=0) break;
@@ -177,6 +178,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
             break;
         }
     }
+    console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
@@ -184,6 +186,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
     }
+    console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
 });
 
 /**
@@ -277,7 +280,7 @@ function gamePhysicsLoop() {
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         var delta = (now - previousTickPhysicsLoop) / 1000;
         previousTickPhysicsLoop = now;
-        inputUpdate();
+
         animate();
     }
     //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
@@ -295,6 +298,7 @@ function gamePhysicsLoop() {
 function animate() {
     //update
     //num = 0;
+    inputUpdate();
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
     //inputUpdate();
@@ -308,9 +312,9 @@ function animate() {
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
     renderer.render(stage);
-    //window.setTimeout(function() {
-    //    requestAnimationFrame(animate)
-    //}, 10);
+    window.setTimeout(function() {
+        requestAnimationFrame(animate)
+    }, 10);
 }
 
 /**
