@@ -145,7 +145,7 @@ socket.on('playerCreated',function(aPlayer){
     console.log(aPlayer);
     mainPlayer = new Player(aPlayer);
     console.log('Game begin!!!');
-    animate();
+    //animate();
     gamePhysicsLoop();
 });
 
@@ -170,7 +170,6 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
     //discard until last sequence number
-    console.log(inputs[inputs.length-1].sequenceNumber,'   ', lastSequenceNumber);
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs.shift();
@@ -178,9 +177,6 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
             break;
         }
     }
-    console.log(inputs);
-    var oldX = mainPlayer.xCenter;
-    var oldY = mainPlayer.yCenter;
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
@@ -281,7 +277,8 @@ function gamePhysicsLoop() {
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         var delta = (now - previousTickPhysicsLoop) / 1000;
         previousTickPhysicsLoop = now;
-
+        inputUpdate();
+        animate();
     }
     //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
     //    setTimeout(gamePhysicsLoop);
@@ -289,7 +286,9 @@ function gamePhysicsLoop() {
     //    process.nextTick(gamePhysicsLoop);
     //}
     setTimeout(gamePhysicsLoop);
+
 }
+
 
 // run the render loop
 
@@ -298,7 +297,7 @@ function animate() {
     //num = 0;
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
-    inputUpdate();
+    //inputUpdate();
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     mainPlayer.shape.clear();
     mainPlayer.shape.lineStyle(0);
@@ -309,9 +308,9 @@ function animate() {
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
     renderer.render(stage);
-    window.setTimeout(function() {
-        requestAnimationFrame(animate)
-    }, 10);
+    //window.setTimeout(function() {
+    //    requestAnimationFrame(animate)
+    //}, 10);
 }
 
 /**
