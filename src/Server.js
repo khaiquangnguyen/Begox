@@ -40,8 +40,8 @@ var connectionHandler = function(socket){
      * The input
      * @param newInput: input sent from client
      */
-    var updateInputs = function(newInput){
-        inputs[socket.id].inputList.push(newInput);
+    var updateInputs = function(newInputPackage){
+        inputs[socket.id].inputList.push(newInputPackage);
         //socket.emit('input',newInput);
 
     };
@@ -74,7 +74,6 @@ var connectionHandler = function(socket){
         //if no player with such id has been created
         let x = Math.random() * 1000;
         let y = Math.random() * 1000;
-
 
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
@@ -197,7 +196,7 @@ gamePhysicsLoop();
 
 var sendMainPlayerLocationToClients = function(){
     for (let keySocket in sockets){
-        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter);
+        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,inputs[keySocket].lastProcess);
     }
 };
 
@@ -231,19 +230,8 @@ var takeWorldSnapshot = function(socketID){
     return aWorldSnapshot;
 };
 
-var killPlayer = function(aPlayer){
-    players.splice(indexOf(aPlayer),1);
-};
-var killMissile = function(aMissile) {
-    missiles.splice(indexOf(aMissile));
-};
-var killWall = function (aWall){
-    walls.splice(indexOf(aWall),1);
-};
-
 function updateAllPlayers(){
     for (let playerKey in players){
         players[playerKey].update(inputs);
     }
-
 }

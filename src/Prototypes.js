@@ -60,6 +60,8 @@ Player.prototype.move = function(inputs) {
     let playerInputs = inputs[this.id].inputList;
     if(playerInputs.length != 0) {
         var input = playerInputs.shift();
+        inputs[this.id].lastProcess = input.sequenceNumber;
+        input = input.value;
         if (input >= 8) {
             if (this.velY < this.maxSpeed) {
                 this.velY++;
@@ -286,6 +288,7 @@ Wall.prototype.render = function(){
 function Input(id){
     this.id = id;
     this.inputList = [];
+    this.lastProcess = 0;
 }
 
 function WorldSnapshot(){
@@ -337,6 +340,12 @@ function WallSnapshot(aWall){
     this.color = aWall.color;
 }
 
+function InputPackage(sequenceNumber,value){
+    this.sequenceNumber = sequenceNumber;
+    this.value = value;
+}
+
+
 module.exports.Input = Input;
 module.exports.Player = Player;
 module.exports.Missile = Missile;
@@ -344,3 +353,4 @@ module.exports.Wall = Wall;
 module.exports.WorldSnapshot = WorldSnapshot;
 module.exports.PlayerSnapshot = PlayerSnapshot;
 module.exports.MissileSnapshot = MissileSnapshot;
+module.exports.InputPackage = InputPackage;

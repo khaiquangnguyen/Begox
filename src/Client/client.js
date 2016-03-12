@@ -48,72 +48,10 @@ function Missile(attributes){
     this.shape = attributes.shape;
     this.color = attributes.color;
 }
-/**
- * Move the main player according to the input stored in the input queue.
- */
-function inputProcessing(){
-    if(inputs.length != 0) {
-        var input = inputs.shift();
-        if (input >= 8) {
-            if (mainPlayer.velY < mainPlayer.maxSpeed) {
-                mainPlayer.velY++;
-            }
-            input -= 8;
-        }
-        if (input >= 4) {
-            if (mainPlayer.velX < mainPlayer.maxSpeed) {
-                mainPlayer.velX++;
-            }
-            input -= 4;
-        }
-        if (input >= 2) {
-            if (mainPlayer.velY > -mainPlayer.maxSpeed) {
-                mainPlayer.velY--;
-            }
-            input -= 2;
-        }
-        if (input >= 1) {
-            if (mainPlayer.velX > -mainPlayer.maxSpeed) {
-                mainPlayer.velX--;
-            }
-        }
-    }
-    mainPlayer.velY *= friction;
-    mainPlayer.yCenter += mainPlayer.velY;
-    mainPlayer.velX *= friction;
-    mainPlayer.xCenter += mainPlayer.velX;
 
-    if (mainPlayer.xCenter > WORLD_WIDTH) {
-        mainPlayer.xCenter = WORLD_WIDTH;
-        mainPlayer.velX = 0;
-    }
-    else if (mainPlayer.xCenter < 0) {
-        mainPlayer.xCenter = 0;
-        mainPlayer.velX = 0;
-    }
-    if (mainPlayer.yCenter > WORLD_HEIGHT) {
-        mainPlayer.yCenter = WORLD_HEIGHT;
-        mainPlayer.velY = 0;
-    }
-    else if (mainPlayer.yCenter < 0) {
-        mainPlayer.yCenter = 0;
-        mainPlayer.velY = 0;
-    }
-}
-
-/**
- * Get input from the user and then push it to the input queue.
- */
-function inputUpdate() {
-    var aInput = 0;
-    if (keys[37]) aInput += 1;
-
-    if (keys[38]) aInput += 2;
-
-    if (keys[39]) aInput += 4;
-
-    if (keys[40]) aInput += 8;
-    if(aInput != 0) sendInputToServer(aInput);
+function input(sequenceNumber,value){
+    this.sequenceNumber = sequenceNumber;
+    this.value = value;
 }
 
 /**
@@ -141,6 +79,8 @@ function viewport()
 //viewport();
 
 var friction = 0.96;
+
+var inputSequenceNumber = 0;
 
 var WORLD_WIDTH = 1500;
 var WORLD_HEIGHT = 1500;
@@ -228,13 +168,88 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     if (worldSnapshots.length > 60) worldSnapshots.shift();
 });
 
-socket.on('updatePosition',function(newX,newY){
-    mainPlayer.xCenter = newX;
-    mainPlayer.yCenter = newY;
+socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
+    console.log(lastSequenceNumber);
+    while(true){
+        let aInputPackage = inputs.shift();
+        if (aInputPackage!= undefined && aInputPackage.sequenceNumber == lastSequenceNumber){
+            break;
+        }
+    }
+    mainPlayer.xCenter = serverX;
+    mainPlayer.yCenter = serverY;
 });
 
-function sendInputToServer(aInput){
-    socket.emit('updateInput', aInput);
+/**
+ * Move the main player according to the input stored in the input queue.
+ */
+function inputProcessing(){
+    mainPlayer.velY *= friction;
+    mainPlayer.yCenter += mainPlayer.velY;
+    mainPlayer.velX *= friction;
+    mainPlayer.xCenter += mainPlayer.velX;
+
+    if (mainPlayer.xCenter > WORLD_WIDTH) {
+        mainPlayer.xCenter = WORLD_WIDTH;
+        mainPlayer.velX = 0;
+    }
+    else if (mainPlayer.xCenter < 0) {
+        mainPlayer.xCenter = 0;
+        mainPlayer.velX = 0;
+    }
+    if (mainPlayer.yCenter > WORLD_HEIGHT) {
+        mainPlayer.yCenter = WORLD_HEIGHT;
+        mainPlayer.velY = 0;
+    }
+    else if (mainPlayer.yCenter < 0) {
+        mainPlayer.yCenter = 0;
+        mainPlayer.velY = 0;
+    }
+}
+
+/**
+ * Get input from the user and then push it to the input queue.
+ */
+function inputUpdate() {
+    var aInput = 0;
+    if (keys[37]) {
+        aInput += 1;
+        if (mainPlayer.velX > -mainPlayer.maxSpeed) {
+            mainPlayer.velX--;
+        }
+    }
+
+    if (keys[38]) {
+        aInput += 2;
+        if (mainPlayer.velY > -mainPlayer.maxSpeed) {
+            mainPlayer.velY--;
+        }
+    }
+
+    if (keys[39]) {
+        aInput += 4;
+        if (mainPlayer.velX < mainPlayer.maxSpeed) {
+            mainPlayer.velX++;
+        }
+    }
+
+    if (keys[40]) {
+        aInput += 8;
+        if (mainPlayer.velY < mainPlayer.maxSpeed) {
+            mainPlayer.velY++;
+        }
+    }
+    //inputProcessing();
+    if(aInput != 0) {
+        let inputPackage =  new input(inputSequenceNumber++,aInput)
+        sendInputToServer(inputPackage);
+        inputs.push(inputPackage);
+
+    }
+}
+
+function sendInputToServer(inputPackage){
+    socket.emit('updateInput', inputPackage);
 }
 
 
@@ -247,7 +262,6 @@ function gamePhysicsLoop() {
         var delta = (now - previousTickPhysicsLoop) / 1000;
         previousTickPhysicsLoop = now;
         inputUpdate();
-        inputProcessing();
     }
     //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
     //    setTimeout(gamePhysicsLoop);
