@@ -177,8 +177,8 @@ socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
             break;
         }
     }
-    //mainPlayer.xCenter = serverX;
-    //mainPlayer.yCenter = serverY;
+    mainPlayer.xCenter = serverX;
+    mainPlayer.yCenter = serverY;
     //for (aInputPackage of inputs){
     //    inputProcessing(aInputPackage.value);
     //}
