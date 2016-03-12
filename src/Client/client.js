@@ -78,7 +78,7 @@ function viewport()
 
 //viewport();
 
-var friction = 0.96;
+var friction = FRICTION;
 
 var inputSequenceNumber = 0;
 
@@ -260,11 +260,12 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
-
-    let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputProcessing(aInput);
+    let inputPackage =  new input(inputSequenceNumber++,aInput);
     sendInputToServer(inputPackage);
     inputs.push(inputPackage);
+
+
 }
 
 function sendInputToServer(inputPackage){
@@ -280,7 +281,7 @@ function gamePhysicsLoop() {
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         var delta = (now - previousTickPhysicsLoop) / 1000;
         previousTickPhysicsLoop = now;
-        inputUpdate();
+
     }
     //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
     //    setTimeout(gamePhysicsLoop);
@@ -297,7 +298,7 @@ function animate() {
     //num = 0;
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
-
+    inputUpdate();
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     mainPlayer.shape.clear();
     mainPlayer.shape.lineStyle(0);
