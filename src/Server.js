@@ -182,7 +182,7 @@ function gamePhysicsLoop() {
     if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
         setTimeout(gamePhysicsLoop);
     } else {
-        process.nextTick(gamePhysicsLoop);
+        setImmediate(gamePhysicsLoop);
     }
 }
 
