@@ -152,11 +152,6 @@ var serverUpdateLoop = function(){
         //takeWorldSnapshot();
         sendWorldSnapshotToAllClients();
         sendMainPlayerLocationToClients();
-        //for( let aSocket of sockets){
-        //    //sendMainPlayerLocationToClients(aSocket);
-        //    //console.log('send input to client with ID', aSocket.id);
-        //
-        //}
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);

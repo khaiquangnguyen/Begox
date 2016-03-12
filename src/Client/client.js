@@ -169,21 +169,48 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 });
 
 socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
-    console.log(lastSequenceNumber);
+    //discard until last sequence number
     while(true){
-        let aInputPackage = inputs.shift();
-        if (aInputPackage!= undefined && aInputPackage.sequenceNumber == lastSequenceNumber){
+        if(inputs.length <=0) break;
+        var aInputPackage = inputs.shift();
+        if (aInputPackage.sequenceNumber == lastSequenceNumber){
             break;
         }
     }
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
+    for (aInputPackage of inputs){
+        inputProcessing(aInputPackage.value);
+    }
 });
 
 /**
  * Move the main player according to the input stored in the input queue.
  */
-function inputProcessing(){
+function inputProcessing(aInput){
+    if (aInput >= 8) {
+        if (mainPlayer.velY < mainPlayer.maxSpeed) {
+            mainPlayer.velY++;
+        }
+        aInput -= 8;
+    }
+    if (aInput >= 4) {
+        if (mainPlayer.velX < mainPlayer.maxSpeed) {
+            mainPlayer.velX++;
+        }
+        aInput -= 4;
+    }
+    if (aInput >= 2) {
+        if (mainPlayer.velY > -mainPlayer.maxSpeed) {
+            mainPlayer.velY--;
+        }
+        aInput -= 2;
+    }
+    if (aInput >= 1) {
+        if (mainPlayer.velX > -mainPlayer.maxSpeed) {
+            mainPlayer.velX--;
+        }
+    }
     mainPlayer.velY *= friction;
     mainPlayer.yCenter += mainPlayer.velY;
     mainPlayer.velX *= friction;
@@ -214,37 +241,24 @@ function inputUpdate() {
     var aInput = 0;
     if (keys[37]) {
         aInput += 1;
-        if (mainPlayer.velX > -mainPlayer.maxSpeed) {
-            mainPlayer.velX--;
-        }
     }
 
     if (keys[38]) {
         aInput += 2;
-        if (mainPlayer.velY > -mainPlayer.maxSpeed) {
-            mainPlayer.velY--;
-        }
     }
 
     if (keys[39]) {
         aInput += 4;
-        if (mainPlayer.velX < mainPlayer.maxSpeed) {
-            mainPlayer.velX++;
-        }
     }
 
     if (keys[40]) {
         aInput += 8;
-        if (mainPlayer.velY < mainPlayer.maxSpeed) {
-            mainPlayer.velY++;
-        }
     }
-    //inputProcessing();
+    inputProcessing(aInput);
     if(aInput != 0) {
-        let inputPackage =  new input(inputSequenceNumber++,aInput)
+        let inputPackage =  new input(inputSequenceNumber++,aInput);
         sendInputToServer(inputPackage);
         inputs.push(inputPackage);
-
     }
 }
 
