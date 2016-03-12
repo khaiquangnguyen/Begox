@@ -55,17 +55,55 @@ Player.prototype.updatePhysics = function(deltaTime){
 /**
  * The movement function of the Player. Only check for collision with Wall.
  */
-Player.prototype.move = function(deltaTime) {
-    if(this.direction != 9) {
-        var originalX = this.xCenter;
-        var originalY = this.yCenter;
-        this.xCenter += Math.sin(this.direction / 4 * Math.PI) * this.speed * deltaTime;
-        this.yCenter += Math.cos(this.direction / 4 * Math.PI) * this.speed * deltaTime;
-        //if collide with Wall, go back to the original position
-        if(this.checkCollision() == true){
-            this.xCenter = originalX;
-            this.yCenter = originalY;
+Player.prototype.move = function(inputs) {
+    "use strict";
+    let playerInputs = inputs[this.id].inputList;
+    if(playerInputs.length != 0) {
+        var input = playerInputs.shift();
+        if (input >= 8) {
+            if (this.velY < this.maxSpeed) {
+                this.velY++;
+            }
+            input -= 8;
         }
+        if (input >= 4) {
+            if (this.velX < this.maxSpeed) {
+                this.velX++;
+            }
+            input -= 4;
+        }
+        if (input >= 2) {
+            if (this.velY > -this.maxSpeed) {
+                this.velY--;
+            }
+            input -= 2;
+        }
+        if (input >= 1) {
+            if (this.velX > -this.maxSpeed) {
+                this.velX--;
+            }
+        }
+    }
+    this.velY *= FRICTION;
+    this.yCenter += this.velY;
+    this.velX *= FRICTION;
+    this.xCenter += this.velX;
+
+    if (this.xCenter > WORLD_WIDTH) {
+        this.xCenter = WORLD_WIDTH;
+        this.velX = 0;
+    }
+    else if (this.xCenter < 0) {
+        this.xCenter = 0;
+        this.velX = 0;
+    }
+    if (this.yCenter > WORLD_HEIGHT) {
+        this.yCenter = WORLD_HEIGHT;
+        this.velY = 0;
+    }
+    else if (this.yCenter < 0) {
+        this.yCenter = 0;
+        this.velY = 0;
     }
 };
 
@@ -115,6 +153,10 @@ Player.prototype.killSelf = function(){
 };
 
 
+Player.prototype.update = function(inputs){
+    this.move(inputs);
+};
+
 /**
  * the reward for killing another player. This comes in the form of accumulating size
  * @param rewardAmount: the amount of reward
@@ -134,17 +176,6 @@ Player.prototype.takeDamage = function(shooter, damage){
     this.updateHP(-damage);
 };
 
-/**
- * The renderer for the current player
- */
-Player.prototype.render = function(){
-
-    this.shape.clear();
-    this.shape.lineStyle(0);
-    this.shape.beginFill(this.color, 0.5);
-    this.shape.drawCircle(this.xCenter, this.yCenter, this.size);
-    this.shape.endFill();
-};
 
 
 /**********************************************************/

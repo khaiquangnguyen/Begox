@@ -37,12 +37,13 @@ app.use(express.static(__dirname + '/Client'));
 var connectionHandler = function(socket){
     //FUNCTION DEFINITION
     /**
-     * When the player gets new input direction
-     * @param id: the id of the sender
-     * @param newDirection - the new direction of the player
+     * The input
+     * @param newInput: input sent from client
      */
-    var updateInputs = function(id, newInput){
-        socket.emit('input',newInput);
+    var updateInputs = function(newInput){
+        inputs[socket.id].inputList.push(newInput);
+        //socket.emit('input',newInput);
+
     };
     /**
      * When receive shoot message
@@ -68,17 +69,12 @@ var connectionHandler = function(socket){
 
     /**
      * initiate a new player with the id provided, which is originally the id of the socket
-     * @param id: the id of the player
-     * @param size
-    * @param type
-    * @param speed
      */
     var initNewPlayer = function(info){
         //if no player with such id has been created
         let x = Math.random() * 1000;
         let y = Math.random() * 1000;
-        console.log(x);
-        console.log(y);
+
 
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
@@ -156,8 +152,9 @@ var serverUpdateLoop = function(){
         previousTickServerLoop = now;
         //takeWorldSnapshot();
         sendWorldSnapshotToAllClients();
+        sendMainPlayerLocationToClients();
         //for( let aSocket of sockets){
-        //    //sendInputToAllClients(aSocket);
+        //    //sendMainPlayerLocationToClients(aSocket);
         //    //console.log('send input to client with ID', aSocket.id);
         //
         //}
@@ -170,11 +167,38 @@ var serverUpdateLoop = function(){
 };
 
 serverUpdateLoop();
-var sendInputToAllClients = function(socket){
-    var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
-    //Random inputs
-    aInputList.inputList = [37,38,39,40];
-    socket.emit("input",aInputList.inputList);
+
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
+/**
+ * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
+ */
+function gamePhysicsLoop() {
+    var now = Date.now();
+    if (previousTickPhysicsLoop + tickLengthMs <= now) {
+        //TODO use delta for movement
+
+        previousTickPhysicsLoop = now;
+        updateAllPlayers();
+    }
+    if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+        setTimeout(gamePhysicsLoop);
+    } else {
+        process.nextTick(gamePhysicsLoop);
+    }
+}
+
+gamePhysicsLoop();
+
+
+var sendMainPlayerLocationToClients = function(){
+    for (let keySocket in sockets){
+        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter);
+    }
 };
 
 var sendWorldSnapshotToAllClients = function() {
@@ -217,4 +241,9 @@ var killWall = function (aWall){
     walls.splice(indexOf(aWall),1);
 };
 
+function updateAllPlayers(){
+    for (let playerKey in players){
+        players[playerKey].update(inputs);
+    }
 
+}

@@ -52,29 +52,30 @@ function Missile(attributes){
  * Move the main player according to the input stored in the input queue.
  */
 function inputProcessing(){
-    if(inputs.length == 0) return;
-    var input = inputs.shift();
-    if (input >= 8){
-        if (mainPlayer.velY < mainPlayer.maxSpeed) {
-            mainPlayer.velY++;
+    if(inputs.length != 0) {
+        var input = inputs.shift();
+        if (input >= 8) {
+            if (mainPlayer.velY < mainPlayer.maxSpeed) {
+                mainPlayer.velY++;
+            }
+            input -= 8;
         }
-        input -= 8;
-    }
-    if (input >= 4){
-        if (mainPlayer.velX < mainPlayer.maxSpeed) {
-            mainPlayer.velX++;
+        if (input >= 4) {
+            if (mainPlayer.velX < mainPlayer.maxSpeed) {
+                mainPlayer.velX++;
+            }
+            input -= 4;
         }
-        input -= 4;
-    }
-    if (input >= 2){
-        if (mainPlayer.velY > -mainPlayer.maxSpeed) {
-            mainPlayer.velY--;
+        if (input >= 2) {
+            if (mainPlayer.velY > -mainPlayer.maxSpeed) {
+                mainPlayer.velY--;
+            }
+            input -= 2;
         }
-        input -= 2;
-    }
-    if (input >= 1){
-        if (mainPlayer.velX > -mainPlayer.maxSpeed) {
-            mainPlayer.velX--;
+        if (input >= 1) {
+            if (mainPlayer.velX > -mainPlayer.maxSpeed) {
+                mainPlayer.velX--;
+            }
         }
     }
     mainPlayer.velY *= friction;
@@ -139,7 +140,7 @@ function viewport()
 
 //viewport();
 
-var friction = 0.98;
+var friction = 0.96;
 
 var WORLD_WIDTH = 1500;
 var WORLD_HEIGHT = 1500;
@@ -227,8 +228,13 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     if (worldSnapshots.length > 60) worldSnapshots.shift();
 });
 
+socket.on('updatePosition',function(newX,newY){
+    mainPlayer.xCenter = newX;
+    mainPlayer.yCenter = newY;
+});
+
 function sendInputToServer(aInput){
-    socket.emit('updateInput',mainPlayer.id, aInput);
+    socket.emit('updateInput', aInput);
 }
 
 
@@ -248,7 +254,7 @@ function gamePhysicsLoop() {
     //} else {
     //    process.nextTick(gamePhysicsLoop);
     //}
-    window.setTimeout(gamePhysicsLoop);
+    setTimeout(gamePhysicsLoop);
 }
 
 // run the render loop
@@ -263,27 +269,16 @@ function animate() {
     mainPlayer.shape.clear();
     mainPlayer.shape.lineStyle(0);
     mainPlayer.shape.beginFill(0xFFFF0B, 0.5);
-    mainPlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, 50);
+    mainPlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, mainPlayer.size);
     mainPlayer.shape.endFill();
 
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
-    drawStuff(rect,mainPlayer);
-    drawStuff(rect2,mainPlayer);
-    drawStuff(rect3,mainPlayer);
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
     }, 10);
 }
-
-
-
-
-
-
-
-
 
 /**
  * Draw the main player of the game
@@ -322,20 +317,6 @@ var drawOtherPlayers = function(otherPlayers, mainPlayer) {
     }
 };
 
-
-/**
- * Draw some stupid square objects inside the game.
- * @param shape
- * @param player
- */
-var drawStuff = function(shape, player) {
-    // draw a rounded rectangle
-    shape.clear();
-    shape.lineStyle(2, 0x0000FF, 1);
-    shape.beginFill(0xFF700B, 1);
-    shape.drawRect(shape.x - player.xCenter + WIDTH / 2, shape.y - player.yCenter + HEIGHT / 2, 100, 100);
-};
-
 /**
  * Draw the border around the game
  *
@@ -350,24 +331,6 @@ var drawBorder = function(shape, player) {
     shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
 };
 
-// Add a bunch of other stupid player doing some dumb things
-
-var rect = new PIXI.Graphics();
-rect.x = 200;
-rect.y = 200;
-
-var rect2 = new PIXI.Graphics();
-rect2.x = 300;
-rect2.y = 200;
-
-var rect3 = new PIXI.Graphics();
-rect3.x = 150;
-rect3.y = 211;
-
 var border = new PIXI.Graphics();
-//
-//stage.addChild(rect);
-//stage.addChild(rect2);
-//stage.addChild(rect3);
 stage.addChild(border);
 
