@@ -179,9 +179,9 @@ socket.on('updatePosition',function(serverX,serverY,lastSequenceNumber){
     }
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
-    //for (aInputPackage of inputs){
-    //    inputProcessing(aInputPackage.value);
-    //}
+    for (aInputPackage of inputs){
+        inputProcessing(aInputPackage.value);
+    }
 });
 
 /**
