@@ -181,6 +181,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
         }
     }
     console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+    console.log("old",mainPlayer.velX,'  ', mainPlayer.velY);
     console.log(inputs.length);
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
@@ -192,6 +193,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
 
     }
     console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+    console.log("new",mainPlayer.velX,'  ', mainPlayer.velY);
 });
 
 /**
