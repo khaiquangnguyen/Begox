@@ -169,33 +169,25 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
-    console.log(inputSequenceNumber-1, lastSequenceNumber);
+    mainPlayer.xCenter = serverX;
+    mainPlayer.yCenter = serverY;
+    mainPlayer.velX = serverVelX;
+    mainPlayer.velY = serverVelY;
     if(lastSequenceNumber == -1) return;
     //discard until last sequence number
     while(true){
         if(inputs.length <=0) break;
         if(inputs[0].sequenceNumber > lastSequenceNumber) break;
         var aInputPackage = inputs.shift();
-        console.log(aInputPackage.sequenceNumber);
         if (aInputPackage.sequenceNumber == lastSequenceNumber){
             break;
         }
     }
-    console.log("old pos",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    console.log("old vel",mainPlayer.velX,'  ', mainPlayer.velY);
-    console.log(inputs.length);
-    mainPlayer.xCenter = serverX;
-    mainPlayer.yCenter = serverY;
-    mainPlayer.velX = serverVelX;
-    mainPlayer.velY = serverVelY;
     for (aInputPackage of inputs){
-        console.log("current pos",aInputPackage, mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-        console.log("current vel",mainPlayer.velX, '    ',mainPlayer.velY);
         inputProcessing(aInputPackage.value);
 
     }
-    console.log("new pos",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    console.log("new vel",mainPlayer.velX,'  ', mainPlayer.velY);
+
 });
 
 /**
@@ -226,9 +218,11 @@ function inputProcessing(aInput){
         }
     }
     //mainPlayer.velY *= friction;
-    mainPlayer.yCenter += mainPlayer.velY;
     //mainPlayer.velX *= friction;
     mainPlayer.xCenter += mainPlayer.velX;
+    mainPlayer.yCenter += mainPlayer.velY;
+
+
 
     if (mainPlayer.xCenter > WORLD_WIDTH) {
         mainPlayer.xCenter = WORLD_WIDTH;
@@ -268,11 +262,11 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
-    console.log("receive new input!");
+    inputProcessing(aInput);
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
-    inputProcessing(aInput);
+
 }
 
 function sendInputToServer(inputPackage){
