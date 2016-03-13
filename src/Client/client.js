@@ -168,26 +168,26 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     if (worldSnapshots.length > 60) worldSnapshots.shift();
 });
 
-socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
-    console.log(inputSequenceNumber, lastSequenceNumber);
-    //discard until last sequence number
-    while(true){
-        if(inputs.length <=0) break;
-        var aInputPackage = inputs.shift();
-        if (aInputPackage.sequenceNumber == lastSequenceNumber){
-            break;
-        }
-    }
-    console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    mainPlayer.xCenter = serverX;
-    mainPlayer.yCenter = serverY;
-    mainPlayer.velX = serverVelX;
-    mainPlayer.velY = serverVelY;
-    for (aInputPackage of inputs){
-        inputProcessing(aInputPackage.value);
-    }
-    console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-});
+//socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
+//    console.log(inputSequenceNumber, lastSequenceNumber);
+//    //discard until last sequence number
+//    while(true){
+//        if(inputs.length <=0) break;
+//        var aInputPackage = inputs.shift();
+//        if (aInputPackage.sequenceNumber == lastSequenceNumber){
+//            break;
+//        }
+//    }
+//    console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+//    mainPlayer.xCenter = serverX;
+//    mainPlayer.yCenter = serverY;
+//    mainPlayer.velX = serverVelX;
+//    mainPlayer.velY = serverVelY;
+//    for (aInputPackage of inputs){
+//        inputProcessing(aInputPackage.value);
+//    }
+//    console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+//});
 
 /**
  * Move the main player according to the input stored in the input queue.

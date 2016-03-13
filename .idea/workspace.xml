@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -56,8 +57,8 @@
       <file leaf-file-name="client.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.16129032">
-              <caret line="168" column="3" selection-start-line="168" selection-start-column="3" selection-end-line="168" selection-end-column="3" />
+            <state vertical-scroll-proportion="0.5519713">
+              <caret line="181" column="35" selection-start-line="181" selection-start-column="35" selection-end-line="181" selection-end-column="35" />
               <folding />
             </state>
           </provider>
@@ -656,7 +657,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457799135675</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="update input processing server">
+      <created>1457846820045</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1457846820045</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1109,8 +1116,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16129032">
-          <caret line="168" column="3" selection-start-line="168" selection-start-column="3" selection-end-line="168" selection-end-column="3" />
+        <state vertical-scroll-proportion="0.5519713">
+          <caret line="181" column="35" selection-start-line="181" selection-start-column="35" selection-end-line="181" selection-end-column="35" />
           <folding />
         </state>
       </provider>
