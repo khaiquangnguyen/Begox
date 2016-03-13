@@ -3,7 +3,7 @@
 var players ={};
 var sockets = {};
 var worldSnapshots = [];
-var missiles = [];
+var missiles = {};
 var walls = {};
 var inputs = {};
 var bulletSequenceNumber = 0;
@@ -52,8 +52,8 @@ var connectionHandler = function(socket){
     var shoot = function(bulletInfo){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
         // Also add bullet limit to player
-        missiles.push(new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
-        bulletInfo.direction,bulletInfo.speed));
+        missiles[bulletSequenceNumber] = new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
+        bulletInfo.direction,bulletInfo.speed,missiles);
         players[socket.id].missileCount ++;
         //socket.emit("canShoot",bulletSequenceNumber);
         bulletSequenceNumber++;
@@ -239,7 +239,7 @@ function updateAllPlayers(){
     }
 }
 function updateAllMissile(){
-    for (let aMissile of missiles){
-        aMissile.update();
+    for (let aMissileKey in missiles){
+        missiles[aMissileKey].update();
     }
 }

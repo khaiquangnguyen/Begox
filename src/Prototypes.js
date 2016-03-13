@@ -208,7 +208,7 @@ Player.prototype.render = function(){
  * @param direction: the direction of the Missile's movement
  * @param speed: the speed of the Player
  */
-function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,missiles){
     this.shooterID = shooterID;
     this.id  = id;
     this.xCenter = xCenter;
@@ -217,6 +217,9 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
     this.type = type;
     this.direction = direction;
     this.speed = speed;
+    this.distanceMoved = 0;
+    //a reference to the list holding this missile for easier remove
+    this.missiles = missiles;
 }
 
 /**
@@ -228,6 +231,8 @@ Missile.prototype.move = function(){
     if (this.checkCollision()){
         //DO SOMETHING
     }
+    this.distanceMoved += this.speed;
+    if (this.distanceMoved >= 1000) this.killSelf();
 
 };
 
@@ -257,7 +262,7 @@ Missile.prototype.update = function(){
 };
 
 Missile.prototype.killSelf = function(){
-    killMissile(this);
+    delete (this.missiles[this.id]);
 };
 
 /**
