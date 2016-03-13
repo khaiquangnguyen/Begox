@@ -93,7 +93,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
         stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
-    if (worldSnapshots.length > 60) worldSnapshots.shift();
+    if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){

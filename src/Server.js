@@ -2,7 +2,7 @@
 
 //===========================================================
 
-//VARIABLE DECLARATION
+//GLOBAL VARIABLE DECLARATION
 
 //==========================================================
 
@@ -27,8 +27,15 @@ var numUpdate = 25;
 var timeBetweenUpdate = 1000/numUpdate;
 //time of the last server update
 var previousTickServerLoop = Date.now();
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
 
-//
+
+
 //Load libraries and dependencies
 var express = require('express');
 var app = require('express')();
@@ -45,6 +52,9 @@ var constants = require('./Client/Constants.js');
 //NETWORKING
 
 //==============================================================
+
+
+
 //start listening on the server
 http.listen(process.env.PORT || 3000, function(){
     console.log('listening on port ',process.env.PORT || 3000);
@@ -161,11 +171,15 @@ var connectionHandler = function(socket){
 
 
 
+
 //=============================================================
 
 //MAIN PROGRAM
 
 //==========================================================
+
+
+
 
 /**
  * The game server update loop, which will take a snapshot of the world and sent it to the players.
@@ -176,7 +190,7 @@ var serverUpdateLoop = function(){
         previousTickServerLoop = now;
         //takeWorldSnapshot();
         sendWorldSnapshotToAllClients();
-        sendMainPlayerLocationToClients();
+
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);
@@ -185,14 +199,6 @@ var serverUpdateLoop = function(){
     }
 };
 
-
-
-//the standard fps of the physics loop = 60
-var fps = 60;
-//time between 2 physics update
-var tickLengthMs = 1000/fps;
-//time of last physics update
-var previousTickPhysicsLoop = Date.now();
 /**
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
  */
@@ -200,7 +206,6 @@ function gamePhysicsLoop() {
     var now = Date.now();
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         //TODO use delta for movement
-
         previousTickPhysicsLoop = now;
         updateGamePhysics();
     }
@@ -212,23 +217,37 @@ function gamePhysicsLoop() {
 }
 
 
-var sendMainPlayerLocationToClients = function(){
-    for (let keySocket in sockets){
-        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,players[keySocket].velX,
-            players[keySocket].velY, inputs[keySocket].lastProcess);
+/**
+ * Update the physics of all object in the game
+ */
+function updateGamePhysics(){
+    for (let playerKey in players){
+        players[playerKey].update(inputs);
     }
-};
+    for (let aMissileKey in missiles){
+        missiles[aMissileKey].update();
+    }
+}
 
+/**
+ * Send snapshot to all clients to update the instance on client's side
+ */
 var sendWorldSnapshotToAllClients = function() {
     var worldSnapshot;
     for (let keySocket in sockets){
+
+        //send the main player update first
+        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,players[keySocket].velX,
+            players[keySocket].velY, inputs[keySocket].lastProcess);
+
+        //send other objects needed to be render to the client
         worldSnapshot = takeWorldSnapshot(keySocket);
         sockets[keySocket].emit('worldSnapshot',worldSnapshot);
     }
 };
 
 /**
- * The the snapshot of the world
+ * Take the snapshot of the world with respect to a specific client
  */
 var takeWorldSnapshot = function(socketID){
     //TODO take world snapshot according to each socket ID
@@ -246,18 +265,11 @@ var takeWorldSnapshot = function(socketID){
     }
     worldSnapshots[socketID].push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
-    if (worldSnapshots[socketID].length > 60) worldSnapshots[socketID].shift();
+    if (worldSnapshots[socketID].length > MAX_WORLD_SNAPSHOT) worldSnapshots[socketID].shift();
     return aWorldSnapshot;
 };
 
-function updateGamePhysics(){
-    for (let playerKey in players){
-        players[playerKey].update(inputs);
-    }
-    for (let aMissileKey in missiles){
-        missiles[aMissileKey].update();
-    }
-}
+
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
 serverUpdateLoop();
