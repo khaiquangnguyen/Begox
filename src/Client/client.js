@@ -179,7 +179,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
         }
     }
     console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    console.log(inputs);
+    console.log(inputs.length);
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
@@ -265,6 +265,7 @@ function inputUpdate() {
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     sendInputToServer(inputPackage);
     inputs.push(inputPackage);
+    console.log("just after taking input",inputs.length);
 
 
 }
