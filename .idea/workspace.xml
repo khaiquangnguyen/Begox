@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Constants.js" afterPath="$PROJECT_DIR$/src/Client/Constants.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -58,8 +56,8 @@
       <file leaf-file-name="client.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.75268817">
-              <caret line="171" column="35" selection-start-line="171" selection-start-column="35" selection-end-line="171" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.16129032">
+              <caret line="168" column="3" selection-start-line="168" selection-start-column="3" selection-end-line="168" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -337,7 +335,7 @@
       <recent name="C:\Users\khainguyen\WebstormProjects\Begox\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Node.js.client.js">
+  <component name="RunManager" selected="Node.js.Server.js">
     <configuration default="false" name="Server.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="C:/Program Files/nodejs/node" path-to-js-file="$PROJECT_DIR$/src/Server.js" working-dir="$PROJECT_DIR$/src">
       <method />
     </configuration>
@@ -411,8 +409,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Node.js.client.js" />
-        <item index="1" class="java.lang.String" itemvalue="Node.js.Server.js" />
+        <item index="0" class="java.lang.String" itemvalue="Node.js.Server.js" />
+        <item index="1" class="java.lang.String" itemvalue="Node.js.client.js" />
         <item index="2" class="java.lang.String" itemvalue="JavaScript Debug.index.html" />
         <item index="3" class="java.lang.String" itemvalue="Node.js.Constants.js" />
         <item index="4" class="java.lang.String" itemvalue="Node.js.Prototypes.js" />
@@ -652,7 +650,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457798171125</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="update input processing server">
+      <created>1457799135675</created>
+      <option name="number" value="00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1457799135675</updated>
+    </task>
+    <option name="localTasksCounter" value="39" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1087,14 +1091,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Server.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/Constants.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1103,10 +1099,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="43" column="25" selection-start-line="43" selection-start-column="25" selection-end-line="43" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75268817">
-          <caret line="171" column="35" selection-start-line="171" selection-start-column="35" selection-end-line="171" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.16129032">
+          <caret line="168" column="3" selection-start-line="168" selection-start-column="3" selection-end-line="168" selection-end-column="3" />
           <folding />
         </state>
       </provider>
