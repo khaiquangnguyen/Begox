@@ -170,6 +170,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
     console.log(inputSequenceNumber, lastSequenceNumber);
+    if(lastSequenceNumber == -1) return;
     //discard until last sequence number
     while(true){
         if(inputs.length <=0) break;

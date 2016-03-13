@@ -299,7 +299,7 @@ Wall.prototype.render = function(){
 function Input(id){
     this.id = id;
     this.inputList = [];
-    this.lastProcess = 0;
+    this.lastProcess = -1;
 }
 
 function WorldSnapshot(){
