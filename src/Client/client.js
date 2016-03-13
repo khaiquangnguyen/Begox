@@ -169,7 +169,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
-    console.log(inputSequenceNumber, lastSequenceNumber);
+    console.log(inputSequenceNumber-1, lastSequenceNumber);
     if(lastSequenceNumber == -1) return;
     //discard until last sequence number
     while(true){
@@ -187,8 +187,9 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
     for (aInputPackage of inputs){
-        inputProcessing(aInputPackage.value);
         console.log("current",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+        inputProcessing(aInputPackage.value);
+
     }
     console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
 });
