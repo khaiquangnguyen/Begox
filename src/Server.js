@@ -185,7 +185,7 @@ var serverUpdateLoop = function(){
     }
 };
 
-serverUpdateLoop();
+
 
 //the standard fps of the physics loop = 60
 var fps = 60;
@@ -210,8 +210,6 @@ function gamePhysicsLoop() {
         setImmediate(gamePhysicsLoop);
     }
 }
-
-
 
 
 var sendMainPlayerLocationToClients = function(){
@@ -262,3 +260,4 @@ function updateGamePhysics(){
 }
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
+serverUpdateLoop();
