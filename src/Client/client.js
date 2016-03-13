@@ -223,9 +223,9 @@ function inputProcessing(aInput){
             mainPlayer.velX--;
         }
     }
-    mainPlayer.velY *= friction;
+    //mainPlayer.velY *= friction;
     mainPlayer.yCenter += mainPlayer.velY;
-    mainPlayer.velX *= friction;
+    //mainPlayer.velX *= friction;
     mainPlayer.xCenter += mainPlayer.velX;
 
     if (mainPlayer.xCenter > WORLD_WIDTH) {
@@ -270,7 +270,6 @@ function inputUpdate() {
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     sendInputToServer(inputPackage);
     inputs.push(inputPackage);
-    console.log("just after taking input",inputs.length);
 
 
 }

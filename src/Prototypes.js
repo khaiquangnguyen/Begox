@@ -86,9 +86,9 @@ Player.prototype.move = function(inputs) {
             }
         }
     }
-    this.velY *= FRICTION;
+    //this.velY *= FRICTION;
     this.yCenter += this.velY;
-    this.velX *= FRICTION;
+    //this.velX *= FRICTION;
     this.xCenter += this.velX;
 
     if (this.xCenter > WORLD_WIDTH) {
