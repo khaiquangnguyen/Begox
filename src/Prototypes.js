@@ -178,6 +178,17 @@ Player.prototype.takeDamage = function(shooter, damage){
     this.updateHP(-damage);
 };
 
+/**
+ * The renderer for the current player
+ */
+Player.prototype.render = function(){
+
+    this.shape.clear();
+    this.shape.lineStyle(0);
+    this.shape.beginFill(this.color, 0.5);
+    this.shape.drawCircle(this.x, this.y, this.size);
+    this.shape.endFill();
+};
 
 
 /**********************************************************/
