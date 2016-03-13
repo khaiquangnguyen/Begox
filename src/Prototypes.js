@@ -20,11 +20,10 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
 
     // Shape
     this.color = 0xFFFF0B;
-
     // Attributes
     this.id = id;
-    this.x = xCenter;
-    this.y = yCenter;
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
     this.size = size;
     this.type = type;
     this.canShoot  = true;
@@ -56,17 +55,57 @@ Player.prototype.updatePhysics = function(deltaTime){
 /**
  * The movement function of the Player. Only check for collision with Wall.
  */
-Player.prototype.move = function(deltaTime) {
-    if(this.direction != 9) {
-        var originalX = this.x;
-        var originalY = this.y;
-        this.x += Math.sin(this.direction / 4 * Math.PI) * this.speed * deltaTime;
-        this.y += Math.cos(this.direction / 4 * Math.PI) * this.speed * deltaTime;
-        //if collide with Wall, go back to the original position
-        if(this.checkCollision() == true){
-            this.x = originalX;
-            this.y = originalY;
+Player.prototype.move = function(inputs) {
+    "use strict";
+    let playerInputs = inputs[this.id].inputList;
+    if(playerInputs.length != 0) {
+        var input = playerInputs.shift();
+        inputs[this.id].lastProcess = input.sequenceNumber;
+        input = input.value;
+        if (input >= 8) {
+            if (this.velY < this.maxSpeed) {
+                this.velY++;
+            }
+            input -= 8;
         }
+        if (input >= 4) {
+            if (this.velX < this.maxSpeed) {
+                this.velX++;
+            }
+            input -= 4;
+        }
+        if (input >= 2) {
+            if (this.velY > -this.maxSpeed) {
+                this.velY--;
+            }
+            input -= 2;
+        }
+        if (input >= 1) {
+            if (this.velX > -this.maxSpeed) {
+                this.velX--;
+            }
+        }
+    }
+    this.velY *= FRICTION;
+    this.yCenter += this.velY;
+    this.velX *= FRICTION;
+    this.xCenter += this.velX;
+
+    if (this.xCenter > WORLD_WIDTH) {
+        this.xCenter = WORLD_WIDTH;
+        this.velX = 0;
+    }
+    else if (this.xCenter < 0) {
+        this.xCenter = 0;
+        this.velX = 0;
+    }
+    if (this.yCenter > WORLD_HEIGHT) {
+        this.yCenter = WORLD_HEIGHT;
+        this.velY = 0;
+    }
+    else if (this.yCenter < 0) {
+        this.yCenter = 0;
+        this.velY = 0;
     }
 };
 
@@ -96,7 +135,7 @@ Player.prototype.changeDirection = function(newDirection){
  */
 Player.prototype.shoot = function (shootDirection){
     if (this.canShoot && this.missileCount< MAX_NUM_MISSILE){
-        var aMissile = new Missile(this.id, this.id * MAX_NUM_MISSILE + this.missileCount, this.x, this.y,this.size / 2, this.type, shootDirection, this.speed);
+        var aMissile = new Missile(this.id, this.id * MAX_NUM_MISSILE + this.missileCount, this.xCenter, this.yCenter,this.size / 2, this.type, shootDirection, this.speed);
         this.canShoot = false;
         this.missileCount ++;
     }
@@ -115,6 +154,10 @@ Player.prototype.killSelf = function(){
     killPlayer(this);
 };
 
+
+Player.prototype.update = function(inputs){
+    this.move(inputs);
+};
 
 /**
  * the reward for killing another player. This comes in the form of accumulating size
@@ -167,20 +210,21 @@ Player.prototype.render = function(){
 function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
     this.shooterID = shooterID;
     this.id  = id;
-    this.x = xCenter;
-    this.y = yCenter;
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
     this.size = size;
     this.type = type;
     this.direction = direction;
     this.speed = speed;
+    this.color = 0xFFFF0B;
 }
 
 /**
  * the movement of the Missile
  */
 Missile.prototype.move = function(deltaTime){
-    this.x += Math.sin(this.direction) * this.speed * deltaTime;
-    this.y += Math.cos(this.direction) * this.speed * deltaTime;
+    this.xCenter += Math.sin(this.direction) * this.speed * deltaTime;
+    this.yCenter += Math.cos(this.direction) * this.speed * deltaTime;
     if (Missile.checkCollision()){
         //DO SOMETHING
     }
@@ -226,11 +270,11 @@ Missile.prototype.render = function(){
 
 
 function Wall(id, xCenter, yCenter, size, type){
-    this.id = id;
-    this.x = xCenter;
-    this.y = yCenter;
+    this.xCenter = xCenter;
+    this.yCenter = yCenter;
     this.size = size;
     this.type = type;
+    this.color = 0xFFFF0B;
 };
 
 
@@ -255,6 +299,7 @@ Wall.prototype.render = function(){
 function Input(id){
     this.id = id;
     this.inputList = [];
+    this.lastProcess = 0;
 }
 
 function WorldSnapshot(){
@@ -272,9 +317,12 @@ function WorldSnapshot(){
  * @constructor
  */
 function PlayerSnapshot(aPlayer){
-    this.x = aPlayer.x;
-    this.y = aPlayer.y;
+    this.id = aPlayer.id;
+    this.xCenter = aPlayer.xCenter;
+    this.yCenter = aPlayer.yCenter;
     this.direction = aPlayer.direction;
+    this.type = aPlayer.type;
+    this.color = aPlayer.color;
 }
 /**
  * The snapshot of a missile with minimal information
@@ -282,9 +330,12 @@ function PlayerSnapshot(aPlayer){
  * @constructor
  */
 function MissileSnapshot(aMissile){
-    this.x = aMissile.x;
-    this.y = aMissile.y;
+    this.id = aMissile.id;
+    this.xCenter = aMissile.xCenter;
+    this.yCenter = aMissile.yCenter;
     this.direction = aMissile.direction;
+    this.shooterID = aMissile.shooterID;
+
 }
 
 /**
@@ -293,10 +344,18 @@ function MissileSnapshot(aMissile){
  * @constructor
  */
 function WallSnapshot(aWall){
-    this.x = aWall.x;
-    this.y = aWall.y;
+    this.xCenter = aWall.xCenter;
+    this.yCenter = aWall.yCenter;
     this.direction = aWall.direction;
+    this.type = aWall.type;
+    this.color = aWall.color;
 }
+
+function InputPackage(sequenceNumber,value){
+    this.sequenceNumber = sequenceNumber;
+    this.value = value;
+}
+
 
 module.exports.Input = Input;
 module.exports.Player = Player;
@@ -305,3 +364,4 @@ module.exports.Wall = Wall;
 module.exports.WorldSnapshot = WorldSnapshot;
 module.exports.PlayerSnapshot = PlayerSnapshot;
 module.exports.MissileSnapshot = MissileSnapshot;
+module.exports.InputPackage = InputPackage;

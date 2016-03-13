@@ -16,10 +16,9 @@ var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
-
 //start listening on the server
-http.listen(3000, function(){
-    console.log('listening on *:3000');
+http.listen(process.env.PORT || 3000, function(){
+    console.log('listening on port!',process.env.PORT || 3000);
 });
 
 //fetch the client files back to any client connect to the server through port 3000
@@ -38,15 +37,14 @@ app.use(express.static(__dirname + '/Client'));
 var connectionHandler = function(socket){
     //FUNCTION DEFINITION
     /**
-     * When the player gets new input direction
-     * @param id: the id of the sender
-     * @param newDirection - the new direction of the player
+     * The input
+     * @param newInput: input sent from client
      */
-    var updateInputs = function(id, newInput){
-        socket.emit('input',newInput);
+    var updateInputs = function(newInputPackage){
+        inputs[socket.id].inputList.push(newInputPackage);
+        //socket.emit('input',newInput);
+
     };
-
-
     /**
      * When receive shoot message
      * @param id: the id of the sender
@@ -71,24 +69,23 @@ var connectionHandler = function(socket){
 
     /**
      * initiate a new player with the id provided, which is originally the id of the socket
-     * @param id: the id of the player
-     * @param size
-    * @param type
-    * @param speed
      */
     var initNewPlayer = function(info){
         //if no player with such id has been created
+        let x = Math.random() * 1000;
+        let y = Math.random() * 1000;
+
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
             switch(info.type){
                 case TRIANGLE_TYPE:
-                    var aPlayer = new prototypes.Player(info.id,200,200,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
                     break;
                 case SQUARE_TYPE:
-                    var aPlayer = new prototypes.Player(info.id,200,200,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
                     break;
                 default:
-                    var aPlayer = new prototypes.Player(info.id,200,200,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
             }
             // add socket to socket dictionary
             sockets[socket.id] = socket;
@@ -153,12 +150,8 @@ var serverUpdateLoop = function(){
     if (previousTickServerLoop + timeBetweenUpdate <= now) {
         previousTickServerLoop = now;
         //takeWorldSnapshot();
-        //sendWorldSnapshot();
-        //for( let aSocket of sockets){
-        //    //sendInputToClient(aSocket);
-        //    //console.log('send input to client with ID', aSocket.id);
-        //
-        //}
+        sendWorldSnapshotToAllClients();
+        sendMainPlayerLocationToClients();
     }
     if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
         setTimeout(serverUpdateLoop);
@@ -169,44 +162,72 @@ var serverUpdateLoop = function(){
 
 serverUpdateLoop();
 
-var sendInputToClient = function(socket){
-    var aInputList = utilities.getItemWithIDFromArray(socket.id,inputs);
-    //Random inputs
-    aInputList.inputList = [37,38,39,40];
-    socket.emit("input",aInputList.inputList);
+//the standard fps of the physics loop = 60
+var fps = 60;
+//time between 2 physics update
+var tickLengthMs = 1000/fps;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
+/**
+ * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
+ */
+function gamePhysicsLoop() {
+    var now = Date.now();
+    if (previousTickPhysicsLoop + tickLengthMs <= now) {
+        //TODO use delta for movement
+
+        previousTickPhysicsLoop = now;
+        updateAllPlayers();
+    }
+    if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+        setTimeout(gamePhysicsLoop);
+    } else {
+        setImmediate(gamePhysicsLoop);
+    }
+}
+
+gamePhysicsLoop();
+
+
+var sendMainPlayerLocationToClients = function(){
+    for (let keySocket in sockets){
+        sockets[keySocket].emit('updatePosition',players[keySocket].xCenter, players[keySocket].yCenter,players[keySocket].velX,
+            players[keySocket].velY, inputs[keySocket].lastProcess);
+    }
 };
 
-var sendWorldSnapshot = function() {
-    //FINISH CODE HERE
+var sendWorldSnapshotToAllClients = function() {
+    var worldSnapshot;
+    for (let keySocket in sockets){
+        worldSnapshot = takeWorldSnapshot(keySocket);
+        sockets[keySocket].emit('worldSnapshot',worldSnapshot);
+    }
 };
 
 /**
  * The the snapshot of the world
  */
-var takeWorldSnapshot = function(){
+var takeWorldSnapshot = function(socketID){
     var aWorldSnapshot = new prototypes.WorldSnapshot();
-    for (let aPlayer of players){
-        aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(aPlayer));
+    for (let playerKey in players){
+        if(playerKey != socketID) {
+            aWorldSnapshot.players.push(new prototypes.PlayerSnapshot(players[playerKey]));
+        }
     }
-    for (let aMissile of missiles){
-        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(aMissile));
+    for (let missileKey in missiles){
+        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(missiles[missileKey]));
     }
-    for (let aWall of walls){
-        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(aWall));
+    for (let wallKey in walls){
+        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(walls[wallKey]));
     }
     worldSnapshots.push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
     if (worldSnapshots.length > 60) worldSnapshots.shift();
+    return aWorldSnapshot;
 };
 
-var killPlayer = function(aPlayer){
-    players.splice(indexOf(aPlayer),1);
-};
-var killMissile = function(aMissile) {
-    missiles.splice(indexOf(aMissile));
-};
-var killWall = function (aWall){
-    walls.splice(indexOf(aWall),1);
-};
-
-
+function updateAllPlayers(){
+    for (let playerKey in players){
+        players[playerKey].update(inputs);
+    }
+}
