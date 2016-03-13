@@ -181,20 +181,21 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
             break;
         }
     }
-    console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    console.log("old",mainPlayer.velX,'  ', mainPlayer.velY);
+    console.log("old pos",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+    console.log("old vel",mainPlayer.velX,'  ', mainPlayer.velY);
     console.log(inputs.length);
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
     for (aInputPackage of inputs){
-        console.log("current",aInputPackage, mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+        console.log("current pos",aInputPackage, mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+        console.log("current vel",mainPlayer.velX, '    ',mainPlayer.velY);
         inputProcessing(aInputPackage.value);
 
     }
-    console.log("new",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
-    console.log("new",mainPlayer.velX,'  ', mainPlayer.velY);
+    console.log("new pos",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+    console.log("new vel",mainPlayer.velX,'  ', mainPlayer.velY);
 });
 
 /**
@@ -267,16 +268,10 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
-    if(aInput != 0 ){
-        let inputPackage =  new input(inputSequenceNumber++,aInput);
-        inputs.push(inputPackage);
-        sendInputToServer(inputPackage);
-    }
+    let inputPackage =  new input(inputSequenceNumber++,aInput);
+    inputs.push(inputPackage);
+    sendInputToServer(inputPackage);
     inputProcessing(aInput);
-
-
-
-
 }
 
 function sendInputToServer(inputPackage){
