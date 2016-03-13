@@ -1,3 +1,13 @@
+
+
+//=============================================================================
+
+/* BASIC FUNCTIONS */
+
+//=============================================================================
+
+
+
 "use strict";
 /**
  * Client version of player. Add shape attribute
@@ -24,17 +34,17 @@ function Player(aPlayer){
     stage.addChild(this.shape);
 }
 
-function ShadowPlayer(attributes){
-    this.id = attributes.id;
-    this.shape  = new PIXI.Graphics();
-    this.xCenter = attributes.xCenter;
-    this.yCenter = attributes.yCenter;
-    this.direction = attributes.direction;
-    this.color = attributes.color;
-    //TODO. velX and velY can be used for optimization
-    //this.velX = velX;
-    //this.velY = velY;
-}
+//function ShadowPlayer(attributes){
+//    this.id = attributes.id;
+//    this.shape  = new PIXI.Graphics();
+//    this.xCenter = attributes.xCenter;
+//    this.yCenter = attributes.yCenter;
+//    this.direction = attributes.direction;
+//    this.color = attributes.color;
+//    //TODO. velX and velY can be used for optimization
+//    //this.velX = velX;
+//    //this.velY = velY;
+//}
 
 function Wall(attributes){
     this.xCenter = attributes.xCenter;
@@ -71,10 +81,20 @@ function viewport()
     HEIGHT = e[ a+'Height' ];
 }
 
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
+document.body.addEventListener("click", click, false);
 
+//=============================================================================
 
-/****************************************************************************/
-//VARIABLE
+/* VARIABLE DECLARATION */
+
+//=============================================================================
+
 
 //viewport();
 
@@ -88,6 +108,7 @@ var WORLD_HEIGHT = 1500;
 var inputs = [];
 var mainPlayer;
 var otherPlayers = {};
+var bulletList = {};
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
 var keys = {};
@@ -116,22 +137,11 @@ var circle = new PIXI.Graphics();
 
 
 
-/****************************************************/
+//=============================================================================
 
+/* NETWORKING */
 
-
-//BASIC SET UP
-document.body.addEventListener("keydown", function (e) {
-    keys[e.keyCode] = true;
-});
-document.body.addEventListener("keyup", function (e) {
-    keys[e.keyCode] = false;
-});
-
-
-
-/***********************************************************/
-//maIN CODE
+//=============================================================================
 
 
 
@@ -142,16 +152,12 @@ socket.on('connectionEstablished', function(id){
 
 });
 socket.on('playerCreated',function(aPlayer){
-    console.log(aPlayer);
     mainPlayer = new Player(aPlayer);
-    console.log('Game begin!!!');
     animate();
-    //gamePhysicsLoop();
 });
 
 socket.on('input',function(aInput){
     inputs.push(aInput);
-
 });
 
 socket.on('worldSnapshot',function(aWorldSnapshot){
@@ -162,9 +168,11 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
         aPlayer.shape = new PIXI.Graphics();
         stage.addChild(aPlayer.shape);
     }
+    for (let aMissile of aWorldSnapshot.missiles){
+        aMissile.shape = new PIXI.Graphics();
+        stage.addChild(aMissile.shape);
+    }
     worldSnapshots.push(aWorldSnapshot);
-
-
     if (worldSnapshots.length > 60) worldSnapshots.shift();
 });
 
@@ -177,18 +185,25 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     //discard until last sequence number
     while(true){
         if(inputs.length <=0) break;
-        if(inputs[0].sequenceNumber > lastSequenceNumber) break;
-        var aInputPackage = inputs.shift();
-        if (aInputPackage.sequenceNumber == lastSequenceNumber){
+        var aInputPackage = inputs[0];
+        if (aInputPackage.sequenceNumber > lastSequenceNumber){
             break;
+        } else{
+            inputs.shift();
         }
     }
+    //process pending input
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
-
     }
-
 });
+
+
+//=============================================================================
+
+/* GAME LOGIC FUNCTIONS */
+
+//=============================================================================
 
 /**
  * Move the main player according to the input stored in the input queue.
@@ -250,15 +265,12 @@ function inputUpdate() {
     if (keys[37]) {
         aInput += 1;
     }
-
     if (keys[38]) {
         aInput += 2;
     }
-
     if (keys[39]) {
         aInput += 4;
     }
-
     if (keys[40]) {
         aInput += 8;
     }
@@ -274,25 +286,25 @@ function sendInputToServer(inputPackage){
 }
 
 
-/**
- * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
- */
-function gamePhysicsLoop() {
-    var now = Date.now();
-    if (previousTickPhysicsLoop + tickLengthMs <= now) {
-        var delta = (now - previousTickPhysicsLoop) / 1000;
-        previousTickPhysicsLoop = now;
-
-        animate();
-    }
-    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
-    //    setTimeout(gamePhysicsLoop);
-    //} else {
-    //    process.nextTick(gamePhysicsLoop);
-    //}
-    setTimeout(gamePhysicsLoop);
-
-}
+///**
+// * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
+// */
+//function gamePhysicsLoop() {
+//    var now = Date.now();
+//    if (previousTickPhysicsLoop + tickLengthMs <= now) {
+//        var delta = (now - previousTickPhysicsLoop) / 1000;
+//        previousTickPhysicsLoop = now;
+//
+//        animate();
+//    }
+//    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+//    //    setTimeout(gamePhysicsLoop);
+//    //} else {
+//    //    process.nextTick(gamePhysicsLoop);
+//    //}
+//    setTimeout(gamePhysicsLoop);
+//
+//}
 
 
 // run the render loop
@@ -302,7 +314,10 @@ function animate() {
     //num = 0;
     inputUpdate();
     drawMainPlayer(mainPlayer);
-    if(worldSnapshots.length >= 1) drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
+    if(worldSnapshots.length >= 1) {
+        drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
+        drawMissiles(worldSnapshots[worldSnapshots.length -1].missiles,mainPlayer);
+    }
     //inputUpdate();
     // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
     mainPlayer.shape.clear();
@@ -318,6 +333,30 @@ function animate() {
         requestAnimationFrame(animate)
     }, 10);
 }
+
+function click(e) {
+    let xPosition = e.clientX;
+    let yPosition = e.clientY;
+    let bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
+    //let aBullet = new Missile(nguoiChoi.id, bulletID, nguoiChoi.x, nguoiChoi.y, nguoiChoi.size * RATIO, "pellet", bulletAngle, 20, nguoiChoi.color);
+    //let bulletVelX = 40 * Math.cos(bulletAngle) | 0;
+    //let bulletVelY = 40 * Math.sin(bulletAngle) | 0;
+    socket.emit("shoot",{x: mainPlayer.xCenter, y: mainPlayer.yCenter, direction: bulletAngle,speed: 40});
+
+    // Add to bullet list and stage
+    //bulletList[bulletID] = newBullet;
+    //stage.addChild(newBullet.shape);
+
+    // Increment bullet ID to avoid duplication;
+    //bulletID += 1;
+}
+
+//=============================================================================
+
+/* DRAWING FUNCTIONS */
+
+//=============================================================================
+
 
 /**
  * Draw the main player of the game
@@ -356,6 +395,11 @@ var drawOtherPlayers = function(otherPlayers, mainPlayer) {
     }
 };
 
+var drawMissiles = function(missileDict, mainPlayer){
+    for (var aMissile of missileDict){
+        drawWithRespectToMainPlayer(aMissile,mainPlayer);
+    }
+};
 /**
  * Draw the border around the game
  *

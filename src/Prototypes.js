@@ -107,6 +107,7 @@ Player.prototype.move = function(inputs) {
         this.yCenter = 0;
         this.velY = 0;
     }
+
 };
 
 /**
@@ -207,7 +208,7 @@ Player.prototype.render = function(){
  * @param direction: the direction of the Missile's movement
  * @param speed: the speed of the Player
  */
-function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
     this.shooterID = shooterID;
     this.id  = id;
     this.xCenter = xCenter;
@@ -216,16 +217,15 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
     this.type = type;
     this.direction = direction;
     this.speed = speed;
-    this.color = 0xFFFF0B;
 }
 
 /**
  * the movement of the Missile
  */
-Missile.prototype.move = function(deltaTime){
-    this.xCenter += Math.sin(this.direction) * this.speed * deltaTime;
-    this.yCenter += Math.cos(this.direction) * this.speed * deltaTime;
-    if (Missile.checkCollision()){
+Missile.prototype.move = function(){
+    this.xCenter += Math.cos(this.direction) * this.speed | 0;
+    this.yCenter += Math.sin(this.direction) * this.speed | 0;
+    if (this.checkCollision()){
         //DO SOMETHING
     }
 
@@ -252,7 +252,8 @@ Missile.prototype.checkCollision = function(){
  * The update is called every time the main game update the physics of the game.
  * @param deltaTime: the time elapsed between last update and this update
  */
-Missile.prototype.updatePhysics = function(deltaTime){
+Missile.prototype.update = function(){
+    this.move();
 };
 
 Missile.prototype.killSelf = function(){
@@ -330,12 +331,11 @@ function PlayerSnapshot(aPlayer){
  * @constructor
  */
 function MissileSnapshot(aMissile){
+    this.shooterID = aMissile.shooterID;
     this.id = aMissile.id;
     this.xCenter = aMissile.xCenter;
     this.yCenter = aMissile.yCenter;
     this.direction = aMissile.direction;
-    this.shooterID = aMissile.shooterID;
-
 }
 
 /**

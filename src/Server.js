@@ -3,9 +3,10 @@
 var players ={};
 var sockets = {};
 var worldSnapshots = [];
-var missiles = {};
+var missiles = [];
 var walls = {};
 var inputs = {};
+var bulletSequenceNumber = 0;
 
 //library for collision detection
 //INITIATE SERVER
@@ -43,14 +44,19 @@ var connectionHandler = function(socket){
     var updateInputs = function(newInputPackage){
         inputs[socket.id].inputList.push(newInputPackage);
         //socket.emit('input',newInput);
-
     };
     /**
      * When receive shoot message
-     * @param id: the id of the sender
      * @param shootDirection: the direction of shoot
      */
-    var shoot = function(id, shootDirection){
+    var shoot = function(bulletInfo){
+        //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
+        // Also add bullet limit to player
+        missiles.push(new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
+        bulletInfo.direction,bulletInfo.speed));
+        players[socket.id].missileCount ++;
+        //socket.emit("canShoot",bulletSequenceNumber);
+        bulletSequenceNumber++;
     };
 
     /**
@@ -178,6 +184,7 @@ function gamePhysicsLoop() {
 
         previousTickPhysicsLoop = now;
         updateAllPlayers();
+        updateAllMissile();
     }
     if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
         setTimeout(gamePhysicsLoop);
@@ -215,10 +222,10 @@ var takeWorldSnapshot = function(socketID){
         }
     }
     for (let missileKey in missiles){
-        aWorldSnapshot.missiles.push(new prototypes.PlayerSnapshot(missiles[missileKey]));
+        aWorldSnapshot.missiles.push(new prototypes.MissileSnapshot(missiles[missileKey]));
     }
     for (let wallKey in walls){
-        aWorldSnapshot.walls.push(new prototypes.PlayerSnapshot(walls[wallKey]));
+        aWorldSnapshot.walls.push(new prototypes.Wall(walls[wallKey]));
     }
     worldSnapshots.push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
@@ -229,5 +236,10 @@ var takeWorldSnapshot = function(socketID){
 function updateAllPlayers(){
     for (let playerKey in players){
         players[playerKey].update(inputs);
+    }
+}
+function updateAllMissile(){
+    for (let aMissile of missiles){
+        aMissile.update();
     }
 }

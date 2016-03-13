@@ -411,7 +411,7 @@ function updateBullet() {
             bullet.y += bullet.velY;
         }
     }
-};
+}
 
 document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
