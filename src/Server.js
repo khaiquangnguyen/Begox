@@ -128,7 +128,7 @@ var connectionHandler = function(socket){
                     var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
                     break;
                 case SQUARE_TYPE:
-                    //TODO: change colllision bound to square
+                    //TODO: change collision bound to square
                     let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
                     break;
