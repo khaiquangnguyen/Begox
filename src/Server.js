@@ -33,6 +33,12 @@ var fps = 60;
 var tickLengthMs = 1000/fps;
 //time of last physics update
 var previousTickPhysicsLoop = Date.now();
+//a circle to initiate all collision
+var circle = SAT.Circle;
+//a square
+var square = SAT.Polygon;
+//a triangle
+var triangle = SAT.Polygon;
 
 
 
@@ -44,6 +50,7 @@ var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
+var sat = require('sat');
 
 
 
@@ -81,6 +88,8 @@ var connectionHandler = function(socket){
     var shoot = function(bulletInfo){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
         // Also add bullet limit to player
+        //TODO: Add triangle and square bullet type as well
+        let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
         missiles[bulletSequenceNumber] = new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
             bulletInfo.direction,bulletInfo.speed,missiles);
         players[socket.id].missileCount ++;
@@ -114,13 +123,18 @@ var connectionHandler = function(socket){
             //initiate new player
             switch(info.type){
                 case TRIANGLE_TYPE:
+                    //TODO: change collision bound to triangle
+                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
                     break;
                 case SQUARE_TYPE:
+                    //TODO: change colllision bound to square
+                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
                     break;
                 default:
-                    var aPlayer = new prototypes.Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
+                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+                    var aPlayer = new prototypes.Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED,roundColBound);
             }
             // add socket to socket dictionary
             sockets[socket.id] = socket;
