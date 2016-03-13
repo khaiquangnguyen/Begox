@@ -43,7 +43,6 @@ var connectionHandler = function(socket){
      */
     var updateInputs = function(newInputPackage){
         inputs[socket.id].inputList.push(newInputPackage);
-        //socket.emit('input',newInput);
     };
     /**
      * When receive shoot message

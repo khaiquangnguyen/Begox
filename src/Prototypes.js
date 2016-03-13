@@ -58,10 +58,16 @@ Player.prototype.updatePhysics = function(deltaTime){
 Player.prototype.move = function(inputs) {
     "use strict";
     let playerInputs = inputs[this.id].inputList;
-    if(playerInputs.length != 0) {
+    if(playerInputs.length == 0) {
+        var input = 0;
+    }
+    else{
         var input = playerInputs.shift();
         inputs[this.id].lastProcess = input.sequenceNumber;
         input = input.value;
+    }
+
+
         if (input >= 8) {
             if (this.velY < this.maxSpeed) {
                 this.velY++;
@@ -85,7 +91,7 @@ Player.prototype.move = function(inputs) {
                 this.velX--;
             }
         }
-    }
+
     //this.velY *= FRICTION;
     this.yCenter += this.velY;
     //this.velX *= FRICTION;

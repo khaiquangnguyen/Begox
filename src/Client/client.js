@@ -154,6 +154,7 @@ socket.on('connectionEstablished', function(id){
 socket.on('playerCreated',function(aPlayer){
     mainPlayer = new Player(aPlayer);
     animate();
+    //gamePhysicsLoop();
 });
 
 socket.on('input',function(aInput){
@@ -196,6 +197,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
     }
+    console.log(mainPlayer.xCenter, mainPlayer.yCenter);
 });
 
 
@@ -279,6 +281,8 @@ function inputUpdate() {
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
 
+
+
 }
 
 function sendInputToServer(inputPackage){
@@ -286,25 +290,26 @@ function sendInputToServer(inputPackage){
 }
 
 
-///**
-// * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
-// */
-//function gamePhysicsLoop() {
-//    var now = Date.now();
-//    if (previousTickPhysicsLoop + tickLengthMs <= now) {
-//        var delta = (now - previousTickPhysicsLoop) / 1000;
-//        previousTickPhysicsLoop = now;
-//
-//        animate();
-//    }
-//    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
-//    //    setTimeout(gamePhysicsLoop);
-//    //} else {
-//    //    process.nextTick(gamePhysicsLoop);
-//    //}
-//    setTimeout(gamePhysicsLoop);
-//
-//}
+/**
+ * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
+ */
+function gamePhysicsLoop() {
+    var now = Date.now();
+    if (previousTickPhysicsLoop + tickLengthMs <= now) {
+        var delta = (now - previousTickPhysicsLoop) / 1000;
+        previousTickPhysicsLoop = now;
+    }
+
+    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
+    //    setTimeout(gamePhysicsLoop);
+    //} else {
+    //    process.nextTick(gamePhysicsLoop);
+    //}
+    window.setTimeout(function() {
+       gamePhysicsLoop();
+    }, 10);
+
+}
 
 
 // run the render loop
