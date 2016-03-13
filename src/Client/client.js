@@ -187,7 +187,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
     for (aInputPackage of inputs){
-        console.log("current",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+        console.log("current",aInputPackage, mainPlayer.xCenter,'  ', mainPlayer.yCenter);
         inputProcessing(aInputPackage.value);
 
     }

@@ -4,7 +4,6 @@
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Prototypes.js" afterPath="$PROJECT_DIR$/src/Prototypes.js" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,8 +59,8 @@
       <file leaf-file-name="client.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.32616487">
-              <caret line="172" column="40" selection-start-line="172" selection-start-column="40" selection-end-line="172" selection-end-column="40" />
+            <state vertical-scroll-proportion="0.4014337">
+              <caret line="187" column="33" selection-start-line="187" selection-start-column="33" selection-end-line="187" selection-end-column="33" />
               <folding />
             </state>
           </provider>
@@ -696,7 +695,19 @@
       <option name="project" value="LOCAL" />
       <updated>1457848303289</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="update input processing server">
+      <created>1457848569552</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1457848569552</updated>
+    </task>
+    <task id="LOCAL-00046" summary="update input processing server">
+      <created>1457848801707</created>
+      <option name="number" value="00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1457848801707</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1151,8 +1162,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32616487">
-          <caret line="172" column="40" selection-start-line="172" selection-start-column="40" selection-end-line="172" selection-end-column="40" />
+        <state vertical-scroll-proportion="0.4014337">
+          <caret line="187" column="33" selection-start-line="187" selection-start-column="33" selection-end-line="187" selection-end-column="33" />
           <folding />
         </state>
       </provider>
