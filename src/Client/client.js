@@ -152,8 +152,6 @@ function inputProcessing(aInput){
             mainPlayer.velX--;
         }
     }
-    //mainPlayer.velY *= friction;
-    //mainPlayer.velX *= friction;
     mainPlayer.xCenter += mainPlayer.velX;
     mainPlayer.yCenter += mainPlayer.velY;
     mainPlayer.xCenter = (mainPlayer.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
@@ -186,7 +184,6 @@ function inputUpdate() {
 function sendInputToServer(inputPackage){
     socket.emit('updateInput', inputPackage);
 }
-
 
 function animate() {
     inputUpdate();

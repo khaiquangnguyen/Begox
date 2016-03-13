@@ -17,7 +17,6 @@
  * @param maxSpeed: the speed of the Player
  */
 function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed){
-
     // Shape
     this.color = 0xFFFF0B;
     // Attributes
@@ -44,15 +43,6 @@ Player.prototype.checkCollision = function(){
 };
 
 /**
- * The update is called every time the main game update the physics of the game.
- * @param deltaTime: the time elapsed between last update and this update
- */
-Player.prototype.updatePhysics = function(deltaTime){
-    //FINISH WRITING CODE HERE
-    this.move(deltaTime);
-};
-
-/**
  * The movement function of the Player. Only check for collision with Wall.
  */
 Player.prototype.move = function(inputs) {
@@ -67,35 +57,35 @@ Player.prototype.move = function(inputs) {
         input = input.value;
     }
 
-
-        if (input >= 8) {
-            if (this.velY < this.maxSpeed) {
-                this.velY++;
-            }
-            input -= 8;
+    if (input >= 8) {
+        if (this.velY < this.maxSpeed) {
+            this.velY++;
         }
-        if (input >= 4) {
-            if (this.velX < this.maxSpeed) {
-                this.velX++;
-            }
-            input -= 4;
+        input -= 8;
+    }
+    if (input >= 4) {
+        if (this.velX < this.maxSpeed) {
+            this.velX++;
         }
-        if (input >= 2) {
-            if (this.velY > -this.maxSpeed) {
-                this.velY--;
-            }
-            input -= 2;
+        input -= 4;
+    }
+    if (input >= 2) {
+        if (this.velY > -this.maxSpeed) {
+            this.velY--;
         }
-        if (input >= 1) {
-            if (this.velX > -this.maxSpeed) {
-                this.velX--;
-            }
+        input -= 2;
+    }
+    if (input >= 1) {
+        if (this.velX > -this.maxSpeed) {
+            this.velX--;
         }
+    }
 
     //this.velY *= FRICTION;
+    this.xCenter += this.velX;
     this.yCenter += this.velY;
     //this.velX *= FRICTION;
-    this.xCenter += this.velX;
+
     this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
     this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
 
@@ -112,27 +102,6 @@ Player.prototype.updateHP = function(amountChange){
         this.killSelf();
     }
 };
-
-/**
- * Change direction of the Player. This function works under the assumption that the parameter is valid
- * @param newDirection: the new direction of the Player
- */
-Player.prototype.changeDirection = function(newDirection){
-    this.direction = newDirection;
-};
-
-/**
- * Shoot missiles when number of missile is less than mximun number of missile actives and not on cooldown.
- * @param shootDirection: the direction to shoot
- */
-Player.prototype.shoot = function (shootDirection){
-    if (this.canShoot && this.missileCount< MAX_NUM_MISSILE){
-        var aMissile = new Missile(this.id, this.id * MAX_NUM_MISSILE + this.missileCount, this.xCenter, this.yCenter,this.size / 2, this.type, shootDirection, this.speed);
-        this.canShoot = false;
-        this.missileCount ++;
-    }
-};
-
 
 /**
  * When player is killed
@@ -272,9 +241,7 @@ function Wall(id, xCenter, yCenter, size, type){
     this.size = size;
     this.type = type;
     this.color = 0xFFFF0B;
-};
-
-
+}
 /**
  * The update is called every time the main game update the physics of the game.
  * @param deltaTime: the time elapsed between last update and this update

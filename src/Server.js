@@ -1,13 +1,35 @@
 
-"use strict";
-var players ={};
-var sockets = {};
-var worldSnapshots = [];
-var missiles = {};
-var walls = {};
-var inputs = {};
-var bulletSequenceNumber = 0;
 
+//===========================================================
+
+//VARIABLE DECLARATION
+
+//==========================================================
+
+
+"use strict";
+//dictionary of all players
+var players ={};
+//dictionary of all sockets
+var sockets = {};
+//dictionary of all world snapshot
+var worldSnapshots = {};
+//dictionary of all missiles
+var missiles = {};
+//dictionary of all walls
+var walls = {};
+//dictionary of all inputs
+var inputs = {};
+//the bullet count. Used to assign a unique ID to each bullet
+var bulletSequenceNumber = 0;
+var numUpdate = 25;
+//the time between two server update
+var timeBetweenUpdate = 1000/numUpdate;
+//time of the last server update
+var previousTickServerLoop = Date.now();
+
+//
+//Load libraries and dependencies
 var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
@@ -15,6 +37,14 @@ var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
+
+
+
+//==============================================================
+
+//NETWORKING
+
+//==============================================================
 //start listening on the server
 http.listen(process.env.PORT || 3000, function(){
     console.log('listening on port ',process.env.PORT || 3000);
@@ -23,12 +53,6 @@ http.listen(process.env.PORT || 3000, function(){
 //fetch the client files back to any client connect to the server through port 3000
 app.use(express.static(__dirname + '/Client'));
 
-
-
-/********************************************************************/
-
-
-//MAIN PROGRAM
 /**
  *  Handle everything which relates to sockets.io and socket.
  * @param socket - the current connecting socket
@@ -48,7 +72,7 @@ var connectionHandler = function(socket){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
         // Also add bullet limit to player
         missiles[bulletSequenceNumber] = new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
-        bulletInfo.direction,bulletInfo.speed,missiles);
+            bulletInfo.direction,bulletInfo.speed,missiles);
         players[socket.id].missileCount ++;
         //socket.emit("canShoot",bulletSequenceNumber);
         bulletSequenceNumber++;
@@ -94,6 +118,8 @@ var connectionHandler = function(socket){
             players[socket.id] = aPlayer;
             //initiate new input list to dictionary
             inputs[socket.id] = new prototypes.Input(info.id);
+            //initiate new worldSnapshot list to dictionary
+            worldSnapshots[socket.id] = [];
             //inform the client of the new player
             socket.emit('playerCreated',aPlayer);
             console.log('New player created.');
@@ -108,17 +134,18 @@ var connectionHandler = function(socket){
      */
     var disconnect = function(){
         console.log(socket.id, "disconnected");
+        //remove the player from players list
         utilities.removeItemWithIDFromArray(socket.id,players);
         console.log("Number of players left:",Object.keys(players).length);
-        ////remove the socket from socket lists
+        ////remove the socket from socket list
         utilities.removeItemWithIDFromArray(socket.id,sockets);
-        //remove input list
+        //remove the corresponding input list from the list of all inputs
         utilities.removeItemWithIDFromArray(socket.id, inputs);
-        //FINISH REMOVE ALL MISSILES CREATED BY PLAYER WITH ID FROM ARRAY
-        //FINISH REMOVE THE PLAYERS FROM THE GAME
+        //remove all missiles fired by the disconnected player from the game
+        for (let aMissileKey in missiles){
+            if(missiles[aMissileKey].shooterID == socket.id) delete(missiles[aMissileKey]);
+        }
     };
-
-    //////////////
 
     //When a new connection is established and client wants to connect
     socket.on('clientWantToConnect',tellClientToConnect);
@@ -133,15 +160,12 @@ var connectionHandler = function(socket){
 };
 
 
-//socket.io job
-io.on('connection', connectionHandler);
 
-//the number of time server sends world snapshot to clients
-var numUpdate = 25;
-//the time between two server update
-var timeBetweenUpdate = 1000/numUpdate;
-//time of the last server update
-var previousTickServerLoop = Date.now();
+//=============================================================
+
+//MAIN PROGRAM
+
+//==========================================================
 
 /**
  * The game server update loop, which will take a snapshot of the world and sent it to the players.
@@ -178,8 +202,7 @@ function gamePhysicsLoop() {
         //TODO use delta for movement
 
         previousTickPhysicsLoop = now;
-        updateAllPlayers();
-        updateAllMissile();
+        updateGamePhysics();
     }
     if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
         setTimeout(gamePhysicsLoop);
@@ -188,7 +211,7 @@ function gamePhysicsLoop() {
     }
 }
 
-gamePhysicsLoop();
+
 
 
 var sendMainPlayerLocationToClients = function(){
@@ -210,6 +233,7 @@ var sendWorldSnapshotToAllClients = function() {
  * The the snapshot of the world
  */
 var takeWorldSnapshot = function(socketID){
+    //TODO take world snapshot according to each socket ID
     var aWorldSnapshot = new prototypes.WorldSnapshot();
     for (let playerKey in players){
         if(playerKey != socketID) {
@@ -222,19 +246,19 @@ var takeWorldSnapshot = function(socketID){
     for (let wallKey in walls){
         aWorldSnapshot.walls.push(new prototypes.Wall(walls[wallKey]));
     }
-    worldSnapshots.push(aWorldSnapshot);
+    worldSnapshots[socketID].push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
-    if (worldSnapshots.length > 60) worldSnapshots.shift();
+    if (worldSnapshots[socketID].length > 60) worldSnapshots[socketID].shift();
     return aWorldSnapshot;
 };
 
-function updateAllPlayers(){
+function updateGamePhysics(){
     for (let playerKey in players){
         players[playerKey].update(inputs);
     }
-}
-function updateAllMissile(){
     for (let aMissileKey in missiles){
         missiles[aMissileKey].update();
     }
 }
+io.on('connection', connectionHandler);
+gamePhysicsLoop();
