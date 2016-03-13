@@ -1,85 +1,5 @@
 
-
-//=============================================================================
-
-/* BASIC FUNCTIONS */
-
-//=============================================================================
-
-
-
 "use strict";
-/**
- * Client version of player. Add shape attribute
- * @param aPlayer
- * @constructor
- */
-function Player(aPlayer){
-    // Additional variables
-    this.shape = new PIXI.Graphics();
-    this.color = aPlayer.color;
-    // Attributes
-    this.id = aPlayer.id;
-    this.xCenter = aPlayer.xCenter;
-    this.yCenter = aPlayer.yCenter;
-    this.size = aPlayer.size;
-    this.type = aPlayer.type;
-    this.canShoot  = aPlayer.canShoot;
-    this.direction = aPlayer.direction;
-    this.missileCount = aPlayer.missileCount;
-    this.lastEnemy = aPlayer.lastEnemy;
-    this.maxSpeed = aPlayer.maxSpeed;
-    this.velX = aPlayer.velX;
-    this.velY = aPlayer.velY;
-    stage.addChild(this.shape);
-}
-
-//function ShadowPlayer(attributes){
-//    this.id = attributes.id;
-//    this.shape  = new PIXI.Graphics();
-//    this.xCenter = attributes.xCenter;
-//    this.yCenter = attributes.yCenter;
-//    this.direction = attributes.direction;
-//    this.color = attributes.color;
-//    //TODO. velX and velY can be used for optimization
-//    //this.velX = velX;
-//    //this.velY = velY;
-//}
-
-function Wall(attributes){
-    this.xCenter = attributes.xCenter;
-    this.yCenter = attributes.yCenter;
-    this.direction = attributes.direction;
-}
-function Missile(attributes){
-    this.id = attributes.id;
-    this.yCenter = attributes.yCenter;
-    this.xCenter = attributes.xCenter;
-    this.shape = attributes.shape;
-    this.color = attributes.color;
-}
-
-function input(sequenceNumber,value){
-    this.sequenceNumber = sequenceNumber;
-    this.value = value;
-}
-
-/**
- *  The view port of the game
- * @returns {{width: *, height: *}}
- */
-function viewport()
-{
-    var e = window
-        , a = 'inner';
-    if ( !( 'innerWidth' in window ) )
-    {
-        a = 'client';
-        e = document.documentElement || document.body;
-    }
-    WIDTH = e[ a+'Width' ];
-    HEIGHT = e[ a+'Height' ];
-}
 
 document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
@@ -87,7 +7,12 @@ document.body.addEventListener("keydown", function (e) {
 document.body.addEventListener("keyup", function (e) {
     keys[e.keyCode] = false;
 });
-document.body.addEventListener("click", click, false);
+document.body.addEventListener("click", function (e) {
+    let xPosition = e.clientX;
+    let yPosition = e.clientY;
+    let bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
+    socket.emit("shoot",{x: mainPlayer.xCenter, y: mainPlayer.yCenter, direction: bulletAngle,speed: 40});
+}, false);
 
 //=============================================================================
 
@@ -95,8 +20,6 @@ document.body.addEventListener("click", click, false);
 
 //=============================================================================
 
-
-//viewport();
 
 var friction = FRICTION;
 
@@ -135,15 +58,11 @@ stage.interactive = true;
 
 var circle = new PIXI.Graphics();
 
-
-
 //=============================================================================
 
 /* NETWORKING */
 
 //=============================================================================
-
-
 
 var socket = io();
 socket.emit('clientWantToConnect');
@@ -197,7 +116,6 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
     }
-    console.log(mainPlayer.xCenter, mainPlayer.yCenter);
 });
 
 
@@ -238,25 +156,8 @@ function inputProcessing(aInput){
     //mainPlayer.velX *= friction;
     mainPlayer.xCenter += mainPlayer.velX;
     mainPlayer.yCenter += mainPlayer.velY;
-
-
-
-    if (mainPlayer.xCenter > WORLD_WIDTH) {
-        mainPlayer.xCenter = WORLD_WIDTH;
-        mainPlayer.velX = 0;
-    }
-    else if (mainPlayer.xCenter < 0) {
-        mainPlayer.xCenter = 0;
-        mainPlayer.velX = 0;
-    }
-    if (mainPlayer.yCenter > WORLD_HEIGHT) {
-        mainPlayer.yCenter = WORLD_HEIGHT;
-        mainPlayer.velY = 0;
-    }
-    else if (mainPlayer.yCenter < 0) {
-        mainPlayer.yCenter = 0;
-        mainPlayer.velY = 0;
-    }
+    mainPlayer.xCenter = (mainPlayer.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
+    mainPlayer.yCenter = (mainPlayer.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
 }
 
 /**
@@ -280,9 +181,6 @@ function inputUpdate() {
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
-
-
-
 }
 
 function sendInputToServer(inputPackage){
@@ -290,46 +188,17 @@ function sendInputToServer(inputPackage){
 }
 
 
-/**
- * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
- */
-function gamePhysicsLoop() {
-    var now = Date.now();
-    if (previousTickPhysicsLoop + tickLengthMs <= now) {
-        var delta = (now - previousTickPhysicsLoop) / 1000;
-        previousTickPhysicsLoop = now;
-    }
-
-    //if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
-    //    setTimeout(gamePhysicsLoop);
-    //} else {
-    //    process.nextTick(gamePhysicsLoop);
-    //}
-    window.setTimeout(function() {
-       gamePhysicsLoop();
-    }, 10);
-
-}
 
 
 // run the render loop
 
 function animate() {
-    //update
-    //num = 0;
     inputUpdate();
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
         drawMissiles(worldSnapshots[worldSnapshots.length -1].missiles,mainPlayer);
     }
-    //inputUpdate();
-    // Draw a circle, set the lineStyle to zero so the circle doesn't have an outline
-    mainPlayer.shape.clear();
-    mainPlayer.shape.lineStyle(0);
-    mainPlayer.shape.beginFill(0xFFFF0B, 0.5);
-    mainPlayer.shape.drawCircle(WIDTH/2, HEIGHT/2, mainPlayer.size);
-    mainPlayer.shape.endFill();
 
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
@@ -339,85 +208,6 @@ function animate() {
     }, 10);
 }
 
-function click(e) {
-    let xPosition = e.clientX;
-    let yPosition = e.clientY;
-    let bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
-    //let aBullet = new Missile(nguoiChoi.id, bulletID, nguoiChoi.x, nguoiChoi.y, nguoiChoi.size * RATIO, "pellet", bulletAngle, 20, nguoiChoi.color);
-    //let bulletVelX = 40 * Math.cos(bulletAngle) | 0;
-    //let bulletVelY = 40 * Math.sin(bulletAngle) | 0;
-    socket.emit("shoot",{x: mainPlayer.xCenter, y: mainPlayer.yCenter, direction: bulletAngle,speed: 40});
-
-    // Add to bullet list and stage
-    //bulletList[bulletID] = newBullet;
-    //stage.addChild(newBullet.shape);
-
-    // Increment bullet ID to avoid duplication;
-    //bulletID += 1;
-}
-
-//=============================================================================
-
-/* DRAWING FUNCTIONS */
-
-//=============================================================================
-
-
-/**
- * Draw the main player of the game
- * @param player
- */
-var drawMainPlayer = function(player) {
-    player.shape.clear();
-    player.shape.lineStyle(0);
-    player.shape.beginFill(player.color, 0.5);
-    player.shape.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
-    player.shape.endFill();
-};
-
-/**
- * Draw all other players relative to the main player position
- *
- * @param other
- * @param player
- */
-var drawWithRespectToMainPlayer = function(other, player) {
-    other.shape.clear();
-    other.shape.lineStyle(0);
-    other.shape.beginFill(other.color, 0.5);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
-    other.shape.endFill();
-};
-
-/**
- * Draw all other player in the list
- *
- * @param otherList
- */
-var drawOtherPlayers = function(otherPlayers, mainPlayer) {
-    for (var aPlayer of otherPlayers) {
-        drawWithRespectToMainPlayer(aPlayer,mainPlayer);
-    }
-};
-
-var drawMissiles = function(missileDict, mainPlayer){
-    for (var aMissile of missileDict){
-        drawWithRespectToMainPlayer(aMissile,mainPlayer);
-    }
-};
-/**
- * Draw the border around the game
- *
- * @param shape
- * @param player
- */
-var drawBorder = function(shape, player) {
-    // draw a rectangular border
-    shape.clear();
-    shape.lineStyle(2, 0x0000FF, 1);
-    shape.beginFill(0xFF700B, 0.10);
-    shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
-};
 
 var border = new PIXI.Graphics();
 stage.addChild(border);

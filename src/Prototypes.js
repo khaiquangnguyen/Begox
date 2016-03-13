@@ -96,23 +96,8 @@ Player.prototype.move = function(inputs) {
     this.yCenter += this.velY;
     //this.velX *= FRICTION;
     this.xCenter += this.velX;
-
-    if (this.xCenter > WORLD_WIDTH) {
-        this.xCenter = WORLD_WIDTH;
-        this.velX = 0;
-    }
-    else if (this.xCenter < 0) {
-        this.xCenter = 0;
-        this.velX = 0;
-    }
-    if (this.yCenter > WORLD_HEIGHT) {
-        this.yCenter = WORLD_HEIGHT;
-        this.velY = 0;
-    }
-    else if (this.yCenter < 0) {
-        this.yCenter = 0;
-        this.velY = 0;
-    }
+    this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
+    this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
 
 };
 
