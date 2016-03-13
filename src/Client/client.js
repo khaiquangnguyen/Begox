@@ -267,10 +267,13 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
-    let inputPackage =  new input(inputSequenceNumber++,aInput);
-    inputs.push(inputPackage);
+    if(aInput != 0 ){
+        let inputPackage =  new input(inputSequenceNumber++,aInput);
+        inputs.push(inputPackage);
+        sendInputToServer(inputPackage);
+    }
     inputProcessing(aInput);
-    sendInputToServer(inputPackage);
+
 
 
 
