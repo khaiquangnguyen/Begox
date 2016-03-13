@@ -174,6 +174,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs.shift();
+        console.log(aInputPackage.sequenceNumber);
         if (aInputPackage.sequenceNumber == lastSequenceNumber){
             break;
         }
