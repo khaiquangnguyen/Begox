@@ -179,6 +179,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
         }
     }
     console.log("old",mainPlayer.xCenter,'  ', mainPlayer.yCenter);
+    console.log(inputs);
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
