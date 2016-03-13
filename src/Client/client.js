@@ -268,6 +268,7 @@ function inputUpdate() {
     if (keys[40]) {
         aInput += 8;
     }
+    console.log("receive new input!");
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
