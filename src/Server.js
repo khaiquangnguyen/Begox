@@ -72,8 +72,8 @@ var connectionHandler = function(socket){
      */
     var initNewPlayer = function(info){
         //if no player with such id has been created
-        let x = Math.random() * 1000;
-        let y = Math.random() * 1000;
+        let x = Math.random() * 1000 | 0;
+        let y = Math.random() * 1000 | 0;
 
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
