@@ -23,8 +23,8 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
 
     // Attributes
     this.id = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
     this.canShoot  = true;
@@ -58,14 +58,14 @@ Player.prototype.updatePhysics = function(deltaTime){
  */
 Player.prototype.move = function(deltaTime) {
     if(this.direction != 9) {
-        var originalX = this.xCenter;
-        var originalY = this.yCenter;
-        this.xCenter += Math.sin(this.direction / 4 * Math.PI) * this.speed * deltaTime;
-        this.yCenter += Math.cos(this.direction / 4 * Math.PI) * this.speed * deltaTime;
+        var originalX = this.x;
+        var originalY = this.y;
+        this.x += Math.sin(this.direction / 4 * Math.PI) * this.speed * deltaTime;
+        this.y += Math.cos(this.direction / 4 * Math.PI) * this.speed * deltaTime;
         //if collide with Wall, go back to the original position
         if(this.checkCollision() == true){
-            this.xCenter = originalX;
-            this.yCenter = originalY;
+            this.x = originalX;
+            this.y = originalY;
         }
     }
 };
@@ -96,7 +96,7 @@ Player.prototype.changeDirection = function(newDirection){
  */
 Player.prototype.shoot = function (shootDirection){
     if (this.canShoot && this.missileCount< MAX_NUM_MISSILE){
-        var aMissile = new Missile(this.id, this.id * MAX_NUM_MISSILE + this.missileCount, this.xCenter, this.yCenter,this.size / 2, this.type, shootDirection, this.speed);
+        var aMissile = new Missile(this.id, this.id * MAX_NUM_MISSILE + this.missileCount, this.x, this.y,this.size / 2, this.type, shootDirection, this.speed);
         this.canShoot = false;
         this.missileCount ++;
     }
@@ -143,7 +143,7 @@ Player.prototype.render = function(){
     this.shape.clear();
     this.shape.lineStyle(0);
     this.shape.beginFill(this.color, 0.5);
-    this.shape.drawCircle(this.xCenter, this.yCenter, this.size);
+    this.shape.drawCircle(this.x, this.y, this.size);
     this.shape.endFill();
 };
 
@@ -167,8 +167,8 @@ Player.prototype.render = function(){
 function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
     this.shooterID = shooterID;
     this.id  = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
     this.direction = direction;
@@ -179,8 +179,8 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed){
  * the movement of the Missile
  */
 Missile.prototype.move = function(deltaTime){
-    this.xCenter += Math.sin(this.direction) * this.speed * deltaTime;
-    this.yCenter += Math.cos(this.direction) * this.speed * deltaTime;
+    this.x += Math.sin(this.direction) * this.speed * deltaTime;
+    this.y += Math.cos(this.direction) * this.speed * deltaTime;
     if (Missile.checkCollision()){
         //DO SOMETHING
     }
@@ -227,8 +227,8 @@ Missile.prototype.render = function(){
 
 function Wall(id, xCenter, yCenter, size, type){
     this.id = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
 };
@@ -272,8 +272,8 @@ function WorldSnapshot(){
  * @constructor
  */
 function PlayerSnapshot(aPlayer){
-    this.xCenter = aPlayer.xCenter;
-    this.yCenter = aPlayer.yCenter;
+    this.x = aPlayer.x;
+    this.y = aPlayer.y;
     this.direction = aPlayer.direction;
 }
 /**
@@ -282,8 +282,8 @@ function PlayerSnapshot(aPlayer){
  * @constructor
  */
 function MissileSnapshot(aMissile){
-    this.xCenter = aMissile.xCenter;
-    this.yCenter = aMissile.yCenter;
+    this.x = aMissile.x;
+    this.y = aMissile.y;
     this.direction = aMissile.direction;
 }
 
@@ -293,8 +293,8 @@ function MissileSnapshot(aMissile){
  * @constructor
  */
 function WallSnapshot(aWall){
-    this.xCenter = aWall.xCenter;
-    this.yCenter = aWall.yCenter;
+    this.x = aWall.x;
+    this.y = aWall.y;
     this.direction = aWall.direction;
 }
 

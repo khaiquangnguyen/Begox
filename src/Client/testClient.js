@@ -1,5 +1,5 @@
-var WIDTH = 800;
-var HEIGHT = 800;
+var WIDTH = window.innerWidth - 30;
+var HEIGHT = window.innerHeight - 30;
 
 var WORLD_WIDTH = 1500;
 var WORLD_HEIGHT = 1500;
@@ -16,6 +16,7 @@ var stage = new PIXI.Container();
 stage.interactive = true;
 
 var circle = new PIXI.Graphics();
+var treeDrawer = new PIXI.Graphics();
 
 /**
  * The prototype for the Player object
@@ -36,8 +37,8 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
 
     // Attributes
     this.id = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
     this.canShoot  = true;
@@ -75,8 +76,8 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction, speed, c
     // Other stuffs
     this.shooterID = shooterID;
     this.id  = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
     this.direction = direction;
@@ -93,7 +94,7 @@ var drawMissile = function(missile, player) {
     missile.shape.clear();
     missile.shape.lineStyle(0);
     missile.shape.beginFill(missile.color, 0.5);
-    missile.shape.drawCircle(missile.xCenter - player.xCenter + WIDTH / 2, missile.yCenter - player.yCenter + HEIGHT / 2, missile.size);
+    missile.shape.drawCircle(missile.x - player.x + WIDTH / 2, missile.y - player.y + HEIGHT / 2, missile.size);
     missile.shape.endFill();
 };
 
@@ -130,7 +131,7 @@ var drawOther = function(other, player) {
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color, 0.5);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
+    other.shape.drawCircle(other.x - player.x + WIDTH / 2, other.y - player.y + HEIGHT / 2, other.size);
     other.shape.endFill();
 };
 
@@ -148,10 +149,10 @@ var drawTriangle = function(other, player) {
     dx1 = other.size * 2.5 * Math.cos(other.direction); dy1 = other.size * 2.5 * Math.sin(other.direction);
     dx2 = other.size * 2 * Math.cos(other.direction + OFFSET_P1); dy2 = other.size * 2 * Math.sin(other.direction + OFFSET_P1);
     dx3 = other.size * 2 * Math.cos(other.direction + OFFSET_P2); dy3 = other.size * 2 * Math.sin(other.direction + OFFSET_P2);
-    other.shape.moveTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx2 - player.xCenter + WIDTH / 2, other.yCenter + dy2 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx3 - player.xCenter + WIDTH / 2, other.yCenter + dy3 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.moveTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx2 - player.x + WIDTH / 2, other.y + dy2 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx3 - player.x + WIDTH / 2, other.y + dy3 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
     other.shape.endFill();
 };
 
@@ -168,11 +169,11 @@ var drawSquare = function(other, player) {
     dx2 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P1); dy2 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P1);
     dx3 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P2); dy3 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P2);
     dx4 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P3); dy4 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P3);
-    other.shape.moveTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx2 - player.xCenter + WIDTH / 2, other.yCenter + dy2 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx3 - player.xCenter + WIDTH / 2, other.yCenter + dy3 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx4 - player.xCenter + WIDTH / 2, other.yCenter + dy4 - player.yCenter + WIDTH / 2);
-    other.shape.lineTo(other.xCenter + dx1 - player.xCenter + WIDTH / 2, other.yCenter + dy1 - player.yCenter + WIDTH / 2);
+    other.shape.moveTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx2 - player.x + WIDTH / 2, other.y + dy2 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx3 - player.x + WIDTH / 2, other.y + dy3 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx4 - player.x + WIDTH / 2, other.y + dy4 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
     other.shape.endFill();
 };
 
@@ -197,7 +198,7 @@ var drawStuff = function(shape, player) {
     shape.clear();
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 1);
-    shape.drawRect(shape.x - player.xCenter + WIDTH / 2, shape.y - player.yCenter + HEIGHT / 2, 100, 100);
+    shape.drawRect(shape.x - player.x + WIDTH / 2, shape.y - player.y + HEIGHT / 2, 100, 100);
 };
 
 /**
@@ -211,15 +212,30 @@ var drawBorder = function(shape, player) {
     shape.clear();
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 0.10);
-    shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
+    shape.drawRect(- player.x + WIDTH / 2, HEIGHT / 2 - player.y, WORLD_WIDTH, WORLD_HEIGHT);
 };
+
+/**
+ * Update the tree
+ */
+function updateTree(tree)
+{
+    //todo: call clear
+
+    //tree = new QuadTree(bounds);
+    //tree.insert(circles);
+
+    tree.clear();
+    tree.insert(otherList);
+    tree.insert(bulletList);
+}
 
 var otherList = [];
 var bulletList = {};
 
 // Add a bunch of other stupid player doing some dumb things
 
-for (i = 0; i < 20; i++) {
+for (i = 0; i < 100; i++) {
     newX = Math.floor((Math.random() * WORLD_WIDTH) + 1);
     newY = Math.floor((Math.random() * WORLD_HEIGHT) + 1);
     newOther = new Player(12, newX, newY, 30, 'triangle', true, -1, 40);
@@ -227,7 +243,36 @@ for (i = 0; i < 20; i++) {
     stage.addChild(newOther.shape)
 }
 
+function renderQuad()
+{
+    treeDrawer.clear();
+    treeDrawer.lineStyle(2, 0xFFFFFF, 2);
+
+    drawNode(quadTree.root, nguoiChoi);
+}
+
+function drawNode(node,player)
+{
+    var bounds = node._bounds;
+
+    treeDrawer.drawRect(
+        Math.abs(bounds.x) + 0.5 - player.x + WIDTH / 2,
+        Math.abs(bounds.y) + 0.5 - player.y + HEIGHT / 2,
+        bounds.width,
+        bounds.height
+    );
+
+    var len = node.nodes.length;
+
+    for(var i = 0; i < len; i++)
+    {
+        drawNode(node.nodes[i],player);
+    }
+
+}
+
 var nguoiChoi = new Player(12, 200, 200, 30, 'triangle', true, -1, 40);
+otherList.push(nguoiChoi);
 
 var friction = 0.98,
     keys = [];
@@ -249,8 +294,15 @@ var border = new PIXI.Graphics();
 stage.addChild(nguoiChoi.shape);
 stage.addChild(rect);
 stage.addChild(rect2);
-stage.addChild(rect3);
 stage.addChild(border);
+stage.addChild(treeDrawer);
+stage.addChild(rect3);
+
+// QuadTree
+bounds = new PIXI.Rectangle(0,0, WORLD_WIDTH, WORLD_HEIGHT);
+quadTree = new QuadTree(bounds, true, 7, 4);
+
+console.log(quadTree);
 
 // run the render loop
 animate();
@@ -259,9 +311,10 @@ function animate() {
     //update
     updateMovement();
     updateBullet();
+    updateTree(quadTree);
+
 
     //num = 0;
-    drawSquare(nguoiChoi, nguoiChoi);
     drawOtherList(otherList, nguoiChoi);
     drawBulletList(bulletList, nguoiChoi);
 
@@ -271,6 +324,7 @@ function animate() {
     drawStuff(rect,nguoiChoi);
     drawStuff(rect2,nguoiChoi);
     drawStuff(rect3,nguoiChoi);
+    renderQuad();
 
     renderer.render(stage);
     window.setTimeout(function() {
@@ -304,31 +358,29 @@ function updateMovement() {
 
     // Calculate velocity
     nguoiChoi.velY *= friction;
-    nguoiChoi.yCenter += nguoiChoi.velY;
+    nguoiChoi.y += nguoiChoi.velY;
     nguoiChoi.velX *= friction;
-    nguoiChoi.xCenter += nguoiChoi.velX;
+    nguoiChoi.x += nguoiChoi.velX;
 
     // Calculate direction
     if ((nguoiChoi.velX == 0) && (nguoiChoi.velY == 0));
     else nguoiChoi.direction = Math.atan2(nguoiChoi.velY,nguoiChoi.velX);
-    console.log(nguoiChoi.direction);
-    console.log("velX: ", nguoiChoi.velX, "velY: ", nguoiChoi.velY);
 
     // Boundary check
-    if (nguoiChoi.xCenter > WORLD_WIDTH) {
-        nguoiChoi.xCenter = WORLD_WIDTH;
+    if (nguoiChoi.x > WORLD_WIDTH) {
+        nguoiChoi.x = WORLD_WIDTH;
         nguoiChoi.velX = 0;
     }
-    else if (nguoiChoi.xCenter < 0) {
-        nguoiChoi.xCenter = 0;
+    else if (nguoiChoi.x < 0) {
+        nguoiChoi.x = 0;
         nguoiChoi.velX = 0;
     }
-    if (nguoiChoi.yCenter > WORLD_HEIGHT) {
-        nguoiChoi.yCenter = WORLD_HEIGHT;
+    if (nguoiChoi.y > WORLD_HEIGHT) {
+        nguoiChoi.y = WORLD_HEIGHT;
         nguoiChoi.velY = 0;
     }
-    else if (nguoiChoi.yCenter < 0) {
-        nguoiChoi.yCenter = 0;
+    else if (nguoiChoi.y < 0) {
+        nguoiChoi.y = 0;
         nguoiChoi.velY = 0;
     }
 }
@@ -339,8 +391,8 @@ function updateMovement() {
  * @returns {boolean}
  */
 function bulletOutside(bullet) {
-    if ((bullet.xCenter > WORLD_WIDTH) || (bullet.yCenter < 0)) return true;
-    if ((bullet.yCenter > WORLD_HEIGHT) || (bullet.yCenter < 0)) return true;
+    if ((bullet.x > WORLD_WIDTH) || (bullet.y < 0)) return true;
+    if ((bullet.y > WORLD_HEIGHT) || (bullet.y < 0)) return true;
     return false;
 }
 
@@ -355,8 +407,8 @@ function updateBullet() {
             delete bulletList[key];
         }
         else {
-            bullet.xCenter += bullet.velX;
-            bullet.yCenter += bullet.velY;
+            bullet.x += bullet.velX;
+            bullet.y += bullet.velY;
         }
     }
 };
@@ -373,7 +425,7 @@ function click(e) {
     var xPosition = e.clientX;
     var yPosition = e.clientY;
     bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
-    newBullet = new Missile(nguoiChoi.id, bulletID, nguoiChoi.xCenter, nguoiChoi.yCenter, nguoiChoi.size * RATIO, "pellet", bulletAngle, 20, nguoiChoi.color);
+    newBullet = new Missile(nguoiChoi.id, bulletID, nguoiChoi.x, nguoiChoi.y, nguoiChoi.size * RATIO, "pellet", bulletAngle, 20, nguoiChoi.color);
     newBullet.velX = newBullet.speed * Math.cos(bulletAngle);
     newBullet.velY = newBullet.speed * Math.sin(bulletAngle);
 

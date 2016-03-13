@@ -10,8 +10,8 @@ function Player(aPlayer){
     this.color = aPlayer.color;
     // Attributes
     this.id = aPlayer.id;
-    this.xCenter = aPlayer.xCenter;
-    this.yCenter = aPlayer.yCenter;
+    this.x = aPlayer.x;
+    this.y = aPlayer.y;
     this.size = aPlayer.size;
     this.type = aPlayer.type;
     this.canShoot  = aPlayer.canShoot;
@@ -51,24 +51,24 @@ function inputProcessing(){
         }
     }
     mainPlayer.velY *= friction;
-    mainPlayer.yCenter += mainPlayer.velY;
+    mainPlayer.y += mainPlayer.velY;
     mainPlayer.velX *= friction;
-    mainPlayer.xCenter += mainPlayer.velX;
+    mainPlayer.x += mainPlayer.velX;
 
-    if (mainPlayer.xCenter > WORLD_WIDTH) {
-        mainPlayer.xCenter = WORLD_WIDTH;
+    if (mainPlayer.x > WORLD_WIDTH) {
+        mainPlayer.x = WORLD_WIDTH;
         mainPlayer.velX = 0;
     }
-    else if (mainPlayer.xCenter < 0) {
-        mainPlayer.xCenter = 0;
+    else if (mainPlayer.x < 0) {
+        mainPlayer.x = 0;
         mainPlayer.velX = 0;
     }
-    if (mainPlayer.yCenter > WORLD_HEIGHT) {
-        mainPlayer.yCenter = WORLD_HEIGHT;
+    if (mainPlayer.y > WORLD_HEIGHT) {
+        mainPlayer.y = WORLD_HEIGHT;
         mainPlayer.velY = 0;
     }
-    else if (mainPlayer.yCenter < 0) {
-        mainPlayer.yCenter = 0;
+    else if (mainPlayer.y < 0) {
+        mainPlayer.y = 0;
         mainPlayer.velY = 0;
     }
 }
@@ -244,7 +244,7 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color, 0.5);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
+    other.shape.drawCircle(other.x - player.x + WIDTH / 2, other.y - player.y + HEIGHT / 2, other.size);
     other.shape.endFill();
 };
 
@@ -268,7 +268,7 @@ var drawStuff = function(shape, player) {
     shape.clear();
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 1);
-    shape.drawRect(shape.x - player.xCenter + WIDTH / 2, shape.y - player.yCenter + HEIGHT / 2, 100, 100);
+    shape.drawRect(shape.x - player.x + WIDTH / 2, shape.y - player.y + HEIGHT / 2, 100, 100);
 };
 
 /**
@@ -282,7 +282,7 @@ var drawBorder = function(shape, player) {
     shape.clear();
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 0.10);
-    shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
+    shape.drawRect(- player.x + WIDTH / 2, HEIGHT / 2 - player.y, WORLD_WIDTH, WORLD_HEIGHT);
 };
 
 

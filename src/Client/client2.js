@@ -50,8 +50,8 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, speed){
 
     // Attributes
     this.id = id;
-    this.xCenter = xCenter;
-    this.yCenter = yCenter;
+    this.x = xCenter;
+    this.y = yCenter;
     this.size = size;
     this.type = type;
     this.canShoot  = true;
@@ -92,7 +92,7 @@ var drawCircle = function(shape){
     shape.clear();
     shape.lineStyle(0);
     shape.beginFill(this.color, 0.5);
-    shape.drawCircle(this.xCenter, this.yCenter, this.size);
+    shape.drawCircle(this.x, this.y, this.size);
     shape.endFill();
 };
 
@@ -105,7 +105,7 @@ var drawStuff = function(shape, player) {
     // draw a rounded rectangle
     shape.lineStyle(2, 0x0000FF, 1);
     shape.beginFill(0xFF700B, 1);
-    shape.drawRect(shape.x - player.xCenter + HEIGHT / 2, shape.y - player.yCenter + WIDTH / 2, 120, 120);
+    shape.drawRect(shape.x - player.x + HEIGHT / 2, shape.y - player.y + WIDTH / 2, 120, 120);
 };
 
 //var socket = io();
@@ -122,7 +122,7 @@ var drawStuff = function(shape, player) {
 //    //        this.shape.clear();
 //    //        this.shape.lineStyle(0);
 //    //        this.shape.beginFill(this.color, 0.5);
-//    //        this.shape.drawCircle(this.xCenter, this.yCenter, this.size);
+//    //        this.shape.drawCircle(this.x, this.y, this.size);
 //    //        this.shape.endFill();
 //    //}
 //});
@@ -191,14 +191,14 @@ function update(player) {
 }
 
     player.velY *= friction;
-    player.yCenter += player.velY;
+    player.y += player.velY;
     player.velX *= friction;
-    player.xCenter += player.velX;
+    player.x += player.velX;
 
-    if (player.xCenter > WORLD_WIDTH) player.xCenter = WORLD_WIDTH;
-    else if (player.xCenter < 0) player.xCenter = 0;
-    else if (player.yCenter > WORLD_HEIGHT) player.xCenter = WORLD_WIDTH;
-    else if (player.yCenter < 0) player.xCenter = WORLD_WIDTH;
+    if (player.x > WORLD_WIDTH) player.x = WORLD_WIDTH;
+    else if (player.x < 0) player.x = 0;
+    else if (player.y > WORLD_HEIGHT) player.x = WORLD_WIDTH;
+    else if (player.y < 0) player.x = WORLD_WIDTH;
 }
 
 document.body.addEventListener("keydown", function (e) {
