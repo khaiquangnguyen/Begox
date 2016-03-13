@@ -8,8 +8,6 @@ var walls = {};
 var inputs = {};
 var bulletSequenceNumber = 0;
 
-//library for collision detection
-//INITIATE SERVER
 var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
@@ -19,7 +17,7 @@ var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
 //start listening on the server
 http.listen(process.env.PORT || 3000, function(){
-    console.log('listening on port!',process.env.PORT || 3000);
+    console.log('listening on port ',process.env.PORT || 3000);
 });
 
 //fetch the client files back to any client connect to the server through port 3000
@@ -39,14 +37,12 @@ var connectionHandler = function(socket){
     //FUNCTION DEFINITION
     /**
      * The input
-     * @param newInput: input sent from client
      */
     var updateInputs = function(newInputPackage){
         inputs[socket.id].inputList.push(newInputPackage);
     };
     /**
      * When receive shoot message
-     * @param shootDirection: the direction of shoot
      */
     var shoot = function(bulletInfo){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen

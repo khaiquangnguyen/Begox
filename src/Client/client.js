@@ -188,10 +188,6 @@ function sendInputToServer(inputPackage){
 }
 
 
-
-
-// run the render loop
-
 function animate() {
     inputUpdate();
     drawMainPlayer(mainPlayer);
@@ -207,8 +203,6 @@ function animate() {
         requestAnimationFrame(animate)
     }, 10);
 }
-
-
 var border = new PIXI.Graphics();
 stage.addChild(border);
 
