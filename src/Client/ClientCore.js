@@ -83,6 +83,7 @@ function viewport()
  * @param player
  */
 var drawMainPlayer = function(player) {
+    player.shape.clear();
     player.shape.lineStyle(0);
     player.shape.beginFill(player.color, 0.5);
     player.shape.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
@@ -96,6 +97,7 @@ var drawMainPlayer = function(player) {
  * @param player
  */
 var drawWithRespectToMainPlayer = function(other, player) {
+    other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color);
     other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);

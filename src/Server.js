@@ -226,8 +226,6 @@ var serverUpdateLoop = function(){
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
  */
 function gamePhysicsLoop() {
-
-
     var now = Date.now();
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         //TODO use delta for movement

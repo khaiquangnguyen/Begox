@@ -51,13 +51,11 @@ Player.prototype.checkCollision = function(otherObjectBounds){
 Player.prototype.move = function(inputs) {
     "use strict";
     let playerInputs = inputs[this.id].inputList;
-    if(playerInputs.length == 0) {
-        var input = 0;
-    }
+    if(playerInputs.length == 0) return;
     else{
-        var input = playerInputs.shift();
-        inputs[this.id].lastProcess = input.sequenceNumber;
-        input = input.value;
+        var aInput = playerInputs.shift();
+        var input = aInput.value;
+        inputs[this.id].lastProcess = aInput.sequenceNumber;
     }
 
     if (input >= 8) {
@@ -83,13 +81,11 @@ Player.prototype.move = function(inputs) {
             this.velX--;
         }
     }
-
-    //this.velY *= FRICTION;
     this.xCenter += this.velX;
     this.yCenter += this.velY;
-    //this.velX *= FRICTION;
     this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
     this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
+    console.log(inputs[this.id].lastProcess, this.xCenter, this.yCenter);
 
 };
 
@@ -216,7 +212,6 @@ Missile.prototype.checkCollision = function(SAT,otherObjects){
     //TODO: check for different collision type
     for (let aObject of otherObjects){
         if (aObject != undefined) {
-            console.log(aObject.colBound);
             if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
                 if(aObject.id != this.shooterID) {
                     this.killSelf();
