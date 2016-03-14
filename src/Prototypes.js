@@ -2,6 +2,7 @@
  * Created by khainguyen on 3/4/2016.
  */
 
+"use strict";
 //PLAYER PROTOTYPE
 
 /**
@@ -188,10 +189,10 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,mis
 /**
  * the movement of the Missile
  */
-Missile.prototype.move = function(){
+Missile.prototype.move = function(SAT, potentialCollisionObjects){
     this.xCenter += Math.cos(this.direction) * this.speed | 0;
     this.yCenter += Math.sin(this.direction) * this.speed | 0;
-    if (this.checkCollision()){
+    if (this.checkCollision(SAT, potentialCollisionObjects)){
         //DO SOMETHING
     }
     this.distanceMoved += this.speed;
@@ -230,8 +231,8 @@ Missile.prototype.takeDamge = function(shooterID, damage){
  * The update is called every time the main game update the physics of the game.
  * @param deltaTime: the time elapsed between last update and this update
  */
-Missile.prototype.update = function(){
-    this.move();
+Missile.prototype.update = function(SAT, potentialCollisionObjects){
+    this.move(SAT, potentialCollisionObjects);
 };
 
 Missile.prototype.killSelf = function(){

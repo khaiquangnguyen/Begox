@@ -8,6 +8,7 @@
 
 
 "use strict";
+
 //dictionary of all players
 var players ={};
 //dictionary of all sockets
@@ -33,20 +34,8 @@ var fps = 60;
 var tickLengthMs = 1000/fps;
 //time of last physics update
 var previousTickPhysicsLoop = Date.now();
-//a circle to initiate all collision
-var circle = SAT.Circle;
-//a square
-var square = SAT.Polygon;
-//a triangle
-var triangle = SAT.Polygon;
 
-//QUAD TREE FOR SERVER
-var bounds = new Object();
-bounds.height = WORLD_HEIGHT;
-bounds.width = WORLD_WIDTH;
-bounds.xCenter = 0;
-bounds.yCenter = 0;
-var quadTree = new QuadTree(bounds, true, 7, 4);
+
 
 /**
  * Update the tree
@@ -68,8 +57,15 @@ var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
 var SAT = require('sat');
+var QT = require('./QuadTree.js');
 
-
+//QUAD TREE FOR SERVER
+var bounds = new Object();
+bounds.height = WORLD_HEIGHT;
+bounds.width = WORLD_WIDTH;
+bounds.xCenter = 0;
+bounds.yCenter = 0;
+var quadTree = new QT.QuadTree(bounds, true, 7, 4);
 
 //==============================================================
 
@@ -147,16 +143,16 @@ var connectionHandler = function(socket){
             switch(info.type){
                 case TRIANGLE_TYPE:
                     //TODO: change collision bound to triangle
-                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+                    var roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED,roundColBound);
                     break;
                 case SQUARE_TYPE:
                     //TODO: change collision bound to square
-                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+                    var roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED,roundColBound);
                     break;
                 default:
-                    let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+                    var roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
                     var aPlayer = new prototypes.Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED,roundColBound);
             }
             // add socket to socket dictionary

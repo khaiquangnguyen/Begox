@@ -30,13 +30,7 @@
  */
 
 
-/**
- * A QuadTree implementation in JavaScript, a 2d spatial subdivision algorithm.
- * @module QuadTree
- **/
-
-(function (window) {
-    "use strict";
+   "use strict";
 
     /****************** QuadTree ****************/
 
@@ -423,6 +417,5 @@
         //Object.getPrototypeOf(BoundsNode.prototype).clear.call(this);
     };
 
-    window.QuadTree = QuadTree;
+module.exports.QuadTree = QuadTree;
 
-}(window));
