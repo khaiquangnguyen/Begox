@@ -85,7 +85,7 @@ Player.prototype.move = function(inputs) {
     this.yCenter += this.velY;
     this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
     this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
-    console.log(inputs[this.id].lastProcess, this.xCenter, this.yCenter);
+    //console.log(inputs[this.id].lastProcess, this.xCenter, this.yCenter);
 
 };
 

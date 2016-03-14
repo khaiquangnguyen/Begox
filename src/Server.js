@@ -215,7 +215,7 @@ var serverUpdateLoop = function(){
         sendWorldSnapshotToAllClients();
         sendMainPlayerLocationToClients();
     }
-    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
+    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 39) {
         setTimeout(serverUpdateLoop);
     } else {
         setImmediate(serverUpdateLoop);

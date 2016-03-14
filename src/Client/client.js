@@ -93,10 +93,6 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
 });
 //
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
-    let oldX = mainPlayer.xCenter;
-    let oldY = mainPlayer.yCenter;
-    let oldVelX = mainPlayer.velX;
-    let oldVelY = mainPlayer.velY;
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
