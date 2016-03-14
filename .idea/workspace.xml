@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Prototypes.js" afterPath="$PROJECT_DIR$/src/Prototypes.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
     </list>
     <ignored path="Begox.iws" />
@@ -24,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Server.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Server.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.32295272">
-              <caret line="130" column="38" selection-start-line="130" selection-start-column="38" selection-end-line="130" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="93" column="67" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
               <folding />
             </state>
           </provider>
@@ -54,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Prototypes.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Prototypes.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Prototypes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.4014337">
+              <caret line="171" column="82" selection-start-line="171" selection-start-column="82" selection-end-line="171" selection-end-column="82" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -168,12 +169,12 @@
         <option value="$PROJECT_DIR$/src/Client/client2.js" />
         <option value="$PROJECT_DIR$/src/Client/index.html" />
         <option value="$PROJECT_DIR$/src/Client/ClientCore.js" />
-        <option value="$PROJECT_DIR$/src/Prototypes.js" />
         <option value="$PROJECT_DIR$/src/Utilities.js" />
         <option value="$PROJECT_DIR$/src/Client/Constants.js" />
         <option value="$PROJECT_DIR$/src/Client/client.js" />
         <option value="$PROJECT_DIR$/src/Client/QuadTree.js" />
         <option value="$PROJECT_DIR$/src/Server.js" />
+        <option value="$PROJECT_DIR$/src/Prototypes.js" />
       </list>
     </option>
   </component>
@@ -433,12 +434,6 @@
       <created>1456542677470</created>
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Merge branch 'master' of https://github.com/khaiquangnguyen/Begox&#10;&#10;Conflicts:&#10;&#9;node_modules/pixi.js/node_modules/async/package.json&#10;&#9;node_modules/pixi.js/package.json&#10;">
-      <created>1457585887284</created>
-      <option name="number" value="00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1457585887284</updated>
     </task>
     <task id="LOCAL-00019" summary="Update server/client connection">
       <created>1457587850998</created>
@@ -728,7 +723,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457913546264</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="update input processing server">
+      <created>1457913564059</created>
+      <option name="number" value="00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1457913564059</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1126,16 +1127,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Prototypes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1186,9 +1177,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32295272">
-          <caret line="130" column="38" selection-start-line="130" selection-start-column="38" selection-end-line="130" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="93" column="67" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Prototypes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4014337">
+          <caret line="171" column="82" selection-start-line="171" selection-start-column="82" selection-end-line="171" selection-end-column="82" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

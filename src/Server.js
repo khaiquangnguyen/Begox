@@ -89,9 +89,9 @@ var connectionHandler = function(socket){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
         // Also add bullet limit to player
         //TODO: Add triangle and square bullet type as well
-        let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+        let colBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
         missiles[bulletSequenceNumber] = new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
-            bulletInfo.direction,bulletInfo.speed,missiles);
+            bulletInfo.direction,bulletInfo.speed,missiles,colBound);
         players[socket.id].missileCount ++;
         //socket.emit("canShoot",bulletSequenceNumber);
         bulletSequenceNumber++;
@@ -125,12 +125,12 @@ var connectionHandler = function(socket){
                 case TRIANGLE_TYPE:
                     //TODO: change collision bound to triangle
                     let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
-                    var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED,roundColBound);
                     break;
                 case SQUARE_TYPE:
                     //TODO: change collision bound to square
                     let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
-                    var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
+                    var aPlayer = new prototypes.Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED,roundColBound);
                     break;
                 default:
                     let roundColBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
