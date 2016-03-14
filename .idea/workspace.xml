@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -477,12 +476,6 @@
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
     </task>
-    <task id="LOCAL-00029" summary="update input processing server">
-      <created>1457764847953</created>
-      <option name="number" value="00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1457764847953</updated>
-    </task>
     <task id="LOCAL-00030" summary="update input processing server">
       <created>1457765162755</created>
       <option name="number" value="00030" />
@@ -771,7 +764,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457998916389</updated>
     </task>
-    <option name="localTasksCounter" value="78" />
+    <task id="LOCAL-00078" summary="update input processing server">
+      <created>1457999509723</created>
+      <option name="number" value="00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1457999509723</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="ToolWindowManager">
