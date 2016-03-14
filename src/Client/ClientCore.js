@@ -1,13 +1,3 @@
-/**
- * Created by khainguyen on 3/13/2016.
- */
-//=============================================================================
-
-/* BASIC FUNCTIONS */
-
-//=============================================================================
-
-
 "use strict";
 /**
  * Client version of player. Add shape attribute
@@ -93,11 +83,12 @@ function viewport()
  * @param player
  */
 var drawMainPlayer = function(player) {
-    player.shape.clear();
-    player.shape.lineStyle(0);
-    player.shape.beginFill(player.color, 0.5);
-    player.shape.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
-    player.shape.endFill();
+    worldDrawer.lineStyle(0);
+    worldDrawer.beginFill(player.color, 0.5);
+    worldDrawer.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
+    worldDrawer.endFill();
+    var img = new PIXI.Sprite(worldDrawer.generateTexture());
+    container.addChild(img);
 };
 
 /**
@@ -107,11 +98,11 @@ var drawMainPlayer = function(player) {
  * @param player
  */
 var drawWithRespectToMainPlayer = function(other, player) {
-    other.shape.clear();
-    other.shape.lineStyle(0);
-    other.shape.beginFill(other.color, 0.5);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
-    other.shape.endFill();
+    worldDrawer.lineStyle(0);
+    worldDrawer.beginFill(other.color);
+    worldDrawer.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
+    worldDrawer.endFill();
+
 };
 
 /**
@@ -158,4 +149,3 @@ function gamePhysicsLoop() {
     }, 10);
 
 }
-

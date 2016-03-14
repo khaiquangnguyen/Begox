@@ -8,6 +8,24 @@ var walls = {};
 var inputs = {};
 var bulletSequenceNumber = 0;
 
+//QUAD TREE FOR SERVER
+var bounds = new Object();
+bounds.height = WORLD_HEIGHT;
+bounds.width = WORLD_WIDTH;
+bounds.xCenter = 0;
+bounds.yCenter = 0;
+var quadTree = new QuadTree(bounds, true, 7, 4);
+
+/**
+ * Update the tree
+ */
+function updateTree()
+{
+    quadTree.clear();
+    quadTree.insert(players);
+    quadTree.insert(missiles);
+}
+
 //library for collision detection
 //INITIATE SERVER
 var express = require('express');
@@ -24,8 +42,6 @@ http.listen(process.env.PORT || 3000, function(){
 
 //fetch the client files back to any client connect to the server through port 3000
 app.use(express.static(__dirname + '/Client'));
-
-
 
 /********************************************************************/
 
@@ -177,6 +193,12 @@ var previousTickPhysicsLoop = Date.now();
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
  */
 function gamePhysicsLoop() {
+
+    // Update QuadTree
+    updateTree();
+
+    // Do other stufds
+
     var now = Date.now();
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         //TODO use delta for movement
@@ -193,7 +215,6 @@ function gamePhysicsLoop() {
 }
 
 gamePhysicsLoop();
-
 
 var sendMainPlayerLocationToClients = function(){
     for (let keySocket in sockets){
@@ -234,6 +255,7 @@ var takeWorldSnapshot = function(socketID){
 
 function updateAllPlayers(){
     for (let playerKey in players){
+        var potentialCollision = quadTree.retrieve(players[playerKey]);
         players[playerKey].update(inputs);
     }
 }
