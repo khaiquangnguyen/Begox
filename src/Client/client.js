@@ -107,7 +107,6 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
             inputs.shift();
         }
     }
-
     //process pending input
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
@@ -196,9 +195,7 @@ function animate() {
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
-    }, 15);
-    //setTimeout(requestAnimationFrame(animate));
-    //requestAnimationFrame(animate);
+    }, 5);
 }
 var border = new PIXI.Graphics();
 stage.addChild(border);
