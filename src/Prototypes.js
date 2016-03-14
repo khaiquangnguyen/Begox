@@ -224,7 +224,7 @@ Missile.prototype.checkCollision = function(SAT,otherObjects){
 
 Missile.prototype.takeDamge = function(shooterID, damage){
     this.killSelf();
-}
+};
 
 /**
  * The update is called every time the main game update the physics of the game.
