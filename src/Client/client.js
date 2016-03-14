@@ -93,7 +93,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
         stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
-    if (worldSnapshots.length > 60) worldSnapshots.shift();
+    if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
@@ -152,8 +152,6 @@ function inputProcessing(aInput){
             mainPlayer.velX--;
         }
     }
-    //mainPlayer.velY *= friction;
-    //mainPlayer.velX *= friction;
     mainPlayer.xCenter += mainPlayer.velX;
     mainPlayer.yCenter += mainPlayer.velY;
     mainPlayer.xCenter = (mainPlayer.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
@@ -187,11 +185,6 @@ function sendInputToServer(inputPackage){
     socket.emit('updateInput', inputPackage);
 }
 
-
-
-
-// run the render loop
-
 function animate() {
     inputUpdate();
     drawMainPlayer(mainPlayer);
@@ -207,8 +200,6 @@ function animate() {
         requestAnimationFrame(animate)
     }, 10);
 }
-
-
 var border = new PIXI.Graphics();
 stage.addChild(border);
 
