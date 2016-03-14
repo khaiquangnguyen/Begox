@@ -83,12 +83,10 @@ function viewport()
  * @param player
  */
 var drawMainPlayer = function(player) {
-    worldDrawer.lineStyle(0);
-    worldDrawer.beginFill(player.color, 0.5);
-    worldDrawer.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
-    worldDrawer.endFill();
-    var img = new PIXI.Sprite(worldDrawer.generateTexture());
-    container.addChild(img);
+    player.shape.lineStyle(0);
+    player.shape.beginFill(player.color, 0.5);
+    player.shape.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
+    player.shape.endFill();
 };
 
 /**
@@ -98,10 +96,10 @@ var drawMainPlayer = function(player) {
  * @param player
  */
 var drawWithRespectToMainPlayer = function(other, player) {
-    worldDrawer.lineStyle(0);
-    worldDrawer.beginFill(other.color);
-    worldDrawer.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
-    worldDrawer.endFill();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color);
+    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
+    other.shape.endFill();
 
 };
 
