@@ -67,7 +67,7 @@ var io = require('socket.io')(http);
 var utilities = require('./Utilities.js');
 var prototypes = require('./Prototypes.js');
 var constants = require('./Client/Constants.js');
-var sat = require('sat');
+var SAT = require('sat');
 
 
 
