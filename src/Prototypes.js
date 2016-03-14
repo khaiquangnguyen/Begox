@@ -51,13 +51,11 @@ Player.prototype.checkCollision = function(otherObjectBounds){
 Player.prototype.move = function(inputs) {
     "use strict";
     let playerInputs = inputs[this.id].inputList;
-    if(playerInputs.length == 0) {
-        var input = 0;
-    }
+    if(playerInputs.length == 0) return;
     else{
-        var input = playerInputs.shift();
-        inputs[this.id].lastProcess = input.sequenceNumber;
-        input = input.value;
+        var aInput = playerInputs.shift();
+        var input = aInput.value;
+        inputs[this.id].lastProcess = aInput.sequenceNumber;
     }
 
     if (input >= 8) {
@@ -83,13 +81,11 @@ Player.prototype.move = function(inputs) {
             this.velX--;
         }
     }
-
-    //this.velY *= FRICTION;
     this.xCenter += this.velX;
     this.yCenter += this.velY;
-    //this.velX *= FRICTION;
     this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
     this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
+    //console.log(inputs[this.id].lastProcess, this.xCenter, this.yCenter);
 
 };
 
@@ -111,10 +107,11 @@ Player.prototype.updateHP = function(amountChange){
  */
 Player.prototype.killSelf = function(){
     // killed by anything, the reward go to the last killer
-    if(this.lastEnemy != null){
-        this.lastEnemy.getRewardForKill(this.size);
-    }
-    killPlayer(this);
+    //if(this.lastEnemy != null){
+    //    console.log(this.lastEnemy);
+    //    this.lastEnemy.getRewardForKill(this.size);
+    //}
+    //killPlayer(this);
 };
 
 
@@ -136,8 +133,8 @@ Player.prototype.getRewardForKill = function(rewardAmount){
  * @param shooter: the player who inflicts the damage to the current player
  * @param damage: the amount of damage taken
  */
-Player.prototype.takeDamage = function(shooter, damage){
-    this.lastEnemy = shooter;
+Player.prototype.takeDamage = function(shooterID, damage){
+    //this.lastEnemy = players[shooterID];
     this.updateHP(-damage);
 };
 
@@ -212,12 +209,16 @@ Missile.prototype.dealDamage = function(target){
  * return true of collide with anything
  */
 Missile.prototype.checkCollision = function(SAT,otherObjects){
-    //TODO: check for different collsion type
+    //TODO: check for different collision type
     for (let aObject of otherObjects){
-        if (SAT.testCircleCircle(this.colBound,aObject.colBound)) {
-            this.killSelf();
-            aObject.takeDamage(this.shooterID,this.size);
-            return true;
+        if (aObject != undefined) {
+            if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
+                if(aObject.id != this.shooterID) {
+                    this.killSelf();
+                }
+                aObject.takeDamage(this.shooterID, this.size);
+                return true;
+            }
         }
     }
     return false;

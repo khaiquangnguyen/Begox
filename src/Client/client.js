@@ -76,10 +76,6 @@ socket.on('playerCreated',function(aPlayer){
     //gamePhysicsLoop();
 });
 
-socket.on('input',function(aInput){
-    inputs.push(aInput);
-});
-
 socket.on('worldSnapshot',function(aWorldSnapshot){
     stage.removeChildren();
     stage.addChild(mainPlayer.shape);
@@ -95,14 +91,13 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     worldSnapshots.push(aWorldSnapshot);
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
-
+//
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
-    if(lastSequenceNumber == -1) return;
-    //discard until last sequence number
+    console.log("receive from server:" ,lastSequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs[0];
@@ -115,6 +110,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     //process pending input
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
+        console.log("process ",aInputPackage.sequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     }
 });
 
@@ -151,6 +147,7 @@ function inputProcessing(aInput){
         if (mainPlayer.velX > -mainPlayer.maxSpeed) {
             mainPlayer.velX--;
         }
+        aInput -= 1;
     }
     mainPlayer.xCenter += mainPlayer.velX;
     mainPlayer.yCenter += mainPlayer.velY;
@@ -176,6 +173,7 @@ function inputUpdate() {
         aInput += 8;
     }
     inputProcessing(aInput);
+    console.log("client direct input:", inputSequenceNumber,mainPlayer.xCenter, mainPlayer.yCenter);
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
@@ -192,13 +190,12 @@ function animate() {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
         drawMissiles(worldSnapshots[worldSnapshots.length -1].missiles,mainPlayer);
     }
-
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
-    }, 10);
+    }, 5);
 }
 var border = new PIXI.Graphics();
 stage.addChild(border);

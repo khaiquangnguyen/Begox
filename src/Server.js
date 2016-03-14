@@ -43,8 +43,10 @@ var previousTickPhysicsLoop = Date.now();
 function updateTree()
 {
     quadTree.clear();
-    quadTree.insert(players);
-    quadTree.insert(missiles);
+    for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
+    //quadTree.insert(players);
+    for (let aMissileKey in missiles) quadTree.insert(players[aMissileKey]);
+    //quadTree.insert(missiles);
 }
 
 //library for collision detection
@@ -108,7 +110,7 @@ var connectionHandler = function(socket){
         //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
         // Also add bullet limit to player
         //TODO: Add triangle and square bullet type as well
-        let colBound = new SAT.Circle(new SAT.Vector(x,y),CIRCLE_SIZE);
+        let colBound = new SAT.Circle(new SAT.Vector(bulletInfo.x,bulletInfo.y),CIRCLE_SIZE);
         missiles[bulletSequenceNumber] = new prototypes.Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
             bulletInfo.direction,bulletInfo.speed,missiles,colBound);
         players[socket.id].missileCount ++;
@@ -202,17 +204,6 @@ var connectionHandler = function(socket){
     socket.on('disconnect',disconnect);
 };
 
-
-//socket.io job
-io.on('connection', connectionHandler);
-
-//the number of time server sends world snapshot to clients
-var numUpdate = 25;
-//the time between two server update
-var timeBetweenUpdate = 1000/numUpdate;
-//time of the last server update
-var previousTickServerLoop = Date.now();
-
 /**
  * The game server update loop, which will take a snapshot of the world and sent it to the players.
  */
@@ -224,35 +215,22 @@ var serverUpdateLoop = function(){
         sendWorldSnapshotToAllClients();
         sendMainPlayerLocationToClients();
     }
-    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 38) {
+    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 39) {
         setTimeout(serverUpdateLoop);
     } else {
         setImmediate(serverUpdateLoop);
     }
 };
 
-serverUpdateLoop();
-
-//the standard fps of the physics loop = 60
-var fps = 60;
-//time between 2 physics update
-var tickLengthMs = 1000/fps;
-//time of last physics update
-var previousTickPhysicsLoop = Date.now();
 /**
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
  */
 function gamePhysicsLoop() {
-
-    // Update QuadTree
-    updateTree();
-
-    // Do other stufds
-
     var now = Date.now();
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
         //TODO use delta for movement
         previousTickPhysicsLoop = now;
+        updateTree();
         updateGamePhysics();
     }
     if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
@@ -274,11 +252,16 @@ var sendMainPlayerLocationToClients = function() {
  * Update the physics of all object in the game
  */
 function updateGamePhysics(){
+    var potentialCollision;
     for (let playerKey in players){
-        players[playerKey].update(inputs);
+        potentialCollision = quadTree.retrieve(players[playerKey]);
+        players[playerKey].update(inputs,potentialCollision);
+
     }
     for (let aMissileKey in missiles){
-        missiles[aMissileKey].update();
+        potentialCollision = quadTree.retrieve(players[aMissileKey]);
+        missiles[aMissileKey].update(SAT,potentialCollision);
+
     }
 }
 
@@ -321,18 +304,6 @@ var takeWorldSnapshot = function(socketID){
     if (worldSnapshots[socketID].length > MAX_WORLD_SNAPSHOT) worldSnapshots[socketID].shift();
     return aWorldSnapshot;
 };
-
-function updateAllPlayers(){
-    for (let playerKey in players){
-        var potentialCollision = quadTree.retrieve(players[playerKey]);
-        players[playerKey].update(inputs);
-    }
-}
-function updateAllMissile(){
-    for (let aMissileKey in missiles){
-        missiles[aMissileKey].update();
-    }
-}
 
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
