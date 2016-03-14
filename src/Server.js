@@ -1,4 +1,5 @@
 
+"use strict";
 
 //============================================================
 
@@ -7,8 +8,8 @@
 //============================================================
 
 
-"use strict";
-//PLAYER PROTOTYPE
+
+//------------------PLAYER PROTOTYPE-------------------------
 
 /**
  * The prototype for the Player object
@@ -143,8 +144,9 @@ Player.prototype.takeDamage = function(shooterID, damage){
     this.updateHP(-damage);
 };
 
-/**********************************************************/
-//MISSILE PROTOTYPES
+
+
+//---------------------------MISSILE PROTOTYPES--------------------------
 
 
 /**
@@ -235,8 +237,8 @@ Missile.prototype.killSelf = function(){
     delete (missiles[this.id]);
 };
 
-/************************************************************/
-//WALL PROTOTYPE
+
+//------------------------WALL PROTOTYPE----------------------------------
 
 
 function Wall(id, xCenter, yCenter, size, type){
@@ -264,6 +266,9 @@ Wall.prototype.render = function(){
     //FINISH CODE HERE
 };
 
+
+
+//-------------------------INPUTS and SNAPSHOT--------------------------------
 function Input(id){
     this.id = id;
     this.inputList = [];
@@ -318,28 +323,25 @@ function WallSnapshot(aWall){
     this.color = aWall.color;
 }
 
+/**
+ * The structure of a input stored in the inputs
+ * @param sequenceNumber: the number of the input
+ * @param value: the value of the input
+ * @constructor
+ */
 function InputPackage(sequenceNumber,value){
     this.sequenceNumber = sequenceNumber;
     this.value = value;
 }
 
 
-module.exports.Input = Input;
-module.exports.Player = Player;
-module.exports.Missile = Missile;
-module.exports.Wall = Wall;
-module.exports.WorldSnapshot = WorldSnapshot;
-module.exports.PlayerSnapshot = PlayerSnapshot;
-module.exports.MissileSnapshot = MissileSnapshot;
-module.exports.InputPackage = InputPackage;
+
 //===========================================================
 
 //GLOBAL VARIABLE DECLARATION
 
 //==========================================================
 
-
-"use strict";
 
 //dictionary of all players
 var players ={};
@@ -368,20 +370,6 @@ var tickLengthMs = 1000/fps;
 var previousTickPhysicsLoop = Date.now();
 
 
-
-/**
- * Update the tree
- */
-function updateTree()
-{
-    quadTree.clear();
-    for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
-    //quadTree.insert(players);
-    for (let aMissileKey in missiles) quadTree.insert(players[aMissileKey]);
-    //quadTree.insert(missiles);
-}
-
-//library for collision detection
 //INITIATE SERVER
 var express = require('express');
 var app = require('express')();
@@ -399,6 +387,7 @@ bounds.width = WORLD_WIDTH;
 bounds.xCenter = 0;
 bounds.yCenter = 0;
 var quadTree = new QT.QuadTree(bounds, true, 7, 4);
+
 
 //==============================================================
 
@@ -574,8 +563,8 @@ function updateGamePhysics(){
     }
     for (let aMissileKey in missiles){
         missiles[aMissileKey].update();
-
     }
+
 }
 
 var sendWorldSnapshotToAllClients = function() {
@@ -613,6 +602,18 @@ var takeWorldSnapshot = function(socketID){
     if (worldSnapshots[socketID].length > MAX_WORLD_SNAPSHOT) worldSnapshots[socketID].shift();
     return aWorldSnapshot;
 };
+
+/**
+ * Update the tree
+ */
+function updateTree()
+{
+    quadTree.clear();
+    for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
+    //quadTree.insert(players);
+    for (let aMissileKey in missiles) quadTree.insert(players[aMissileKey]);
+    //quadTree.insert(missiles);
+}
 
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
