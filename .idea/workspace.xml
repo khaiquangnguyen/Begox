@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Prototypes.js" afterPath="$PROJECT_DIR$/src/Prototypes.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -437,12 +434,6 @@
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
     </task>
-    <task id="LOCAL-00024" summary="Update server/client connection">
-      <created>1457666404075</created>
-      <option name="number" value="00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1457666404075</updated>
-    </task>
     <task id="LOCAL-00025" summary="Update server/client connection">
       <created>1457669632018</created>
       <option name="number" value="00025" />
@@ -731,7 +722,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457936495776</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="update input processing server">
+      <created>1457936862246</created>
+      <option name="number" value="00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1457936862246</updated>
+    </task>
+    <option name="localTasksCounter" value="74" />
     <servers />
   </component>
   <component name="ToolWindowManager">
