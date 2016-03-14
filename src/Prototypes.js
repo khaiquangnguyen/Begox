@@ -16,7 +16,7 @@
  * @param direction: the current direction of the Player
  * @param maxSpeed: the speed of the Player
  */
-function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed){
+function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed,colBound){
     // Shape
     this.color = 0xFFFF0B;
     // Attributes
@@ -32,13 +32,15 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
     this.velY = 0;
     this.missileCount = 0;
     this.lastEnemy = null;
+    this.colBound = colBound;
 }
 
 /**
  * Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false.
  */
-Player.prototype.checkCollision = function(){
+Player.prototype.checkCollision = function(otherObjectBounds){
     //FINISH WRITING CODE
+
     return true;
 };
 
@@ -85,7 +87,6 @@ Player.prototype.move = function(inputs) {
     this.xCenter += this.velX;
     this.yCenter += this.velY;
     //this.velX *= FRICTION;
-
     this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
     this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
 
@@ -168,7 +169,7 @@ Player.prototype.render = function(){
  * @param direction: the direction of the Missile's movement
  * @param speed: the speed of the Player
  */
-function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,missiles){
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,missiles,colBound){
     this.shooterID = shooterID;
     this.id  = id;
     this.xCenter = xCenter;
@@ -180,7 +181,9 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,mis
     this.distanceMoved = 0;
     //a reference to the list holding this missile for easier remove
     this.missiles = missiles;
+    this.colBound = colBound;
 }
+
 
 /**
  * the movement of the Missile
