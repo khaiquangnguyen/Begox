@@ -29,7 +29,7 @@
         <entry file="file://$PROJECT_DIR$/src/Server.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="93" column="67" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
+              <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -58,8 +58,8 @@
       <file leaf-file-name="Prototypes.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Prototypes.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4014337">
-              <caret line="171" column="82" selection-start-line="171" selection-start-column="82" selection-end-line="171" selection-end-column="82" />
+            <state vertical-scroll-proportion="0.57347673">
+              <caret line="222" column="2" selection-start-line="222" selection-start-column="2" selection-end-line="222" selection-end-column="2" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -145,7 +145,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="requireModule" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
   </component>
@@ -435,12 +435,6 @@
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
     </task>
-    <task id="LOCAL-00019" summary="Update server/client connection">
-      <created>1457587850998</created>
-      <option name="number" value="00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1457587850998</updated>
-    </task>
     <task id="LOCAL-00020" summary="Update server/client connection">
       <created>1457589581814</created>
       <option name="number" value="00020" />
@@ -729,7 +723,13 @@
       <option name="project" value="LOCAL" />
       <updated>1457913564059</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="update input processing server">
+      <created>1457913831035</created>
+      <option name="number" value="00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1457913831035</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1178,15 +1178,15 @@
     <entry file="file://$PROJECT_DIR$/src/Server.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="93" column="67" selection-start-line="93" selection-start-column="67" selection-end-line="93" selection-end-column="67" />
+          <caret line="52" column="25" selection-start-line="52" selection-start-column="25" selection-end-line="52" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Prototypes.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4014337">
-          <caret line="171" column="82" selection-start-line="171" selection-start-column="82" selection-end-line="171" selection-end-column="82" />
+        <state vertical-scroll-proportion="0.57347673">
+          <caret line="222" column="2" selection-start-line="222" selection-start-column="2" selection-end-line="222" selection-end-column="2" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
