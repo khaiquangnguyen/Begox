@@ -73,7 +73,7 @@ function viewport()
 
 //=============================================================================
 
-/* DRAWING FUNCTIONS */
+/* PLAYERS AND MISSILES FUNCTIONS */
 
 //=============================================================================
 
@@ -85,7 +85,7 @@ function viewport()
 var drawMainPlayer = function(player) {
     player.shape.clear();
     player.shape.lineStyle(0);
-    player.shape.beginFill(player.color, 0.5);
+    player.shape.beginFill(player.color);
     player.shape.drawCircle(WIDTH / 2, HEIGHT / 2, player.size);
     player.shape.endFill();
 };
@@ -103,6 +103,47 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
     other.shape.endFill();
 
+};
+
+
+/**
+ * Draw a triangular object
+ * @param other
+ * @param player
+ */
+var drawTriangle = function(other, player) {
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color);
+    let dx1 = other.size * 2.5 * Math.cos(other.direction); let dy1 = other.size * 2.5 * Math.sin(other.direction);
+    let dx2 = other.size * 2 * Math.cos(other.direction + OFFTRIANGLE_P1); let dy2 = other.size * 2 * Math.sin(other.direction + OFFTRIANGLE_P1);
+    let dx3 = other.size * 2 * Math.cos(other.direction + OFFTRIANGLE_P2); let dy3 = other.size * 2 * Math.sin(other.direction + OFFTRIANGLE_P2);
+    other.shape.moveTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx2 - player.x + WIDTH / 2, other.y + dy2 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx3 - player.x + WIDTH / 2, other.y + dy3 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.endFill();
+};
+
+/**
+ * Draw a square of object
+ * @param other
+ * @param player
+ */
+var drawSquare = function(other, player) {
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color);
+    let dx1 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P0); let dy1 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P0);
+    let dx2 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P1); let dy2 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P1);
+    let dx3 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P2); let dy3 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P2);
+    let dx4 = other.size * 2 * Math.cos(other.direction + OFFSQUARE_P3); let dy4 = other.size * 2 * Math.sin(other.direction + OFFSQUARE_P3);
+    other.shape.moveTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx2 - player.x + WIDTH / 2, other.y + dy2 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx3 - player.x + WIDTH / 2, other.y + dy3 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx4 - player.x + WIDTH / 2, other.y + dy4 - player.y + WIDTH / 2);
+    other.shape.lineTo(other.x + dx1 - player.x + WIDTH / 2, other.y + dy1 - player.y + WIDTH / 2);
+    other.shape.endFill();
 };
 
 /**
@@ -135,6 +176,98 @@ var drawBorder = function(shape, player) {
     shape.drawRect(- player.xCenter + WIDTH / 2, HEIGHT / 2 - player.yCenter, WORLD_WIDTH, WORLD_HEIGHT);
 };
 
+//=============================================================================
+
+/* BACKGROUND FUNCTIONS */
+
+//=============================================================================
+
+/* create a tiling sprite ...
+ * requires a texture, a width and a height
+ */
+
+
+function updateBackground() {
+    background.tilePosition.x = -mainPlayer.xCenter + WIDTH / 2;
+    background.tilePosition.y = -mainPlayer.yCenter + HEIGHT / 2;
+}
+
+//=============================================================================
+
+/* HEX-BASED FUNCTION */
+
+//=============================================================================
+
+/**
+ * Create a hex array which is a map of locations that contain hex obstacle
+ * @returns {Array}
+ */
+function createHexMap() {
+
+    // Create a hex array
+    var hexArray = new Array(NUM_HEX_HEIGHT);
+    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
+        hexArray[i] = new Array(NUM_HEX_WIDTH);
+    }
+
+    // Randomize hex array
+    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
+        for (let j = 0; j < NUM_HEX_WIDTH; j++) {
+            if (Math.random() < HEX_DENSITY) {
+                hexArray[i][j] = 1;
+            }
+        }
+    }
+
+    // Return the hexArray
+    return hexArray;
+}
+
+/**
+ * Generate sprites of HexSprite according to the hex-map
+ * @param hexMap
+ * @param hexContainer
+ */
+function createHexSprites(hexMap, hexContainer, hexArray) {
+    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
+        for (let j = 0; j < NUM_HEX_WIDTH; j++) {
+            if (hexMap[i][j] == 1) {
+                // create a new Sprite
+                var hexObstacle = PIXI.Sprite.fromImage(HEX_BASE);
+
+                // set the anchor point so the texture is center on the sprite
+
+                // Set scale and position
+                hexObstacle.scale.set(HEX_SCALE);
+                hexObstacle.xPosition = i * TILE_WIDTH + j % 2 * TILE_WIDTH / 2;
+                hexObstacle.yPosition = Math.floor(j/2) * TILE_HEIGHT + j % 2 * HEX_HEIGHT * 3 / 4;
+
+                // Add to hex container and to hex_map for easier reference later
+                hexContainer.addChild(hexObstacle);
+                hexArray.push(hexObstacle);
+            }
+        }
+    }
+}
+
+/**
+ * Update the sprite position according to player position
+ * @param hexContainer
+ * @param player
+ */
+function updateHexSprites(hexArray, player) {
+    for (let hexBase of hexArray) {
+        hexBase.x = hexBase.xPosition - player.xCenter + WIDTH/2;
+        hexBase.y = hexBase.yPosition - player.yCenter + HEIGHT/2;
+    }
+}
+
+//=============================================================================
+
+/* GAME PHYSICS LOOP */
+
+//=============================================================================
+
 /**
  * The game physics loop, which handle all of the physics of the game such as movement, collision, input, etc...
  */
@@ -147,22 +280,4 @@ function gamePhysicsLoop() {
     window.setTimeout(function() {
         gamePhysicsLoop();
     }, 10);
-}
-
-///////////////////////////
-// TILING SPRITE
-///////////////////////////
-// create a texture from an image path
-
-
-
-/* create a tiling sprite ...
- * requires a texture, a width and a height
- * in WebGL the image size should preferably be a power of two
- */
-
-
-function updateBackground() {
-    background.tilePosition.x = -mainPlayer.xCenter + WORLD_WIDTH / 2;
-    background.tilePosition.y = -mainPlayer.yCenter + WORLD_HEIGHT / 2;
 }

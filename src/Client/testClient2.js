@@ -245,7 +245,7 @@ var bulletList = {};
 ///////////////////////////
 // create a texture from an image path
 
-var texture = PIXI.Texture.fromImage('Texture.png');
+var texture = PIXI.Texture.fromImage(BACKGROUND_TEXTURE);
 
 /* create a tiling sprite ...
  * requires a texture, a width and a height

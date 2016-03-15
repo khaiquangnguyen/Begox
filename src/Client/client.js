@@ -25,9 +25,6 @@ var friction = FRICTION;
 
 var inputSequenceNumber = 0;
 
-var WORLD_WIDTH = 1500;
-var WORLD_HEIGHT = 1500;
-
 var inputs = [];
 var mainPlayer;
 var otherPlayers = {};
@@ -35,7 +32,6 @@ var bulletList = {};
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
 var keys = {};
-var texture = PIXI.Texture.fromImage('Texture.png');
 //the standard fps of the physics loop = 60
 var fps = 60;
 //time between 2 physics update
@@ -50,10 +46,30 @@ var canvas = document.getElementById('canvas');
 
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
-var renderer = PIXI.autoDetectRenderer(WIDTH,HEIGHT,{view:canvas,antialias: true });
+var renderer = PIXI.autoDetectRenderer(WIDTH,HEIGHT,{view:canvas, antialias: true });
+
+// Background stuffs
+var texture = PIXI.Texture.fromImage(BACKGROUND_TEXTURE);
 var background = new PIXI.extras.TilingSprite(texture, renderer.width, renderer.height);
-background.tileScale.x = 1/4;
-background.tileScale.y = 1/4;
+background.tileScale.x = 1/3;
+background.tileScale.y = 1/3;
+
+// Hex-based particle container
+var hexContainer = new PIXI.ParticleContainer(10000, {
+    scale: true,
+    position: true,
+    rotation: false,
+    uvs: false,
+    alpha: true});
+
+var hexMap = createHexMap(); hexMap[0][0] = 1;
+var hexArray = [];
+createHexSprites(hexMap, hexContainer, hexArray);
+
+console.log(hexContainer);
+console.log(hexArray);
+console.log(hexMap);
+
 // create the root of the scene graph
 var stage = new PIXI.Container();
 stage.interactive = true;
@@ -81,8 +97,9 @@ socket.on('playerCreated',function(aPlayer){
 socket.on('worldSnapshot',function(aWorldSnapshot){
     stage.removeChildren();
     stage.addChild(background);
+    stage.addChild(hexContainer);
     stage.addChild(mainPlayer.shape);
-    stage.addChild(border);
+    //stage.addChild(border);
     for (let aPlayer of aWorldSnapshot.players){
         aPlayer.shape = new PIXI.Graphics();
         stage.addChild(aPlayer.shape);
@@ -100,7 +117,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
-    console.log("receive from server:" ,lastSequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
+    //console.log("receive from server:" ,lastSequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs[0];
@@ -113,7 +130,7 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     //process pending input
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
-        console.log("process ",aInputPackage.sequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
+        //console.log("process ",aInputPackage.sequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     }
 });
 
@@ -176,7 +193,7 @@ function inputUpdate() {
         aInput += 8;
     }
     inputProcessing(aInput);
-    console.log("client direct input:", inputSequenceNumber,mainPlayer.xCenter, mainPlayer.yCenter);
+    //console.log("client direct input:", inputSequenceNumber,mainPlayer.xCenter, mainPlayer.yCenter);
     let inputPackage =  new input(inputSequenceNumber++,aInput);
     inputs.push(inputPackage);
     sendInputToServer(inputPackage);
@@ -187,8 +204,13 @@ function sendInputToServer(inputPackage){
 }
 
 function animate() {
+
+    // Update info
     inputUpdate();
     updateBackground();
+    updateHexSprites(hexArray, mainPlayer);
+
+    // Draw players and stuffs
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);

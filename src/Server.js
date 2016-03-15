@@ -25,7 +25,7 @@
  */
 function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed){
     // Shape
-    this.color = 0xFFFF0B;
+    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     // Attributes
     this.id = id;
     this.xCenter = xCenter;

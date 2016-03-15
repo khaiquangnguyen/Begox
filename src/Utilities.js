@@ -29,6 +29,3 @@ module.exports.removeItemWithIDFromArray = function(ID,dictionary){
        if(dictionary[ID].id == ID) delete dictionary[ID];
    }
 };
-
-
-
