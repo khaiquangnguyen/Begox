@@ -35,7 +35,7 @@ var bulletList = {};
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
 var keys = {};
-
+var texture = PIXI.Texture.fromImage('Texture.png');
 //the standard fps of the physics loop = 60
 var fps = 60;
 //time between 2 physics update
@@ -51,7 +51,9 @@ var canvas = document.getElementById('canvas');
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 var renderer = PIXI.autoDetectRenderer(WIDTH,HEIGHT,{view:canvas,antialias: true });
-
+var background = new PIXI.extras.TilingSprite(texture, renderer.width, renderer.height);
+background.tileScale.x = 1/4;
+background.tileScale.y = 1/4;
 // create the root of the scene graph
 var stage = new PIXI.Container();
 stage.interactive = true;
@@ -78,6 +80,7 @@ socket.on('playerCreated',function(aPlayer){
 
 socket.on('worldSnapshot',function(aWorldSnapshot){
     stage.removeChildren();
+    stage.addChild(background);
     stage.addChild(mainPlayer.shape);
     stage.addChild(border);
     for (let aPlayer of aWorldSnapshot.players){
@@ -185,6 +188,7 @@ function sendInputToServer(inputPackage){
 
 function animate() {
     inputUpdate();
+    updateBackground();
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
@@ -201,4 +205,6 @@ function animate() {
 }
 var border = new PIXI.Graphics();
 stage.addChild(border);
+
+
 

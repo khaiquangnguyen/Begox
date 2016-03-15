@@ -147,5 +147,22 @@ function gamePhysicsLoop() {
     window.setTimeout(function() {
         gamePhysicsLoop();
     }, 10);
+}
 
+///////////////////////////
+// TILING SPRITE
+///////////////////////////
+// create a texture from an image path
+
+
+
+/* create a tiling sprite ...
+ * requires a texture, a width and a height
+ * in WebGL the image size should preferably be a power of two
+ */
+
+
+function updateBackground() {
+    background.tilePosition.x = -mainPlayer.xCenter + WORLD_WIDTH / 2;
+    background.tilePosition.y = -mainPlayer.yCenter + WORLD_HEIGHT / 2;
 }
