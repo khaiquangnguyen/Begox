@@ -611,7 +611,7 @@ function updateTree()
     quadTree.clear();
     for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
     //quadTree.insert(players);
-    for (let aMissileKey in missiles) quadTree.insert(players[aMissileKey]);
+    for (let aMissileKey in missiles) quadTree.insert(missiles[aMissileKey]);
     //quadTree.insert(missiles);
 }
 
