@@ -27,8 +27,8 @@
       <file leaf-file-name="Server.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.40900564">
-              <caret line="610" column="21" selection-start-line="610" selection-start-column="21" selection-end-line="610" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.4878049">
+              <caret line="212" column="36" selection-start-line="212" selection-start-column="36" selection-end-line="212" selection-end-column="36" />
               <folding>
                 <element signature="n#!!doc;n#Player#0" expanded="false" />
                 <element signature="n#!!block;n#Player#0" expanded="false" />
@@ -46,13 +46,13 @@
                 <element signature="n#!!doc;n#Missile#0" expanded="false" />
                 <element signature="n#!!block;n#Missile#0" expanded="false" />
                 <element signature="e#5517#5662#0" expanded="false" />
-                <element signature="e#6451#6475#0" expanded="false" />
+                <element signature="e#6481#6505#0" expanded="false" />
                 <element signature="n#!!block;n#Wall#0" expanded="false" />
-                <element signature="e#7070#7232#0" expanded="false" />
-                <element signature="e#7283#7286#0" expanded="false" />
-                <element signature="e#7325#7348#0" expanded="false" />
-                <element signature="e#7351#7387#0" expanded="false" />
-                <element signature="e#7422#7448#0" expanded="false" />
+                <element signature="e#7100#7262#0" expanded="false" />
+                <element signature="e#7313#7316#0" expanded="false" />
+                <element signature="e#7355#7378#0" expanded="false" />
+                <element signature="e#7381#7417#0" expanded="false" />
+                <element signature="e#7452#7478#0" expanded="false" />
                 <element signature="n#!!block;n#Input#0" expanded="false" />
                 <element signature="n#!!block;n#WorldSnapshot#0" expanded="false" />
                 <element signature="n#!!doc;n#PlayerSnapshot#0" expanded="false" />
@@ -63,15 +63,15 @@
                 <element signature="n#!!block;n#WallSnapshot#0" expanded="false" />
                 <element signature="n#!!doc;n#InputPackage#0" expanded="false" />
                 <element signature="n#!!block;n#InputPackage#0" expanded="false" />
-                <element signature="e#10674#10741#0" expanded="false" />
-                <element signature="e#11458#11567#0" expanded="false" />
-                <element signature="e#11949#12053#0" expanded="false" />
-                <element signature="e#12094#12506#0" expanded="false" />
-                <element signature="e#12655#14059#0" expanded="false" />
-                <element signature="e#14066#14149#0" expanded="false" />
-                <element signature="e#14181#14893#0" expanded="false" />
-                <element signature="e#15344#15451#0" expanded="false" />
-                <element signature="e#15485#15829#0" expanded="false" />
+                <element signature="e#10704#10771#0" expanded="false" />
+                <element signature="e#11488#11597#0" expanded="false" />
+                <element signature="e#11979#12083#0" expanded="false" />
+                <element signature="e#12124#12536#0" expanded="false" />
+                <element signature="e#12685#14089#0" expanded="false" />
+                <element signature="e#14096#14179#0" expanded="false" />
+                <element signature="e#14211#14923#0" expanded="false" />
+                <element signature="e#15374#15481#0" expanded="false" />
+                <element signature="e#15515#15859#0" expanded="false" />
                 <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
               </folding>
             </state>
@@ -475,12 +475,6 @@
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
     </task>
-    <task id="LOCAL-00033" summary="update input processing server">
-      <created>1457793401342</created>
-      <option name="number" value="00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1457793401342</updated>
-    </task>
     <task id="LOCAL-00034" summary="update input processing server">
       <created>1457793812030</created>
       <option name="number" value="00034" />
@@ -769,7 +763,13 @@
       <option name="project" value="LOCAL" />
       <updated>1458007156312</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="update input processing server">
+      <created>1458007918983</created>
+      <option name="number" value="00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1458007918984</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -920,13 +920,13 @@
             <element signature="n#!!doc;n#Missile#0" expanded="false" />
             <element signature="n#!!block;n#Missile#0" expanded="false" />
             <element signature="e#5517#5662#0" expanded="false" />
-            <element signature="e#6451#6475#0" expanded="false" />
+            <element signature="e#6481#6505#0" expanded="false" />
             <element signature="n#!!block;n#Wall#0" expanded="false" />
-            <element signature="e#7070#7232#0" expanded="false" />
-            <element signature="e#7283#7286#0" expanded="false" />
-            <element signature="e#7325#7348#0" expanded="false" />
-            <element signature="e#7351#7387#0" expanded="false" />
-            <element signature="e#7422#7448#0" expanded="false" />
+            <element signature="e#7100#7262#0" expanded="false" />
+            <element signature="e#7313#7316#0" expanded="false" />
+            <element signature="e#7355#7378#0" expanded="false" />
+            <element signature="e#7381#7417#0" expanded="false" />
+            <element signature="e#7452#7478#0" expanded="false" />
             <element signature="n#!!block;n#Input#0" expanded="false" />
             <element signature="n#!!block;n#WorldSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#PlayerSnapshot#0" expanded="false" />
@@ -937,15 +937,15 @@
             <element signature="n#!!block;n#WallSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#InputPackage#0" expanded="false" />
             <element signature="n#!!block;n#InputPackage#0" expanded="false" />
-            <element signature="e#10674#10741#0" expanded="false" />
-            <element signature="e#11458#11567#0" expanded="false" />
-            <element signature="e#11949#12053#0" expanded="false" />
-            <element signature="e#12094#12506#0" expanded="false" />
-            <element signature="e#12655#14059#0" expanded="false" />
-            <element signature="e#14066#14149#0" expanded="false" />
-            <element signature="e#14181#14893#0" expanded="false" />
-            <element signature="e#15344#15451#0" expanded="false" />
-            <element signature="e#15485#15829#0" expanded="false" />
+            <element signature="e#10704#10771#0" expanded="false" />
+            <element signature="e#11488#11597#0" expanded="false" />
+            <element signature="e#11979#12083#0" expanded="false" />
+            <element signature="e#12124#12536#0" expanded="false" />
+            <element signature="e#12685#14089#0" expanded="false" />
+            <element signature="e#14096#14179#0" expanded="false" />
+            <element signature="e#14211#14923#0" expanded="false" />
+            <element signature="e#15374#15481#0" expanded="false" />
+            <element signature="e#15515#15859#0" expanded="false" />
             <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
           </folding>
         </state>
@@ -1040,13 +1040,13 @@
             <element signature="n#!!doc;n#Missile#0" expanded="false" />
             <element signature="n#!!block;n#Missile#0" expanded="false" />
             <element signature="e#5517#5662#0" expanded="false" />
-            <element signature="e#6451#6475#0" expanded="false" />
+            <element signature="e#6481#6505#0" expanded="false" />
             <element signature="n#!!block;n#Wall#0" expanded="false" />
-            <element signature="e#7070#7232#0" expanded="false" />
-            <element signature="e#7283#7286#0" expanded="false" />
-            <element signature="e#7325#7348#0" expanded="false" />
-            <element signature="e#7351#7387#0" expanded="false" />
-            <element signature="e#7422#7448#0" expanded="false" />
+            <element signature="e#7100#7262#0" expanded="false" />
+            <element signature="e#7313#7316#0" expanded="false" />
+            <element signature="e#7355#7378#0" expanded="false" />
+            <element signature="e#7381#7417#0" expanded="false" />
+            <element signature="e#7452#7478#0" expanded="false" />
             <element signature="n#!!block;n#Input#0" expanded="false" />
             <element signature="n#!!block;n#WorldSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#PlayerSnapshot#0" expanded="false" />
@@ -1057,15 +1057,15 @@
             <element signature="n#!!block;n#WallSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#InputPackage#0" expanded="false" />
             <element signature="n#!!block;n#InputPackage#0" expanded="false" />
-            <element signature="e#10674#10741#0" expanded="false" />
-            <element signature="e#11458#11567#0" expanded="false" />
-            <element signature="e#11949#12053#0" expanded="false" />
-            <element signature="e#12094#12506#0" expanded="false" />
-            <element signature="e#12655#14059#0" expanded="false" />
-            <element signature="e#14066#14149#0" expanded="false" />
-            <element signature="e#14181#14893#0" expanded="false" />
-            <element signature="e#15344#15451#0" expanded="false" />
-            <element signature="e#15485#15829#0" expanded="false" />
+            <element signature="e#10704#10771#0" expanded="false" />
+            <element signature="e#11488#11597#0" expanded="false" />
+            <element signature="e#11979#12083#0" expanded="false" />
+            <element signature="e#12124#12536#0" expanded="false" />
+            <element signature="e#12685#14089#0" expanded="false" />
+            <element signature="e#14096#14179#0" expanded="false" />
+            <element signature="e#14211#14923#0" expanded="false" />
+            <element signature="e#15374#15481#0" expanded="false" />
+            <element signature="e#15515#15859#0" expanded="false" />
             <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
           </folding>
         </state>
@@ -1294,14 +1294,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/client.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.1666665">
-          <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/QuadTree.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1312,10 +1304,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.1666665">
+          <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40900564">
-          <caret line="610" column="21" selection-start-line="610" selection-start-column="21" selection-end-line="610" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.4878049">
+          <caret line="212" column="36" selection-start-line="212" selection-start-column="36" selection-end-line="212" selection-end-column="36" />
           <folding>
             <element signature="n#!!doc;n#Player#0" expanded="false" />
             <element signature="n#!!block;n#Player#0" expanded="false" />
@@ -1333,13 +1333,13 @@
             <element signature="n#!!doc;n#Missile#0" expanded="false" />
             <element signature="n#!!block;n#Missile#0" expanded="false" />
             <element signature="e#5517#5662#0" expanded="false" />
-            <element signature="e#6451#6475#0" expanded="false" />
+            <element signature="e#6481#6505#0" expanded="false" />
             <element signature="n#!!block;n#Wall#0" expanded="false" />
-            <element signature="e#7070#7232#0" expanded="false" />
-            <element signature="e#7283#7286#0" expanded="false" />
-            <element signature="e#7325#7348#0" expanded="false" />
-            <element signature="e#7351#7387#0" expanded="false" />
-            <element signature="e#7422#7448#0" expanded="false" />
+            <element signature="e#7100#7262#0" expanded="false" />
+            <element signature="e#7313#7316#0" expanded="false" />
+            <element signature="e#7355#7378#0" expanded="false" />
+            <element signature="e#7381#7417#0" expanded="false" />
+            <element signature="e#7452#7478#0" expanded="false" />
             <element signature="n#!!block;n#Input#0" expanded="false" />
             <element signature="n#!!block;n#WorldSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#PlayerSnapshot#0" expanded="false" />
@@ -1350,15 +1350,15 @@
             <element signature="n#!!block;n#WallSnapshot#0" expanded="false" />
             <element signature="n#!!doc;n#InputPackage#0" expanded="false" />
             <element signature="n#!!block;n#InputPackage#0" expanded="false" />
-            <element signature="e#10674#10741#0" expanded="false" />
-            <element signature="e#11458#11567#0" expanded="false" />
-            <element signature="e#11949#12053#0" expanded="false" />
-            <element signature="e#12094#12506#0" expanded="false" />
-            <element signature="e#12655#14059#0" expanded="false" />
-            <element signature="e#14066#14149#0" expanded="false" />
-            <element signature="e#14181#14893#0" expanded="false" />
-            <element signature="e#15344#15451#0" expanded="false" />
-            <element signature="e#15485#15829#0" expanded="false" />
+            <element signature="e#10704#10771#0" expanded="false" />
+            <element signature="e#11488#11597#0" expanded="false" />
+            <element signature="e#11979#12083#0" expanded="false" />
+            <element signature="e#12124#12536#0" expanded="false" />
+            <element signature="e#12685#14089#0" expanded="false" />
+            <element signature="e#14096#14179#0" expanded="false" />
+            <element signature="e#14211#14923#0" expanded="false" />
+            <element signature="e#15374#15481#0" expanded="false" />
+            <element signature="e#15515#15859#0" expanded="false" />
             <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
           </folding>
         </state>

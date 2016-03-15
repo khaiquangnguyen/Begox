@@ -209,10 +209,11 @@ Missile.prototype.checkCollision = function(){
     for (let aObject of potentialColObjs){
         if (aObject != undefined) {
             if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
-                if(aObject.id != this.shooterID) {
+                if(aObject.id != this.shooterID && aObject.id != this.id) {
                     this.killSelf();
+                    aObject.takeDamage(this.shooterID, this.size);
                 }
-                aObject.takeDamage(this.shooterID, this.size);
+
                 return true;
             }
         }
@@ -606,13 +607,10 @@ var takeWorldSnapshot = function(socketID){
 /**
  * Update the tree
  */
-function updateTree()
-{
+function updateTree(){
     quadTree.clear();
     for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
-    //quadTree.insert(players);
     for (let aMissileKey in missiles) quadTree.insert(missiles[aMissileKey]);
-    //quadTree.insert(missiles);
 }
 
 io.on('connection', connectionHandler);
