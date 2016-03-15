@@ -193,8 +193,16 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
  * the movement of the Missile
  */
 Missile.prototype.move = function(){
-    this.xCenter += Math.cos(this.direction) * this.speed | 0;
-    this.yCenter += Math.sin(this.direction) * this.speed | 0;
+    let xSpeed = Math.cos(this.direction) * this.speed | 0;
+    let ySpeed = Math.sin(this.direction) * this.speed | 0;
+    // check collision with each half speed to ensure the missile
+    // do not pass through objects when moving too fast
+    this.xCenter += xSpeed / 2;
+    this.yCenter += ySpeed / 2;
+    this.checkCollision();
+    //check collision again
+    this.xCenter += xSpeed / 2;
+    this.yCenter += ySpeed / 2;
     this.checkCollision();
     this.distanceMoved += this.speed;
     if (this.distanceMoved >= 1000) this.killSelf();
@@ -203,8 +211,7 @@ Missile.prototype.move = function(){
 
 Missile.prototype.dealDamage = function(target){
     //FINISH CODE HERE
-    var shooter = utilities.getItemWithIDFromArray(this.shooterID,players);
-    target.takeDamage(shooter, this.size);
+    target.takeDamage(this.shooterID, this.size);
 };
 
 
@@ -219,8 +226,9 @@ Missile.prototype.checkCollision = function(){
         if (aObject != undefined) {
             if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
                 if(aObject.id != this.shooterID && aObject.id != this.id) {
-                    aObject.takeDamage(this.shooterID, this.size);
+                    this.dealDamage(aObject);
                     this.killSelf();
+
                 }
                 return true;
             }
@@ -350,34 +358,6 @@ function InputPackage(sequenceNumber,value){
 
 //==========================================================
 
-
-//dictionary of all players
-var players ={};
-//dictionary of all sockets
-var sockets = {};
-//dictionary of all world snapshot
-var worldSnapshots = {};
-//dictionary of all missiles
-var missiles = {};
-//dictionary of all walls
-var walls = {};
-//dictionary of all inputs
-var inputs = {};
-//the bullet count. Used to assign a unique ID to each bullet
-var bulletSequenceNumber = 0;
-var numUpdate = 25;
-//the time between two server update
-var timeBetweenUpdate = 1000/numUpdate;
-//time of the last server update
-var previousTickServerLoop = Date.now();
-//the standard fps of the physics loop = 60
-var fps = 60;
-//time between 2 physics update
-var tickLengthMs = 1000/fps;
-//time of last physics update
-var previousTickPhysicsLoop = Date.now();
-
-
 //INITIATE SERVER
 var express = require('express');
 var app = require('express')();
@@ -396,6 +376,31 @@ bounds.xCenter = 0;
 bounds.yCenter = 0;
 var quadTree = new QT.QuadTree(bounds, true, 7, 4);
 
+
+
+//dictionary of all players
+var players ={};
+//dictionary of all sockets
+var sockets = {};
+//dictionary of all world snapshot
+var worldSnapshots = {};
+//dictionary of all missiles
+var missiles = {};
+//dictionary of all walls
+var walls = {};
+//dictionary of all inputs
+var inputs = {};
+//the bullet count. Used to assign a unique ID to each bullet
+var bulletSequenceNumber = 0;
+//the time between two server update
+var timeBetweenUpdate = 1000/NUM_UPDATE;
+//time of the last server update
+var previousTickServerLoop = Date.now();
+//the standard fps of the physics loop = 60
+//time between 2 physics update
+var tickLengthMs = 1000/FPS_PHYSICS_CHECK;
+//time of last physics update
+var previousTickPhysicsLoop = Date.now();
 
 //==============================================================
 
@@ -429,7 +434,7 @@ var connectionHandler = function(socket){
     //FUNCTION DEFINITION
 
     var updateInputs = function(newInputPackage){
-        inputs[socket.id].inputList.push(newInputPackage);
+        if(inputs[socket.id] != undefined) inputs[socket.id].inputList.push(newInputPackage);
     };
 
     var shoot = function(direction){
@@ -526,11 +531,12 @@ var serverUpdateLoop = function(){
         previousTickServerLoop = now;
         sendWorldSnapshotToAllClients();
     }
-    if (Date.now() - previousTickServerLoop < timeBetweenUpdate - 39) {
-        setTimeout(serverUpdateLoop);
-    } else {
-        setImmediate(serverUpdateLoop);
-    }
+    setImmediate(serverUpdateLoop);
+    //if (Date.now() - previousTickServerLoop < 1) {
+    //    setTimeout(serverUpdateLoop);
+    //} else {
+    //
+    //}
 };
 
 /**
@@ -539,16 +545,16 @@ var serverUpdateLoop = function(){
 function gamePhysicsLoop() {
     var now = Date.now();
     if (previousTickPhysicsLoop + tickLengthMs <= now) {
-        //TODO use delta for movement
         previousTickPhysicsLoop = now;
         updateTree();
         updateGamePhysics();
     }
-    if (Date.now() - previousTickPhysicsLoop < tickLengthMs - 16) {
-        setTimeout(gamePhysicsLoop);
+    if (Date.now() - previousTickServerLoop < 1) {
+        setTimeout(serverUpdateLoop);
     } else {
         setImmediate(gamePhysicsLoop);
     }
+
 }
 
 /**
