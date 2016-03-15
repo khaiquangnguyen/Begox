@@ -10,8 +10,8 @@ document.body.addEventListener("keyup", function (e) {
 document.body.addEventListener("click", function (e) {
     let xPosition = e.clientX;
     let yPosition = e.clientY;
-    let bulletAngle = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
-    socket.emit("shoot",{x: mainPlayer.xCenter, y: mainPlayer.yCenter, direction: bulletAngle,speed: 40});
+    let direction = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
+    socket.emit("shoot",direction);
 }, false);
 
 //=============================================================================
@@ -171,8 +171,6 @@ function inputProcessing(aInput){
     }
     mainPlayer.xCenter += mainPlayer.velX;
     mainPlayer.yCenter += mainPlayer.velY;
-    mainPlayer.xCenter = (mainPlayer.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
-    mainPlayer.yCenter = (mainPlayer.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
 }
 
 /**

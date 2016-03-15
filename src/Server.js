@@ -23,7 +23,7 @@
  * @param direction: the current direction of the Player
  * @param maxSpeed: the speed of the Player
  */
-function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed){
+function Player(id, xCenter, yCenter, size, type, direction, maxSpeed){
     // Shape
     this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
     // Attributes
@@ -32,12 +32,12 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
     this.yCenter = yCenter;
     this.size = size;
     this.type = type;
-    this.canShoot  = true;
+    //0 is can shoot, not zero is can't
+    this.canShoot  = 0;
     this.direction = direction;
     this.maxSpeed = maxSpeed;
     this.velX = 0;
     this.velY = 0;
-    this.missileCount = 0;
     this.lastEnemy = null;
     this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);;
 }
@@ -45,10 +45,9 @@ function Player(id, xCenter, yCenter, size, type, canShoot, direction, maxSpeed)
 /**
  * Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false.
  */
-Player.prototype.checkCollision = function(otherObjectBounds){
-    //FINISH WRITING CODE
+Player.prototype.checkCollision = function(){
     this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
-    var potentialCollision = quadTree.retrieve(players[playerKey]);
+    var potentialCollision = quadTree.retrieve(players[this.id]);
     return true;
 };
 
@@ -89,21 +88,6 @@ Player.prototype.move = function() {
     }
     this.xCenter += this.velX;
     this.yCenter += this.velY;
-    this.xCenter = (this.xCenter + WORLD_WIDTH) % WORLD_WIDTH;
-    this.yCenter = (this.yCenter + WORLD_HEIGHT) % WORLD_HEIGHT;
-
-};
-
-/**
- * change the HP of the current player. Used only in cases when the killer is not important
- * if hit by missile, the change in HP will be handle by the missile for better sync with reward to the missile's shooter.
- * @param amountChange: the amount of HP change
- */
-Player.prototype.updateHP = function(amountChange){
-    this.size += amountChange;
-    if (this.size == 0){
-        this.killSelf();
-    }
 };
 
 /**
@@ -112,16 +96,22 @@ Player.prototype.updateHP = function(amountChange){
  */
 Player.prototype.killSelf = function(){
     // killed by anything, the reward go to the last killer
-    //if(this.lastEnemy != null){
-    //    console.log(this.lastEnemy);
-    //    this.lastEnemy.getRewardForKill(this.size);
-    //}
-    //killPlayer(this);
+    if(this.lastEnemy != null){
+        this.lastEnemy.getRewardForKill(this.size);
+    }
+    utilities.removeItemWithIDFromArray(this.id,players);
+    utilities.removeItemWithIDFromArray(this.id,sockets);
+    utilities.removeItemWithIDFromArray(this.id, inputs);
+    for (let aMissileKey in missiles){
+        if(missiles[aMissileKey].shooterID == this.id) delete(missiles[aMissileKey]);
+    }
 };
 
-
 Player.prototype.update = function(){
-    //Different collision types
+    if(this.canShoot != 0) {
+        this.canShoot++;
+        this.canShoot %= 10;
+    }
     this.move();
 };
 
@@ -141,10 +131,32 @@ Player.prototype.getRewardForKill = function(rewardAmount){
  */
 Player.prototype.takeDamage = function(shooterID, damage){
     //this.lastEnemy = players[shooterID];
-    this.updateHP(-damage);
+    this.size -= damage;
+    if (this.size <= 0 ){
+        this.killSelf();
+    }
 };
 
-
+Player.prototype.shoot = function(direction){
+    if(this.canShoot == 0) {
+        this.canShoot ++ ;
+        let speed = 0;
+        switch (this.type) {
+            case 0:
+                speed = CIRCLE_BULLET_SPEED;
+                break;
+            case 1:
+                speed = TRIANGLE_BULLET_SPEED;
+                break;
+            case 2:
+                speed = SQUARE_BULLET_SPEED;
+                break;
+        }
+        missiles[bulletSequenceNumber] = new Missile(this.id, bulletSequenceNumber, this.xCenter, this.yCenter, this.size / 2 | 0, this.type,
+            direction, speed);
+        bulletSequenceNumber++;
+    }
+};
 
 //---------------------------MISSILE PROTOTYPES--------------------------
 
@@ -183,9 +195,7 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
 Missile.prototype.move = function(){
     this.xCenter += Math.cos(this.direction) * this.speed | 0;
     this.yCenter += Math.sin(this.direction) * this.speed | 0;
-    if (this.checkCollision()){
-        //DO SOMETHING
-    }
+    this.checkCollision();
     this.distanceMoved += this.speed;
     if (this.distanceMoved >= 1000) this.killSelf();
 
@@ -203,17 +213,15 @@ Missile.prototype.dealDamage = function(target){
  * return true of collide with anything
  */
 Missile.prototype.checkCollision = function(){
-    //TODO: check for different collision type
     this.colBound = new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
     let potentialColObjs = quadTree.retrieve(this);
     for (let aObject of potentialColObjs){
         if (aObject != undefined) {
             if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
                 if(aObject.id != this.shooterID && aObject.id != this.id) {
-                    this.killSelf();
                     aObject.takeDamage(this.shooterID, this.size);
+                    this.killSelf();
                 }
-
                 return true;
             }
         }
@@ -230,7 +238,6 @@ Missile.prototype.takeDamage = function(shooterID, damage){
  * @param deltaTime: the time elapsed between last update and this update
  */
 Missile.prototype.update = function(){
-    //TODO: different missile types
     this.move();
 };
 
@@ -420,24 +427,13 @@ app.use(express.static(__dirname + '/Client'));
  */
 var connectionHandler = function(socket){
     //FUNCTION DEFINITION
-    /**
-     * The input
-     */
+
     var updateInputs = function(newInputPackage){
         inputs[socket.id].inputList.push(newInputPackage);
     };
-    /**
-     * When receive shoot message
-     */
-    var shoot = function(bulletInfo){
-        //TODO: check conditions before allow player to shoot, such as reload time and the number of bullet on screen
-        // Also add bullet limit to player
-        //TODO: Add triangle and square bullet type as well
 
-        missiles[bulletSequenceNumber] = new Missile(socket.id,bulletSequenceNumber,bulletInfo.x,bulletInfo.y, CIRCLE_SIZE, CIRCLE_TYPE,
-            bulletInfo.direction,bulletInfo.speed);
-        players[socket.id].missileCount ++;
-        bulletSequenceNumber++;
+    var shoot = function(direction){
+        players[socket.id].shoot(direction);
     };
 
     /**
@@ -461,18 +457,18 @@ var connectionHandler = function(socket){
         //if no player with such id has been created
         let x = Math.random() * 1000 | 0;
         let y = Math.random() * 1000 | 0;
-
+    //TODO: check so that the spawn location is not too stupid, such as on a missile or a tile or a shape
         if(utilities.getItemWithIDFromArray(info.id,players) == -1){
             //initiate new player
             switch(info.type){
                 case TRIANGLE_TYPE:
-                    var aPlayer = new Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,true,-1,TRIANGLE_SPEED);
+                    var aPlayer = new Player(info.id,x,y,TRIANGLE_SIZE,TRIANGLE_TYPE,-1,TRIANGLE_SPEED);
                     break;
                 case SQUARE_TYPE:
-                    var aPlayer = new Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,true,-1,SQUARE_SPEED);
+                    var aPlayer = new Player(info.id,x,y,SQUARE_SIZE,SQUARE_TYPE,-1,SQUARE_SPEED);
                     break;
                 default:
-                    var aPlayer = new Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,true,-1,CIRCLE_SPEED);
+                    var aPlayer = new Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,-1,CIRCLE_SPEED);
             }
             // add socket to socket dictionary
             sockets[socket.id] = socket;
