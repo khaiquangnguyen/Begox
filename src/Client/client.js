@@ -192,6 +192,8 @@ function animate() {
     }
     // draw a rounded rectangle
     drawBorder(border, mainPlayer);
+
+    // Render stuffs
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
