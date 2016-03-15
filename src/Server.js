@@ -549,12 +549,12 @@ function gamePhysicsLoop() {
         updateTree();
         updateGamePhysics();
     }
-    if (Date.now() - previousTickServerLoop < 1) {
-        setTimeout(serverUpdateLoop);
-    } else {
-        setImmediate(gamePhysicsLoop);
-    }
+    //if (Date.now() - previousTickServerLoop < 1) {
+    //    setTimeout(serverUpdateLoop);
+    //} else {
 
+    //}
+    setImmediate(gamePhysicsLoop);
 }
 
 /**
@@ -614,6 +614,7 @@ function updateTree(){
     for(let aPlayerKey in players) quadTree.insert(players[aPlayerKey]);
     for (let aMissileKey in missiles) quadTree.insert(missiles[aMissileKey]);
 }
+
 
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
