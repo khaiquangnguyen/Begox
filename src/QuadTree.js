@@ -339,31 +339,31 @@
             var index = this._findIndex(item);
             var node = this.nodes[index];
 
-            if (item.xCenter - item.size >= node._bounds.xCenter &&
-                item.xCenter + item.size <= node._bounds.xCenter + node._bounds.width &&
-                item.yCenter - item.size >= node._bounds.yCenter &&
-                item.yCenter + item.size <= node._bounds.yCenter + node._bounds.height) {
+            if (item.xCenter - item.size/2 >= node._bounds.xCenter &&
+                item.xCenter + item.size/2 <= node._bounds.xCenter + node._bounds.width &&
+                item.yCenter - item.size/2 >= node._bounds.yCenter &&
+                item.yCenter + item.size/2 <= node._bounds.yCenter + node._bounds.height) {
 
                 out.push.apply(out, this.nodes[index].retrieve(item));
             } else {
                 //Part of the item are overlapping multiple child nodes. For each of the overlapping nodes, return all containing objects.
 
-                if (item.xCenter - item.size <= this.nodes[Node.TOP_RIGHT]._bounds.xCenter) {
-                    if (item.yCenter - item.size <= this.nodes[Node.BOTTOM_LEFT]._bounds.yCenter) {
+                if (item.xCenter - item.size/2 <= this.nodes[Node.TOP_RIGHT]._bounds.xCenter) {
+                    if (item.yCenter - item.size/2 <= this.nodes[Node.BOTTOM_LEFT]._bounds.yCenter) {
                         out.push.apply(out, this.nodes[Node.TOP_LEFT].getAllContent());
                     }
 
-                    if (item.yCenter + item.size > this.nodes[Node.BOTTOM_LEFT]._bounds.yCenter) {
+                    if (item.yCenter + item.size/2 > this.nodes[Node.BOTTOM_LEFT]._bounds.yCenter) {
                         out.push.apply(out, this.nodes[Node.BOTTOM_LEFT].getAllContent());
                     }
                 }
 
-                if (item.xCenter + item.size > this.nodes[Node.TOP_RIGHT]._bounds.xCenter) {//position+width bigger than middle xCenter
-                    if (item.yCenter - item.size <= this.nodes[Node.BOTTOM_RIGHT]._bounds.yCenter) {
+                if (item.xCenter + item.size/2 > this.nodes[Node.TOP_RIGHT]._bounds.xCenter) {//position+width bigger than middle xCenter
+                    if (item.yCenter - item.size/2 <= this.nodes[Node.BOTTOM_RIGHT]._bounds.yCenter) {
                         out.push.apply(out, this.nodes[Node.TOP_RIGHT].getAllContent());
                     }
 
-                    if (item.yCenter + item.size > this.nodes[Node.BOTTOM_RIGHT]._bounds.yCenter) {
+                    if (item.yCenter + item.size/2 > this.nodes[Node.BOTTOM_RIGHT]._bounds.yCenter) {
                         out.push.apply(out, this.nodes[Node.BOTTOM_RIGHT].getAllContent());
                     }
                 }
