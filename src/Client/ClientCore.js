@@ -21,7 +21,6 @@ function Player(aPlayer){
     this.maxSpeed = aPlayer.maxSpeed;
     this.velX = aPlayer.velX;
     this.velY = aPlayer.velY;
-    stage.addChild(this.shape);
 }
 
 function ShadowPlayer(attributes){
@@ -105,6 +104,22 @@ var drawWithRespectToMainPlayer = function(other, player) {
 
 };
 
+var drawWithRespectToMainPlayerInterpolation = function(other, player) {
+    //calculate interpolation
+    other.shape.clear();
+    other.shape.lineStyle(0);
+    other.shape.beginFill(other.color);
+    let newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor) | 0;
+    let newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor) | 0;
+    //console.log("old", other.xCenter - player.xCenter + WIDTH / 2,  other.yCenter - player.yCenter + HEIGHT / 2 );
+    //console.log("vel",other.velX, other.velY);
+    //console.log("inter", other.velX * other.interpolateFactor | 0, other.velY * other.interpolateFactor | 0);
+    //console.log("new", newX, newY);
+    other.shape.drawCircle(newX, newY, 20);
+    other.shape.endFill();
+
+};
+
 
 /**
  * Draw a triangular object
@@ -157,9 +172,9 @@ var drawOtherPlayers = function(otherPlayers, mainPlayer) {
     }
 };
 
-var drawMissiles = function(missileDict, mainPlayer){
-    for (var aMissile of missileDict){
-        drawWithRespectToMainPlayer(aMissile,mainPlayer);
+var drawMissiles = function(missileArray, mainPlayer){
+    for (let aMissile of missileArray){
+        drawWithRespectToMainPlayerInterpolation(aMissile,mainPlayer);
     }
 };
 /**

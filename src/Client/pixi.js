@@ -7393,10 +7393,10 @@ Container.prototype.getChildIndex = function (child)
 {
     var index = this.children.indexOf(child);
 
-    if (index === -1)
-    {
-        throw new Error('The supplied DisplayObject must be a child of the caller');
-    }
+    //if (index === -1)
+    //{
+    //    throw new Error('The supplied DisplayObject must be a child of the caller');
+    //}
 
     return index;
 };

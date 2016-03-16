@@ -24,9 +24,9 @@ document.body.addEventListener("click", function (e) {
 var friction = FRICTION;
 
 var inputSequenceNumber = 0;
-
 var inputs = [];
 var mainPlayer;
+var missiles = [];
 var otherPlayers = {};
 var bulletList = {};
 //the option, one of triangle, circle or square
@@ -41,7 +41,6 @@ var previousTickPhysicsLoop = Date.now();
 
 var worldSnapshots = [];
 //var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
-//stage.addChild(mainPlayer.shape);
 var canvas = document.getElementById('canvas');
 
 var WIDTH = window.innerWidth;
@@ -66,9 +65,9 @@ var hexMap = createHexMap(); hexMap[0][0] = 1;
 var hexArray = [];
 createHexSprites(hexMap, hexContainer, hexArray);
 
-console.log(hexContainer);
-console.log(hexArray);
-console.log(hexMap);
+//console.log(hexContainer);
+//console.log(hexArray);
+//console.log(hexMap);
 
 // create the root of the scene graph
 var stage = new PIXI.Container();
@@ -90,23 +89,23 @@ socket.on('connectionEstablished', function(id){
 });
 socket.on('playerCreated',function(aPlayer){
     mainPlayer = new Player(aPlayer);
-    animate();
-    //gamePhysicsLoop();
-});
-
-socket.on('worldSnapshot',function(aWorldSnapshot){
-    stage.removeChildren();
     stage.addChild(background);
     stage.addChild(hexContainer);
     stage.addChild(mainPlayer.shape);
-    //stage.addChild(border);
-    for (let aPlayer of aWorldSnapshot.players){
-        aPlayer.shape = new PIXI.Graphics();
-        stage.addChild(aPlayer.shape);
-    }
+    animate();
+});
+
+socket.on('worldSnapshot',function(aWorldSnapshot){
+    //stage.removeChildren();
+    //stage.addChild(background);
+    //stage.addChild(hexContainer);
+    //for (let aPlayer of aWorldSnapshot.players){
+    //    aPlayer.shape = new PIXI.Graphics();
+    //    stage.addChild(aPlayer.shape);
+    //}
     for (let aMissile of aWorldSnapshot.missiles){
         aMissile.shape = new PIXI.Graphics();
-        stage.addChild(aMissile.shape);
+    //    stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
@@ -201,30 +200,75 @@ function sendInputToServer(inputPackage){
     socket.emit('updateInput', inputPackage);
 }
 
+function updateStage(){
+    stage.removeChildren();
+    stage.addChild(background);
+    stage.addChild(hexContainer);
+    stage.addChild(mainPlayer.shape);
+}
+
+
+
+function interpolateMissiles(){
+    //if there are not enough snapshots, stop drawing
+    missiles = [];
+    if(worldSnapshots.length < 2) {
+        return 0;
+    }
+    else{
+        let currMissileSnapshots = worldSnapshots[worldSnapshots.length - 1].missiles;
+        let beforeMissilesSnapshots = worldSnapshots[worldSnapshots.length - 2].missiles;
+        let prevTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
+        let nextTimeStamp = worldSnapshots[worldSnapshots.length - 1].timeStamp;
+        let delayTimeStamp = Date.now() - DELAYED_TIME;
+        //
+        //console.log("prev", prevTimeStamp);
+        //console.log("delay", delayTimeStamp);
+        //console.log("next", nextTimeStamp);
+        if (delayTimeStamp < prevTimeStamp || delayTimeStamp > nextTimeStamp) return 0;
+        for (let i = 0; i < currMissileSnapshots.length; i ++) {
+            for (let j = 0; j < beforeMissilesSnapshots.length; j++) {
+                if (currMissileSnapshots[i].id == beforeMissilesSnapshots[j].id) {
+                    let aMissile = beforeMissilesSnapshots[j];
+                    aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter ;
+                    aMissile.velY =  currMissileSnapshots[i].yCenter - beforeMissilesSnapshots[j].yCenter;
+                    aMissile.interpolateFactor = (delayTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
+                    updateStage();
+                    aMissile.shape = beforeMissilesSnapshots[j].shape;
+                    stage.addChild(aMissile.shape);
+
+
+                    missiles.push(aMissile);
+                }
+            }
+        }
+    }
+
+}
 function animate() {
 
     // Update info
     inputUpdate();
     updateBackground();
     updateHexSprites(hexArray, mainPlayer);
-
     // Draw players and stuffs
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
-        drawMissiles(worldSnapshots[worldSnapshots.length -1].missiles,mainPlayer);
+        interpolateMissiles();
+        drawMissiles(missiles, mainPlayer);
     }
     // draw a rounded rectangle
-    drawBorder(border, mainPlayer);
-
     // Render stuffs
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
-    }, 5);
+    }, 10);
+    //requestAnimationFrame(animate);
+    //setTimeout(animate);
 }
-var border = new PIXI.Graphics();
-stage.addChild(border);
+
+
 
 
 

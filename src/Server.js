@@ -298,6 +298,8 @@ function WorldSnapshot(){
     this.missiles = [];
     //the array of walls snapshot
     this.walls = [];
+    //the time stamp
+    this.timeStamp = 0;
 }
 
 /**
@@ -589,6 +591,7 @@ var sendWorldSnapshotToAllClients = function() {
 var takeWorldSnapshot = function(socketID){
     //TODO take world snapshot according to each socket ID
     var aWorldSnapshot = new WorldSnapshot();
+    aWorldSnapshot.timeStamp = Date.now();
     for (let playerKey in players){
         if(playerKey != socketID) {
             aWorldSnapshot.players.push(new PlayerSnapshot(players[playerKey]));
