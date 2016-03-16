@@ -37,7 +37,8 @@ var fps = 60;
 //time between 2 physics update
 var tickLengthMs = 1000/fps;
 //time of last physics update
-var previousTickPhysicsLoop = Date.now();
+var delayedTimeStamp = Date.now();
+var lastTimeStamp = Date.now();
 
 var worldSnapshots = [];
 //var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
@@ -108,6 +109,10 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     //    stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
+    if(worldSnapshots.length >=2){
+        delayedTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
+    }
+    lastTimeStamp = Date.now();
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
 //
@@ -220,19 +225,20 @@ function interpolateMissiles(){
         let beforeMissilesSnapshots = worldSnapshots[worldSnapshots.length - 2].missiles;
         let prevTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
         let nextTimeStamp = worldSnapshots[worldSnapshots.length - 1].timeStamp;
-        let delayTimeStamp = Date.now() - DELAYED_TIME;
         //
         //console.log("prev", prevTimeStamp);
-        //console.log("delay", delayTimeStamp);
+        //console.log("delay", delayedTimeStamp);
         //console.log("next", nextTimeStamp);
-        if (delayTimeStamp < prevTimeStamp || delayTimeStamp > nextTimeStamp) return 0;
+        delayedTimeStamp = delayedTimeStamp + Date.now() - lastTimeStamp;
+        lastTimeStamp = Date.now();
+        if (delayedTimeStamp < prevTimeStamp || delayedTimeStamp > nextTimeStamp) return 0;
         for (let i = 0; i < currMissileSnapshots.length; i ++) {
             for (let j = 0; j < beforeMissilesSnapshots.length; j++) {
                 if (currMissileSnapshots[i].id == beforeMissilesSnapshots[j].id) {
                     let aMissile = beforeMissilesSnapshots[j];
                     aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter ;
                     aMissile.velY =  currMissileSnapshots[i].yCenter - beforeMissilesSnapshots[j].yCenter;
-                    aMissile.interpolateFactor = (delayTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
+                    aMissile.interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
                     updateStage();
                     aMissile.shape = beforeMissilesSnapshots[j].shape;
                     stage.addChild(aMissile.shape);
@@ -246,20 +252,16 @@ function interpolateMissiles(){
 
 }
 function animate() {
-
     // Update info
     inputUpdate();
     updateBackground();
     updateHexSprites(hexArray, mainPlayer);
-    // Draw players and stuffs
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
         drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
         interpolateMissiles();
         drawMissiles(missiles, mainPlayer);
     }
-    // draw a rounded rectangle
-    // Render stuffs
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
