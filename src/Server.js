@@ -205,7 +205,7 @@ Missile.prototype.move = function(){
     this.yCenter += ySpeed / 2;
     this.checkCollision();
     this.distanceMoved += this.speed;
-    if (this.distanceMoved >= 1000) this.killSelf();
+    if (this.distanceMoved >= 600) this.killSelf();
 
 };
 
@@ -534,11 +534,6 @@ var serverUpdateLoop = function(){
         sendWorldSnapshotToAllClients();
     }
     setImmediate(serverUpdateLoop);
-    //if (Date.now() - previousTickServerLoop < 1) {
-    //    setTimeout(serverUpdateLoop);
-    //} else {
-    //
-    //}
 };
 
 /**
@@ -554,7 +549,6 @@ function gamePhysicsLoop() {
     //if (Date.now() - previousTickServerLoop < 1) {
     //    setTimeout(serverUpdateLoop);
     //} else {
-
     //}
     setImmediate(gamePhysicsLoop);
 }

@@ -81,16 +81,20 @@ stage.interactive = true;
 
 var socket = io();
 socket.emit('clientWantToConnect');
+
 socket.on('connectionEstablished', function(id){
     socket.emit('initNewPlayer',{id: id,type:playerType} );
     //begin calculate expected lag
     expectedLagMs = Date.now();
-
 });
+
 socket.on('playerCreated',function(aPlayer){
     expectedLagMs = Date.now() - expectedLagMs;
     //round expected lag to the nearest 100 ms
-    expectedLagMs = Math.ceil(expectedLagMs / 100) * 100;
+    //expectedLagMs = Math.ceil(expectedLagMs / 100) * 100;
+    //add extra expected lag to compensate for both processing time from the server
+    expectedLagMs += 40;
+    console.log(expectedLagMs);
     mainPlayer = new Player(aPlayer);
     stage.addChild(background);
     stage.addChild(hexContainer);
@@ -105,7 +109,7 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
     worldSnapshots.push(aWorldSnapshot);
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
-//
+
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
     //update position to match that of the server
     mainPlayer.xCenter = serverX;
@@ -202,8 +206,6 @@ function updateStage(){
     stage.addChild(mainPlayer.shape);
 }
 
-
-
 function interpolateMissiles(){
     //if there are not enough snapshots, stop drawing
     missiles = [];
@@ -212,11 +214,14 @@ function interpolateMissiles(){
     }
     else{
         delayedTimeStamp = Date.now() - expectedLagMs;
-        for (let k = 1; k < worldSnapshots.length; k++){
+        for (let k = worldSnapshots.length-1; k > 1; k--){
             let currMissileSnapshots = worldSnapshots[k].missiles;
             let beforeMissilesSnapshots = worldSnapshots[k-1].missiles;
             let nextTimeStamp = worldSnapshots[k].timeStamp;
             let prevTimeStamp = worldSnapshots[k-1].timeStamp;
+            //console.log("prev", prevTimeStamp);
+            //console.log("delay", delayedTimeStamp);
+            //console.log("next", nextTimeStamp);
             if (delayedTimeStamp > prevTimeStamp && delayedTimeStamp < nextTimeStamp){
                 updateStage();
                 for (let i = 0; i < currMissileSnapshots.length; i ++) {
@@ -232,14 +237,12 @@ function interpolateMissiles(){
                         }
                     }
                 }
+                break;
             }
         }
-        //console.log("prev", prevTimeStamp);
-        //console.log("delay", delayedTimeStamp);
-        //console.log("next", nextTimeStamp);
     }
-
 }
+
 function animate() {
     // Update info
     inputUpdate();
@@ -247,16 +250,15 @@ function animate() {
     updateHexSprites(hexArray, mainPlayer);
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
-        drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
+        //drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
         interpolateMissiles();
         drawMissiles(missiles, mainPlayer);
     }
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
-    }, 10);
-    //requestAnimationFrame(animate);
-    //setTimeout(animate);
+    }, 8);
+
 }
 
 

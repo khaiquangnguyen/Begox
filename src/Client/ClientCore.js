@@ -106,26 +106,25 @@ var drawWithRespectToMainPlayer = function(other, player) {
 
 var drawWithRespectToMainPlayerInterpolation = function(other, player) {
     //calculate interpolation
+
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color);
-    //let newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor * 0.9) | 0;
-    //let newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 0.9) | 0;
-    //other.shape.drawCircle(newX, newY, 20);
-    //other.shape.endFill();
-    //other.shape.beginFill(other.color,1);
     let newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor);
     let newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor);
-    other.shape.drawCircle(newX, newY, 20);
+    other.shape.drawCircle(newX, newY, 10);
     other.shape.endFill();
-    //other.shape.beginFill(other.color,0.5);
-    //newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor* 1.1) | 0;
-    //newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 1.1) | 0;
-    //console.log("old", other.xCenter - player.xCenter + WIDTH / 2,  other.yCenter - player.yCenter + HEIGHT / 2 );
-    //console.log("vel",other.velX, other.velY);
-    //console.log("inter", other.velX * other.interpolateFactor | 0, other.velY * other.interpolateFactor | 0);
-    //console.log("new", newX, newY);
-    other.shape.drawCircle(newX, newY, 20);
+
+    other.shape.beginFill(other.color,0.3);
+     newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor * 0.75);
+     newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 0.75);
+    other.shape.drawCircle(newX, newY, 10);
+    other.shape.endFill();
+
+    other.shape.beginFill(other.color,0.3);
+     newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor * 1.3);
+     newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 1.3);
+    other.shape.drawCircle(newX, newY, 10);
     other.shape.endFill();
 
 
