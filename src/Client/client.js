@@ -36,9 +36,11 @@ var keys = {};
 var fps = 60;
 //time between 2 physics update
 var tickLengthMs = 1000/fps;
-//time of last physics update
+//current time with added calculation based on lag
+// used to for interpolation
 var delayedTimeStamp = Date.now();
-var lastTimeStamp = Date.now();
+//expected lagging time.
+var expectedLagMs = 0;
 
 var worldSnapshots = [];
 //var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
@@ -86,33 +88,33 @@ var socket = io();
 socket.emit('clientWantToConnect');
 socket.on('connectionEstablished', function(id){
     socket.emit('initNewPlayer',{id: id,type:playerType} );
+    //begin calculate expected lag
+    expectedLagMs = Date.now();
 
 });
 socket.on('playerCreated',function(aPlayer){
+    expectedLagMs = Date.now() - expectedLagMs;
+    //round expected lag to the nearest 100th ms
+    expectedLagMs = Math.ceil(expectedLagMs / 100) * 100;
     mainPlayer = new Player(aPlayer);
     stage.addChild(background);
     stage.addChild(hexContainer);
     stage.addChild(mainPlayer.shape);
+
+
     animate();
 });
 
 socket.on('worldSnapshot',function(aWorldSnapshot){
-    //stage.removeChildren();
-    //stage.addChild(background);
-    //stage.addChild(hexContainer);
-    //for (let aPlayer of aWorldSnapshot.players){
-    //    aPlayer.shape = new PIXI.Graphics();
-    //    stage.addChild(aPlayer.shape);
-    //}
     for (let aMissile of aWorldSnapshot.missiles){
         aMissile.shape = new PIXI.Graphics();
     //    stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
-    if(worldSnapshots.length >=2){
-        delayedTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
-    }
-    lastTimeStamp = Date.now();
+    //if(worldSnapshots.length >=2){
+    //    delayedTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
+    //}
+    //lastTimeStamp = Date.now();
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
 //
@@ -121,7 +123,6 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
-    //console.log("receive from server:" ,lastSequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs[0];
@@ -134,7 +135,6 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     //process pending input
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
-        //console.log("process ",aInputPackage.sequenceNumber, mainPlayer.xCenter, mainPlayer.yCenter);
     }
 });
 
@@ -221,33 +221,32 @@ function interpolateMissiles(){
         return 0;
     }
     else{
-        let currMissileSnapshots = worldSnapshots[worldSnapshots.length - 1].missiles;
-        let beforeMissilesSnapshots = worldSnapshots[worldSnapshots.length - 2].missiles;
-        let prevTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
-        let nextTimeStamp = worldSnapshots[worldSnapshots.length - 1].timeStamp;
-        //
-        //console.log("prev", prevTimeStamp);
-        //console.log("delay", delayedTimeStamp);
-        //console.log("next", nextTimeStamp);
-        delayedTimeStamp = delayedTimeStamp + Date.now() - lastTimeStamp;
-        lastTimeStamp = Date.now();
-        if (delayedTimeStamp < prevTimeStamp || delayedTimeStamp > nextTimeStamp) return 0;
-        for (let i = 0; i < currMissileSnapshots.length; i ++) {
-            for (let j = 0; j < beforeMissilesSnapshots.length; j++) {
-                if (currMissileSnapshots[i].id == beforeMissilesSnapshots[j].id) {
-                    let aMissile = beforeMissilesSnapshots[j];
-                    aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter ;
-                    aMissile.velY =  currMissileSnapshots[i].yCenter - beforeMissilesSnapshots[j].yCenter;
-                    aMissile.interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
-                    updateStage();
-                    aMissile.shape = beforeMissilesSnapshots[j].shape;
-                    stage.addChild(aMissile.shape);
-
-
-                    missiles.push(aMissile);
+        delayedTimeStamp = Date.now() - expectedLagMs;
+        for (let k = 1; k < worldSnapshots.length; k++){
+            let currMissileSnapshots = worldSnapshots[k].missiles;
+            let beforeMissilesSnapshots = worldSnapshots[k-1].missiles;
+            let nextTimeStamp = worldSnapshots[k].timeStamp;
+            let prevTimeStamp = worldSnapshots[k-1].timeStamp;
+            if (delayedTimeStamp > prevTimeStamp && delayedTimeStamp < nextTimeStamp){
+                updateStage();
+                for (let i = 0; i < currMissileSnapshots.length; i ++) {
+                    for (let j = 0; j < beforeMissilesSnapshots.length; j++) {
+                        if (currMissileSnapshots[i].id == beforeMissilesSnapshots[j].id) {
+                            let aMissile = beforeMissilesSnapshots[j];
+                            aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter ;
+                            aMissile.velY =  currMissileSnapshots[i].yCenter - beforeMissilesSnapshots[j].yCenter;
+                            aMissile.interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
+                            aMissile.shape = beforeMissilesSnapshots[j].shape;
+                            stage.addChild(aMissile.shape);
+                            missiles.push(aMissile);
+                        }
+                    }
                 }
             }
         }
+        //console.log("prev", prevTimeStamp);
+        //console.log("delay", delayedTimeStamp);
+        //console.log("next", nextTimeStamp);
     }
 
 }
