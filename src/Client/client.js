@@ -21,14 +21,11 @@ document.body.addEventListener("click", function (e) {
 //=============================================================================
 
 
-var friction = FRICTION;
-
 var inputSequenceNumber = 0;
 var inputs = [];
 var mainPlayer;
 var missiles = [];
 var otherPlayers = {};
-var bulletList = {};
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
 var keys = {};
@@ -41,9 +38,7 @@ var tickLengthMs = 1000/fps;
 var delayedTimeStamp = Date.now();
 //expected lagging time.
 var expectedLagMs = 0;
-
 var worldSnapshots = [];
-//var mainPlayer = new Player(0, 200, 200, 30, 'triangle', true, -1, 40);;
 var canvas = document.getElementById('canvas');
 
 var WIDTH = window.innerWidth;
@@ -76,7 +71,7 @@ createHexSprites(hexMap, hexContainer, hexArray);
 var stage = new PIXI.Container();
 stage.interactive = true;
 
-var circle = new PIXI.Graphics();
+
 
 //=============================================================================
 
@@ -94,35 +89,30 @@ socket.on('connectionEstablished', function(id){
 });
 socket.on('playerCreated',function(aPlayer){
     expectedLagMs = Date.now() - expectedLagMs;
-    //round expected lag to the nearest 100th ms
+    //round expected lag to the nearest 100 ms
     expectedLagMs = Math.ceil(expectedLagMs / 100) * 100;
     mainPlayer = new Player(aPlayer);
     stage.addChild(background);
     stage.addChild(hexContainer);
     stage.addChild(mainPlayer.shape);
-
-
     animate();
 });
 
 socket.on('worldSnapshot',function(aWorldSnapshot){
     for (let aMissile of aWorldSnapshot.missiles){
         aMissile.shape = new PIXI.Graphics();
-    //    stage.addChild(aMissile.shape);
     }
     worldSnapshots.push(aWorldSnapshot);
-    //if(worldSnapshots.length >=2){
-    //    delayedTimeStamp = worldSnapshots[worldSnapshots.length - 2].timeStamp;
-    //}
-    //lastTimeStamp = Date.now();
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
 });
 //
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
+    //update position to match that of the server
     mainPlayer.xCenter = serverX;
     mainPlayer.yCenter = serverY;
     mainPlayer.velX = serverVelX;
     mainPlayer.velY = serverVelY;
+    //remove processed input
     while(true){
         if(inputs.length <=0) break;
         var aInputPackage = inputs[0];
