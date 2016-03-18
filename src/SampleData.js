@@ -24,6 +24,10 @@ function samplePlayer(){
     // the type of the player. maximum 3 types, (1,2,3)
     // maximum 2 bits
     var type;
+    // 16 bits
+    var xCenter;
+    //16 bits
+    var yCenter;
 }
 
 
@@ -39,17 +43,22 @@ function samplePlayer(){
  * convert an array to a sequence of number/bits, with certain designated structure
  * to save data
  *
+ * You can modify anyway you want with this data structure. The important thing is
+ * that it is possible to convert from this form into the intermediate data form that will be sent
+ * over the network, and the intermediate data form can also be converted back to this form.
+ *
  *
  */
 function sampleWorldSnapshot(){
     //The time stamp. A sequence of 8-10 numbers. This may need further modification
     // 32 bits?
     var timeStamp;
-    //An array of updatePlayer
+    var destroyedPlayers = [];
+    //An array of updatePlayer. Use updatePlayer() as default data type.
     var UpdatePlayers = [];
-    //An array of new missiles
+    //An array of new missiles. USe sampleNewMissiles() as default data type
     var newMissiles = [];
-    //An array of updateMissile
+    //An array of destroyedMissiles. Use sampleDestroyedMissiles as default data type
     var destroyedMissiles = [];
 }
 
@@ -96,7 +105,7 @@ function sampleNewMissiles(){
 function updatePlayer(){
     // the ID of the player
     //16 bits
-    var playeID;
+    var playerID;
     //16 bits
     var xCenter;
     //16 bits
@@ -105,3 +114,6 @@ function updatePlayer(){
     var size;
 }
 
+function destroyedPlayer(){
+    var playerID;
+}
