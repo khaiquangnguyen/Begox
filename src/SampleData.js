@@ -10,9 +10,9 @@
  * sent very often. Therefore, this one doesn't need much optimization.
  */
 function samplePlayer(){
-    //A string sequence of a bunch of weird character.
-    // something like "#wtlUeeaZ6apw47V0AAAA".
-    var socketID;
+    //the name of the player
+    //maximum probably 64 bits, may be more depend on the length of the name
+    var name;
     // the Id of the player assigned from the server
     // for easier identification.
     // A 16 bits number maximum.
