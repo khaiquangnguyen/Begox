@@ -456,12 +456,6 @@
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
     </task>
-    <task id="LOCAL-00051" summary="update input processing server">
-      <created>1457856325450</created>
-      <option name="number" value="00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1457856325451</updated>
-    </task>
     <task id="LOCAL-00052" summary="update input processing server">
       <created>1457856453127</created>
       <option name="number" value="00052" />
@@ -750,7 +744,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459023089101</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="Update sample player file">
+      <created>1459023095112</created>
+      <option name="number" value="00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1459023095112</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="ToolWindowManager">
