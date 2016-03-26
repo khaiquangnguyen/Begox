@@ -59,13 +59,22 @@ function Wall(attributes){
     this.yCenter = attributes.yCenter;
     this.direction = attributes.direction;
 }
-function Missile(attributes){
+function ClientMissile(attributes){
     this.id = attributes.id;
-    this.yCenter = attributes.yCenter;
     this.xCenter = attributes.xCenter;
+    this.yCenter = attributes.yCenter;
     this.shape = attributes.shape;
     this.color = attributes.color;
+    this.size = attributes.size;
+    this.direction = attributes.direction;
 }
+
+ClientMissile.prototype.update = function(delta){
+    let xSpeed = Math.cos(this.direction) * 720 * delta | 0;
+    let ySpeed = Math.sin(this.direction) * 720 * delta | 0;
+    this.xCenter += xSpeed;
+    this.yCenter += ySpeed;
+};
 
 function Input(sequenceNumber,value){
     this.sequenceNumber = sequenceNumber;
@@ -126,7 +135,6 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.beginFill(other.color);
     other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
     other.shape.endFill();
-
 };
 
 var drawWithRespectToMainPlayerInterpolation = function(other, player) {
@@ -194,7 +202,7 @@ var drawOtherPlayers = function(otherPlayers, mainPlayer) {
 
 var drawMissiles = function(missileArray, mainPlayer){
     for (let aMissile of missileArray){
-        drawWithRespectToMainPlayerInterpolation(aMissile,mainPlayer);
+        drawWithRespectToMainPlayer(aMissile,mainPlayer);
     }
 };
 /**

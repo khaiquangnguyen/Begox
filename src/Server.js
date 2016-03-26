@@ -153,7 +153,7 @@ Player.prototype.shoot = function(direction){
                 break;
         }
         missiles[bulletSequenceNumber] = new Missile(this.id, bulletSequenceNumber, this.xCenter, this.yCenter, this.size / 2 | 0, this.type,
-            direction, speed);
+            direction, speed,this.color);
         bulletSequenceNumber++;
     }
 };
@@ -174,7 +174,7 @@ Player.prototype.shoot = function(direction){
  * @param speed: the speed of the Player
  * @param colBound: the collision bound of the object
  */
-function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
+function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,color){
     this.shooterID = shooterID;
     this.id  = id;
     this.xCenter = xCenter;
@@ -184,6 +184,7 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
     this.direction = direction;
     this.speed = speed;
     this.distanceMoved = 0;
+    this.color = color;
     //TODO; different missile types
     this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
     this.new = true;
@@ -194,8 +195,8 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
  * the movement of the Missile
  */
 Missile.prototype.move = function(){
-    let xSpeed = Math.cos(this.direction) * this.speed | 0;
-    let ySpeed = Math.sin(this.direction) * this.speed | 0;
+    let xSpeed = Math.cos(this.direction) * this.speed / FPS_PHYSICS_CHECK | 0;
+    let ySpeed = Math.sin(this.direction) * this.speed / FPS_PHYSICS_CHECK | 0;
     // check collision with each half speed to ensure the missile
     // do not pass through objects when moving too fast
     this.xCenter += xSpeed / 2;
@@ -205,7 +206,7 @@ Missile.prototype.move = function(){
     this.xCenter += xSpeed / 2;
     this.yCenter += ySpeed / 2;
     this.checkCollision();
-    this.distanceMoved += this.speed;
+    this.distanceMoved += this.speed / FPS_PHYSICS_CHECK;
     if (this.distanceMoved >= 600) this.killSelf();
 
 };
@@ -325,21 +326,8 @@ function MissileSnapshot(aMissile){
     this.yCenter = aMissile.yCenter;
     this.direction = aMissile.direction;
     this.color = aMissile.color;
-    this.shape = aMissile.shape;
+    this.type = aMissile.type;
     this.size = aMissile.size;
-}
-
-/**
- * The snapshot of a wall with minimal information
- * @param aWall
- * @constructor
- */
-function WallSnapshot(aWall){
-    this.xCenter = aWall.xCenter;
-    this.yCenter = aWall.yCenter;
-    this.direction = aWall.direction;
-    this.type = aWall.type;
-    this.color = aWall.color;
 }
 
 /**
@@ -592,6 +580,13 @@ var sendWorldSnapshotToAllClients = function() {
         worldSnapshot = takeWorldSnapshot(keySocket);
         sockets[keySocket].emit('worldSnapshot',worldSnapshot);
     }
+
+    //update status of all missiles to true
+    for (let missileKey in missiles){
+        if (missiles[missileKey].new === true){
+            missiles[missileKey].new = false;
+        }
+    }
 };
 
 /**
@@ -612,7 +607,6 @@ var takeWorldSnapshot = function(socketID){
     for (let missileKey in missiles){
         if (missiles[missileKey].new === true){
             aWorldSnapshot.newMissiles.push(new MissileSnapshot(missiles[missileKey]));
-            missiles[missileKey].new = false;
         }
     }
     worldSnapshots[socketID].push(aWorldSnapshot);
