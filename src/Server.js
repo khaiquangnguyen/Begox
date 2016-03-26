@@ -379,7 +379,8 @@ bounds.yCenter = 0;
 var quadTree = new QT.QuadTree(bounds, true, 7, 4);
 
 
-
+//the hex map of the game
+var hexMap = [];
 //dictionary of all players
 var players ={};
 //dictionary of all sockets
@@ -449,6 +450,8 @@ var connectionHandler = function(socket){
     var tellClientToConnect = function(){
         //if the connection doesn't exist yet, then allow the player to connect
         if(utilities.getItemWithIDFromArray(socket.id,sockets) == -1) {
+            //send the map back to the client, no matter whether then client is valid or not
+            socket.emit('map',hexMap);
             socket.emit('connectionEstablished', socket.id);
             console.log('Connection established', socket.id);
         }
@@ -612,7 +615,30 @@ function updateTree(){
     for (let aMissileKey in missiles) quadTree.insert(missiles[aMissileKey]);
 }
 
+/**
+ * Create a hex array which is a map of locations that contain hex obstacle
+ * @returns {Array}
+ */
+function createHexMap() {
 
+    // Create a hex array
+    hexMap = new Array(NUM_HEX_HEIGHT);
+    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
+        hexMap[i] = new Array(NUM_HEX_WIDTH);
+    }
+
+    // Randomize hex array
+    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
+        for (let j = 0; j < NUM_HEX_WIDTH; j++) {
+            if (Math.random() < HEX_DENSITY) {
+                hexMap[i][j] = 1;
+            }
+        }
+    }
+}
+
+createHexMap();
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
 serverUpdateLoop();
+

@@ -59,9 +59,9 @@ var hexContainer = new PIXI.ParticleContainer(10000, {
     uvs: false,
     alpha: true});
 
-var hexMap = createHexMap(); hexMap[0][0] = 1;
+//var hexMap = createHexMap();
+var hexMap = [];
 var hexArray = [];
-createHexSprites(hexMap, hexContainer, hexArray);
 
 //console.log(hexContainer);
 //console.log(hexArray);
@@ -130,6 +130,11 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
     for (aInputPackage of inputs){
         inputProcessing(aInputPackage.value);
     }
+});
+
+socket.on('map',function(map){
+    hexMap = map;
+    createHexSprites(hexMap, hexContainer, hexArray);
 });
 
 
