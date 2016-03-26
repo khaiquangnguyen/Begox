@@ -5,6 +5,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/ClientCore.js" afterPath="$PROJECT_DIR$/src/Client/ClientCore.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SampleData.js" afterPath="$PROJECT_DIR$/src/SampleData.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
     </list>
     <ignored path="Begox.iws" />
@@ -29,8 +30,8 @@
       <file leaf-file-name="Server.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="490" column="69" selection-start-line="490" selection-start-column="69" selection-end-line="490" selection-end-column="69" />
+            <state vertical-scroll-proportion="173.0">
+              <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
               <folding>
                 <element signature="n#!!doc;n#Player#0" expanded="false" />
                 <element signature="n#!!block;n#Player#0" expanded="false" />
@@ -47,14 +48,13 @@
                 <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
                 <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
                 <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-                <element signature="e#17250#17742#0" expanded="false" />
-                <element signature="e#17745#17820#0" expanded="false" />
-                <element signature="e#17863#18640#0" expanded="false" />
+                <element signature="e#17280#17772#0" expanded="false" />
+                <element signature="e#17775#17850#0" expanded="false" />
                 <element signature="n#!!doc;n#updateTree#0" expanded="false" />
                 <element signature="n#!!block;n#updateTree#0" expanded="false" />
                 <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
                 <element signature="n#!!block;n#createHexMap#0" expanded="false" />
-                <marker date="1459018685049" expanded="true" signature="16900:16908" placeholder="//..." />
+                <marker date="1459021793424" expanded="true" signature="16930:16938" placeholder="//..." />
               </folding>
             </state>
           </provider>
@@ -64,7 +64,7 @@
         <entry file="file://$PROJECT_DIR$/src/SampleData.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="47" column="92" selection-start-line="47" selection-start-column="92" selection-end-line="47" selection-end-column="92" />
+              <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -73,8 +73,8 @@
       <file leaf-file-name="ClientCore.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/ClientCore.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2249135">
-              <caret line="224" column="0" selection-start-line="224" selection-start-column="0" selection-end-line="224" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.64874554">
+              <caret line="135" column="39" selection-start-line="135" selection-start-column="39" selection-end-line="135" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -94,13 +94,13 @@
         <entry file="file://$PROJECT_DIR$/src/Client/client.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="137" column="51" selection-start-line="137" selection-start-column="51" selection-end-line="137" selection-end-column="51" />
+              <caret line="281" column="121" selection-start-line="281" selection-start-column="121" selection-end-line="281" selection-end-column="121" />
               <folding>
                 <element signature="n#!!doc;n#inputProcessing#0" expanded="false" />
                 <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
                 <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
                 <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
-                <marker date="1459018316986" expanded="true" signature="8148:8150" placeholder="{...}" />
+                <marker date="1459022116250" expanded="true" signature="10090:10092" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -195,8 +195,8 @@
         <option value="$PROJECT_DIR$/src/Client/pixi.js" />
         <option value="$PROJECT_DIR$/src/Client/Constants.js" />
         <option value="$PROJECT_DIR$/src/SampleData.js" />
-        <option value="$PROJECT_DIR$/src/Client/client.js" />
         <option value="$PROJECT_DIR$/src/Server.js" />
+        <option value="$PROJECT_DIR$/src/Client/client.js" />
         <option value="$PROJECT_DIR$/src/Client/ClientCore.js" />
       </list>
     </option>
@@ -458,12 +458,6 @@
       <created>1456542677470</created>
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
-    </task>
-    <task id="LOCAL-00048" summary="update input processing server">
-      <created>1457849360623</created>
-      <option name="number" value="00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1457849360623</updated>
     </task>
     <task id="LOCAL-00049" summary="update input processing server">
       <created>1457851058682</created>
@@ -753,7 +747,13 @@
       <option name="project" value="LOCAL" />
       <updated>1459017738475</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="Update sample player file">
+      <created>1459018898669</created>
+      <option name="number" value="00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1459018898669</updated>
+    </task>
+    <option name="localTasksCounter" value="98" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -835,7 +835,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/Server.js</url>
-          <line>465</line>
+          <line>466</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
@@ -861,7 +861,7 @@
             <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
             <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
             <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
-            <marker date="1459018316986" expanded="true" signature="8148:8150" placeholder="{...}" />
+            <marker date="1459022116250" expanded="true" signature="10090:10092" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -941,14 +941,13 @@
             <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
             <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
             <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="e#17250#17742#0" expanded="false" />
-            <element signature="e#17745#17820#0" expanded="false" />
-            <element signature="e#17863#18640#0" expanded="false" />
+            <element signature="e#17280#17772#0" expanded="false" />
+            <element signature="e#17775#17850#0" expanded="false" />
             <element signature="n#!!doc;n#updateTree#0" expanded="false" />
             <element signature="n#!!block;n#updateTree#0" expanded="false" />
             <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
-            <marker date="1459018685049" expanded="true" signature="16900:16908" placeholder="//..." />
+            <marker date="1459021793424" expanded="true" signature="16930:16938" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -1037,14 +1036,13 @@
             <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
             <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
             <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="e#17250#17742#0" expanded="false" />
-            <element signature="e#17745#17820#0" expanded="false" />
-            <element signature="e#17863#18640#0" expanded="false" />
+            <element signature="e#17280#17772#0" expanded="false" />
+            <element signature="e#17775#17850#0" expanded="false" />
             <element signature="n#!!doc;n#updateTree#0" expanded="false" />
             <element signature="n#!!block;n#updateTree#0" expanded="false" />
             <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
-            <marker date="1459018685049" expanded="true" signature="16900:16908" placeholder="//..." />
+            <marker date="1459021793424" expanded="true" signature="16930:16938" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -1237,15 +1235,15 @@
     <entry file="file://$PROJECT_DIR$/src/SampleData.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="47" column="92" selection-start-line="47" selection-start-column="92" selection-end-line="47" selection-end-column="92" />
+          <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="490" column="69" selection-start-line="490" selection-start-column="69" selection-end-line="490" selection-end-column="69" />
+        <state vertical-scroll-proportion="173.0">
+          <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
           <folding>
             <element signature="n#!!doc;n#Player#0" expanded="false" />
             <element signature="n#!!block;n#Player#0" expanded="false" />
@@ -1262,14 +1260,13 @@
             <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
             <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
             <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="e#17250#17742#0" expanded="false" />
-            <element signature="e#17745#17820#0" expanded="false" />
-            <element signature="e#17863#18640#0" expanded="false" />
+            <element signature="e#17280#17772#0" expanded="false" />
+            <element signature="e#17775#17850#0" expanded="false" />
             <element signature="n#!!doc;n#updateTree#0" expanded="false" />
             <element signature="n#!!block;n#updateTree#0" expanded="false" />
             <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
-            <marker date="1459018685049" expanded="true" signature="16900:16908" placeholder="//..." />
+            <marker date="1459021793424" expanded="true" signature="16930:16938" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -1277,21 +1274,21 @@
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="137" column="51" selection-start-line="137" selection-start-column="51" selection-end-line="137" selection-end-column="51" />
+          <caret line="281" column="121" selection-start-line="281" selection-start-column="121" selection-end-line="281" selection-end-column="121" />
           <folding>
             <element signature="n#!!doc;n#inputProcessing#0" expanded="false" />
             <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
             <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
             <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
-            <marker date="1459018316986" expanded="true" signature="8148:8150" placeholder="{...}" />
+            <marker date="1459022116250" expanded="true" signature="10090:10092" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/ClientCore.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2249135">
-          <caret line="224" column="0" selection-start-line="224" selection-start-column="0" selection-end-line="224" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.64874554">
+          <caret line="135" column="39" selection-start-line="135" selection-start-column="39" selection-end-line="135" selection-end-column="39" />
           <folding />
         </state>
       </provider>

@@ -314,6 +314,7 @@ function PlayerSnapshot(aPlayer){
     this.direction = aPlayer.direction;
     this.type = aPlayer.type;
     this.color = aPlayer.color;
+    this.size = aPlayer.size;
 }
 /**
  * The snapshot of a missile with minimal information

@@ -23,6 +23,12 @@ function Player(aPlayer){
     this.velY = aPlayer.velY;
 }
 
+
+/**
+ * A basic object to store all the information of other players in the game
+ * @param attributes
+ * @constructor
+ */
 function ShadowPlayer(attributes){
     this.id = attributes.id;
     this.shape  = new PIXI.Graphics();
@@ -30,9 +36,23 @@ function ShadowPlayer(attributes){
     this.yCenter = attributes.yCenter;
     this.direction = attributes.direction;
     this.color = attributes.color;
-    //this.velX = velX;
-    //this.velY = velY;
+    this.type = attributes.type;
+    this.interpolateFactor = 0;
+    this.velX = 0;
+    this.velY = 0;
 }
+
+/**
+ * Update the shadow player
+ * @param updateData
+ */
+ShadowPlayer.prototype.update = function(updateData){
+    this.xCenter = updateData.xCenter;
+    this.yCenter = updateData.yCenter;
+    this.velX = updateData.velX;
+    this.velY = updateData.velY;
+    this.interpolateFactor = updateData.interpolateFactor;
+};
 
 function Wall(attributes){
     this.xCenter = attributes.xCenter;
@@ -50,6 +70,11 @@ function Missile(attributes){
 function input(sequenceNumber,value){
     this.sequenceNumber = sequenceNumber;
     this.value = value;
+}
+
+function PlayerSnapshot(timeStamp, otherPlayers){
+    this.timeStamp = timeStamp;
+    this.otherPlayers = otherPlayers;
 }
 
 /**
@@ -106,28 +131,13 @@ var drawWithRespectToMainPlayer = function(other, player) {
 
 var drawWithRespectToMainPlayerInterpolation = function(other, player) {
     //calculate interpolation
-
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color);
     let newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor);
     let newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor);
-    other.shape.drawCircle(newX, newY, 10);
+    other.shape.drawCircle(newX, newY, 20);
     other.shape.endFill();
-
-    other.shape.beginFill(other.color,0.3);
-     newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor * 0.75);
-     newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 0.75);
-    other.shape.drawCircle(newX, newY, 10);
-    other.shape.endFill();
-
-    other.shape.beginFill(other.color,0.3);
-     newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor * 1.3);
-     newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor * 1.3);
-    other.shape.drawCircle(newX, newY, 10);
-    other.shape.endFill();
-
-
 };
 
 
@@ -177,8 +187,8 @@ var drawSquare = function(other, player) {
  * @param otherList
  */
 var drawOtherPlayers = function(otherPlayers, mainPlayer) {
-    for (var aPlayer of otherPlayers) {
-        drawWithRespectToMainPlayer(aPlayer,mainPlayer);
+    for (let aPlayer of otherPlayers) {
+        drawWithRespectToMainPlayerInterpolation(aPlayer,mainPlayer);
     }
 };
 

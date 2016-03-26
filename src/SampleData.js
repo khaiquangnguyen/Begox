@@ -114,6 +114,3 @@ function updatePlayer(){
     var size;
 }
 
-function destroyedPlayer(){
-    var playerID;
-}

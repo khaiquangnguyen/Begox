@@ -25,7 +25,10 @@ var inputSequenceNumber = 0;
 var inputs = [];
 var mainPlayer;
 var missiles = [];
+//dictionary of all players
 var otherPlayers = {};
+//array of all players to draw
+var playersToDraw = [];
 //the option, one of triangle, circle or square
 var playerType = TRIANGLE_TYPE;
 var keys = {};
@@ -234,12 +237,52 @@ function interpolateMissiles(){
                     for (let j = 0; j < beforeMissilesSnapshots.length; j++) {
                         if (currMissileSnapshots[i].id == beforeMissilesSnapshots[j].id) {
                             let aMissile = beforeMissilesSnapshots[j];
-                            aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter ;
+                            aMissile.velX = currMissileSnapshots[i].xCenter - beforeMissilesSnapshots[j].xCenter;
                             aMissile.velY =  currMissileSnapshots[i].yCenter - beforeMissilesSnapshots[j].yCenter;
                             aMissile.interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
                             aMissile.shape = beforeMissilesSnapshots[j].shape;
                             stage.addChild(aMissile.shape);
                             missiles.push(aMissile);
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
+
+/**
+ * Interpolate players from the data sent by the server
+ * @returns {number}
+ */
+function interpolatePlayers(){
+    playersToDraw = [];
+    //if there are not enough snapshots, stop drawing
+    if(worldSnapshots.length < 2) {
+        return 0;
+    }
+    else{
+        delayedTimeStamp = Date.now() - expectedLagMs;
+        for (let k = worldSnapshots.length-1; k > 1; k--){
+            let currPlayerSnapshot = worldSnapshots[k].players;
+            let prevPlayerSnapshot = worldSnapshots[k-1].players;
+            let nextTimeStamp = worldSnapshots[k].timeStamp;
+            let prevTimeStamp = worldSnapshots[k-1].timeStamp;
+            if (delayedTimeStamp > prevTimeStamp && delayedTimeStamp < nextTimeStamp){
+                updateStage();
+                for (let i = 0; i < currPlayerSnapshot.length; i ++) {
+                    for (let j = 0; j < prevPlayerSnapshot.length; j++) {
+                        if (currPlayerSnapshot[i].id == prevPlayerSnapshot[j].id) {
+                            let aPlayer = otherPlayers[currPlayerSnapshot[i].id];
+                            let xCenter = prevPlayerSnapshot[j].xCenter;
+                            let yCenter = prevPlayerSnapshot[j].yCenter;
+                            let velX = currPlayerSnapshot[i].xCenter - prevPlayerSnapshot[j].xCenter ;
+                            let velY =  currPlayerSnapshot[i].yCenter - prevPlayerSnapshot[j].yCenter;
+                            let interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
+                            aPlayer.update({xCenter,yCenter,velX,velY,interpolateFactor});
+                            stage.addChild(aPlayer.shape);
+                            playersToDraw.push(aPlayer);
                         }
                     }
                 }
@@ -256,9 +299,10 @@ function animate() {
     updateHexSprites(hexArray, mainPlayer);
     drawMainPlayer(mainPlayer);
     if(worldSnapshots.length >= 1) {
-        //drawOtherPlayers(worldSnapshots[worldSnapshots.length -1].players, mainPlayer);
-        interpolateMissiles();
-        drawMissiles(missiles, mainPlayer);
+        //interpolateMissiles();
+        //drawMissiles(missiles, mainPlayer);
+        interpolatePlayers();
+        drawOtherPlayers(playersToDraw,mainPlayer);
     }
     renderer.render(stage);
     window.setTimeout(function() {
