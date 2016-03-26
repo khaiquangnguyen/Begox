@@ -186,6 +186,7 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed){
     this.distanceMoved = 0;
     //TODO; different missile types
     this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
+    this.new = true;
 }
 
 
@@ -293,11 +294,11 @@ function Input(id){
 
 function WorldSnapshot(){
     //the array of players snapshot
-    this.players = [];
+    this.updatePlayers = [];
     //the array of missiles snapshot
-    this.missiles = [];
-    //the array of walls snapshot
-    this.walls = [];
+    this.newMissiles = [];
+    //the array of destroyed missile
+    this.destroyedMissiles = [];
     //the time stamp
     this.timeStamp = 0;
 }
@@ -311,9 +312,6 @@ function PlayerSnapshot(aPlayer){
     this.id = aPlayer.id;
     this.xCenter = aPlayer.xCenter;
     this.yCenter = aPlayer.yCenter;
-    this.direction = aPlayer.direction;
-    this.type = aPlayer.type;
-    this.color = aPlayer.color;
     this.size = aPlayer.size;
 }
 /**
@@ -599,18 +597,23 @@ var sendWorldSnapshotToAllClients = function() {
  */
 var takeWorldSnapshot = function(socketID){
     //TODO take world snapshot according to each socket ID
+
+
+
     var aWorldSnapshot = new WorldSnapshot();
     aWorldSnapshot.timeStamp = Date.now();
     for (let playerKey in players){
         if(playerKey != socketID) {
-            aWorldSnapshot.players.push(new PlayerSnapshot(players[playerKey]));
+            aWorldSnapshot.updatePlayers.push(new PlayerSnapshot(players[playerKey]));
         }
     }
+
     for (let missileKey in missiles){
-        aWorldSnapshot.missiles.push(new MissileSnapshot(missiles[missileKey]));
-    }
-    for (let wallKey in walls){
-        aWorldSnapshot.walls.push(new Wall(walls[wallKey]));
+        if (missiles[missileKey].new === true){
+            aWorldSnapshot.newMissiles.push(new MissileSnapshot(missiles[missileKey]));
+            missiles[missileKey].new = false;
+        }
+
     }
     worldSnapshots[socketID].push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only

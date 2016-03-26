@@ -53,7 +53,6 @@ function sampleWorldSnapshot(){
     //The time stamp. A sequence of 8-10 numbers. This may need further modification
     // 32 bits?
     var timeStamp;
-    var destroyedPlayers = [];
     //An array of updatePlayer. Use updatePlayer() as default data type.
     var UpdatePlayers = [];
     //An array of new missiles. USe sampleNewMissiles() as default data type
@@ -85,17 +84,12 @@ function sampleNewMissiles(){
     var startX;
     //16 bits
     var startY;
-    //16 bits
-    var endX;
-    //16 bits
-    var endY;
     //5 bits
     var color;
     //2 bits
     var shape;
     //8 bits
     var size;
-
 }
 
 /**

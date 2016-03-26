@@ -67,7 +67,7 @@ function Missile(attributes){
     this.color = attributes.color;
 }
 
-function input(sequenceNumber,value){
+function Input(sequenceNumber,value){
     this.sequenceNumber = sequenceNumber;
     this.value = value;
 }
