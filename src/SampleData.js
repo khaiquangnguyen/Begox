@@ -90,6 +90,8 @@ function sampleNewMissiles(){
     var shape;
     //8 bits
     var size;
+    //10 bits
+    var direction;
 }
 
 /**

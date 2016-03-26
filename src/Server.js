@@ -320,7 +320,6 @@ function PlayerSnapshot(aPlayer){
  * @constructor
  */
 function MissileSnapshot(aMissile){
-    this.shooterID = aMissile.shooterID;
     this.id = aMissile.id;
     this.xCenter = aMissile.xCenter;
     this.yCenter = aMissile.yCenter;
