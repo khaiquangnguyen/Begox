@@ -89,8 +89,6 @@ socket.on('connectionEstablished', function(id){
 
 socket.on('playerCreated',function(aPlayer){
     expectedLagMs = Date.now() - expectedLagMs;
-    //round expected lag to the nearest 100 ms
-    //expectedLagMs = Math.ceil(expectedLagMs / 100) * 100;
     //add extra expected lag to compensate for both processing time from the server
     expectedLagMs += 40;
     console.log(expectedLagMs);
@@ -104,6 +102,11 @@ socket.on('playerCreated',function(aPlayer){
 socket.on('worldSnapshot',function(aWorldSnapshot){
     worldSnapshots.push(aWorldSnapshot);
     if (worldSnapshots.length > MAX_WORLD_SNAPSHOT) worldSnapshots.shift();
+    for (let aMissile of aWorldSnapshot.newMissiles){
+        let newMissile = new ClientMissile(aMissile);
+        newMissile.shape = new PIXI.Graphics();
+        missiles.push(newMissile);
+    }
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
@@ -210,6 +213,9 @@ function updateStage(){
     stage.addChild(background);
     stage.addChild(hexContainer);
     stage.addChild(mainPlayer.shape);
+    for (let aMissile of missiles) {
+        stage.addChild(aMissile.shape);
+    }
 }
 
 
@@ -253,6 +259,15 @@ function interpolatePlayers(){
     }
 }
 
+function updateMissiles(delta){
+    for (let aMissiles of missiles){
+        aMissiles.update(delta);
+    }
+}
+
+var prevTime = Date.now();
+var currTime = Date.now();
+var delta = 0;
 function animate() {
     // Update info
     inputUpdate();
@@ -263,6 +278,11 @@ function animate() {
         interpolatePlayers();
         drawOtherPlayers(playersToDraw,mainPlayer);
     }
+    prevTime = currTime;
+    currTime = Date.now();
+    delta = (currTime - prevTime) / 1000;
+    updateMissiles(delta);
+    drawMissiles(missiles, mainPlayer);
     renderer.render(stage);
     window.setTimeout(function() {
         requestAnimationFrame(animate)
