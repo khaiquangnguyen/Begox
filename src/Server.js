@@ -324,6 +324,9 @@ function MissileSnapshot(aMissile){
     this.xCenter = aMissile.xCenter;
     this.yCenter = aMissile.yCenter;
     this.direction = aMissile.direction;
+    this.color = aMissile.color;
+    this.shape = aMissile.shape;
+    this.size = aMissile.size;
 }
 
 /**
@@ -606,13 +609,11 @@ var takeWorldSnapshot = function(socketID){
             aWorldSnapshot.updatePlayers.push(new PlayerSnapshot(players[playerKey]));
         }
     }
-
     for (let missileKey in missiles){
         if (missiles[missileKey].new === true){
             aWorldSnapshot.newMissiles.push(new MissileSnapshot(missiles[missileKey]));
             missiles[missileKey].new = false;
         }
-
     }
     worldSnapshots[socketID].push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
