@@ -223,31 +223,6 @@ function updateBackground() {
 
 //=============================================================================
 
-///**
-// * Create a hex array which is a map of locations that contain hex obstacle
-// * @returns {Array}
-// */
-//function createHexMap() {
-//
-//    // Create a hex array
-//    var hexArray = new Array(NUM_HEX_HEIGHT);
-//    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
-//        hexArray[i] = new Array(NUM_HEX_WIDTH);
-//    }
-//
-//    // Randomize hex array
-//    for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
-//        for (let j = 0; j < NUM_HEX_WIDTH; j++) {
-//            if (Math.random() < HEX_DENSITY) {
-//                hexArray[i][j] = 1;
-//            }
-//        }
-//    }
-//
-//    // Return the hexArray
-//    return hexArray;
-//}
-
 /**
  * Generate sprites of HexSprite according to the hex-map
  * @param hexMap

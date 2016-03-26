@@ -63,10 +63,6 @@ var hexContainer = new PIXI.ParticleContainer(10000, {
 var hexMap = [];
 var hexArray = [];
 
-//console.log(hexContainer);
-//console.log(hexArray);
-//console.log(hexMap);
-
 // create the root of the scene graph
 var stage = new PIXI.Container();
 stage.interactive = true;
@@ -135,6 +131,11 @@ socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,last
 socket.on('map',function(map){
     hexMap = map;
     createHexSprites(hexMap, hexContainer, hexArray);
+});
+
+socket.on('anotherPlayerConnect',function(playerAttributes){
+    var anotherPlayer = new ShadowPlayer(playerAttributes);
+    otherPlayers[anotherPlayer.id] = anotherPlayer;
 });
 
 

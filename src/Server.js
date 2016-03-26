@@ -480,6 +480,18 @@ var connectionHandler = function(socket){
                 default:
                     var aPlayer = new Player(info.id,x,y,CIRCLE_SIZE,CIRCLE_TYPE,-1,CIRCLE_SPEED);
             }
+
+            //inform other clients of the newly connected player
+            for (let socketID in sockets) {
+                sockets[socketID].emit('anotherPlayerConnect', aPlayer);
+            }
+            //inform the client of the new player
+            socket.emit('playerCreated',aPlayer);
+            console.log('New player created.');
+            //send the previously connected players to the new player
+            for (let aPlayerKey in players){
+                socket.emit('anotherPlayerConnect', players[aPlayerKey]);
+            }
             // add socket to socket dictionary
             sockets[socket.id] = socket;
             //add player to player dictionary
@@ -488,9 +500,8 @@ var connectionHandler = function(socket){
             inputs[socket.id] = new Input(info.id);
             //initiate new worldSnapshot list to dictionary
             worldSnapshots[socket.id] = [];
-            //inform the client of the new player
-            socket.emit('playerCreated',aPlayer);
-            console.log('New player created.');
+
+
         }
         else{
             console.log('player existed. Terminate initializing new player.')
@@ -620,13 +631,11 @@ function updateTree(){
  * @returns {Array}
  */
 function createHexMap() {
-
     // Create a hex array
     hexMap = new Array(NUM_HEX_HEIGHT);
     for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
         hexMap[i] = new Array(NUM_HEX_WIDTH);
     }
-
     // Randomize hex array
     for (let i = 0; i < NUM_HEX_HEIGHT; i++) {
         for (let j = 0; j < NUM_HEX_WIDTH; j++) {
@@ -637,6 +646,7 @@ function createHexMap() {
     }
 }
 
+//Create a map on the server as the blueprint for all the maps in the client
 createHexMap();
 io.on('connection', connectionHandler);
 gamePhysicsLoop();
