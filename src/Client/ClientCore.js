@@ -126,7 +126,6 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.beginFill(other.color);
     other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
     other.shape.endFill();
-
 };
 
 var drawWithRespectToMainPlayerInterpolation = function(other, player) {
