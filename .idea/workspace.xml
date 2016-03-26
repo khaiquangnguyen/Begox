@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2666849d-9622-4700-920c-45def505c71d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/ClientCore.js" afterPath="$PROJECT_DIR$/src/Client/ClientCore.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/Constants.js" afterPath="$PROJECT_DIR$/src/Client/Constants.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Client/client.js" afterPath="$PROJECT_DIR$/src/Client/client.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/SampleData.js" afterPath="$PROJECT_DIR$/src/SampleData.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Server.js" afterPath="$PROJECT_DIR$/src/Server.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Begox.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,28 +26,22 @@
       <file leaf-file-name="Server.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
+            <state vertical-scroll-proportion="-18.8">
+              <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
               <folding>
-                <element signature="n#!!doc;n#Player#0" expanded="false" />
-                <element signature="n#!!block;n#Player#0" expanded="false" />
-                <element signature="e#1309#1425#0" expanded="false" />
-                <element signature="e#1649#1732#0" expanded="false" />
                 <element signature="e#1768#2557#0" expanded="false" />
-                <element signature="e#2560#2633#0" expanded="false" />
-                <element signature="e#3281#3419#0" expanded="false" />
-                <element signature="e#3516#3678#0" expanded="false" />
-                <element signature="e#3911#4509#0" expanded="false" />
-                <element signature="n#!!doc;n#Missile#0" expanded="false" />
-                <element signature="n#!!block;n#Missile#0" expanded="false" />
-                <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
-                <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
-                <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
-                <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-                <element signature="n#!!doc;n#updateTree#0" expanded="false" />
-                <element signature="n#!!block;n#updateTree#0" expanded="false" />
-                <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
                 <element signature="n#!!block;n#createHexMap#0" expanded="false" />
+                <marker date="1459035629784" expanded="false" signature="1309:1425" placeholder="/** Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false. ...*/" />
+                <marker date="1459035629784" expanded="false" signature="2560:2633" placeholder="/** When player is killed ...*/" />
+                <marker date="1459035629784" expanded="false" signature="3281:3419" placeholder="/** the reward for killing another player. This comes in the form of accumulating size ...*/" />
+                <marker date="1459035629784" expanded="false" signature="3516:3678" placeholder="/** When the player takes damage ...*/" />
+                <marker date="1459035629784" expanded="true" signature="3911:4467" placeholder="{...}" />
+                <marker date="1459035629784" expanded="true" signature="3940:4467" placeholder="{...}" />
+                <marker date="1459035629784" expanded="true" signature="4019:4296" placeholder="{...}" />
+                <marker date="1459035629784" expanded="true" signature="18395:18401" placeholder="{...}" />
+                <marker date="1459035629784" expanded="true" signature="18395:18636" placeholder="{...}" />
+                <marker date="1459035629784" expanded="false" signature="18639:18665" placeholder="/** Update the tree ...*/" />
+                <marker date="1459035629784" expanded="false" signature="18865:18968" placeholder="/** Create a hex array which is a map of locations that contain hex obstacle ...*/" />
               </folding>
             </state>
           </provider>
@@ -61,7 +51,7 @@
         <entry file="file://$PROJECT_DIR$/src/SampleData.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+              <caret line="91" column="13" selection-start-line="91" selection-start-column="13" selection-end-line="91" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -70,8 +60,18 @@
       <file leaf-file-name="ClientCore.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Client/ClientCore.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43548387">
-              <caret line="145" column="16" selection-start-line="145" selection-start-column="16" selection-end-line="145" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.32616487">
+              <caret line="58" column="32" selection-start-line="58" selection-start-column="32" selection-end-line="58" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Constants.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Client/Constants.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-10.5">
+              <caret line="15" column="25" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -90,13 +90,11 @@
       <file leaf-file-name="client.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Client/client.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="276" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
+            <state vertical-scroll-proportion="-11.9">
+              <caret line="104" column="34" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
               <folding>
-                <element signature="n#!!doc;n#inputProcessing#0" expanded="false" />
-                <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
-                <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
-                <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
+                <marker date="1459035629723" expanded="true" signature="2454:2510" placeholder="{...}" />
+                <marker date="1459035629723" expanded="true" signature="7999:8115" placeholder="{...}" />
               </folding>
             </state>
           </provider>
@@ -107,16 +105,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="73" column="46" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="46" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Client/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -161,7 +149,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="sendMapToClient" />
       </map>
     </option>
     <option name="PUSH_TAGS">
@@ -192,10 +180,10 @@
         <option value="$PROJECT_DIR$/src/Client/testClient.js" />
         <option value="$PROJECT_DIR$/src/Utilities.js" />
         <option value="$PROJECT_DIR$/src/Client/pixi.js" />
-        <option value="$PROJECT_DIR$/src/Client/Constants.js" />
         <option value="$PROJECT_DIR$/src/SampleData.js" />
-        <option value="$PROJECT_DIR$/src/Server.js" />
+        <option value="$PROJECT_DIR$/src/Client/Constants.js" />
         <option value="$PROJECT_DIR$/src/Client/client.js" />
+        <option value="$PROJECT_DIR$/src/Server.js" />
         <option value="$PROJECT_DIR$/src/Client/ClientCore.js" />
       </list>
     </option>
@@ -256,8 +244,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -457,24 +445,6 @@
       <created>1456542677470</created>
       <option name="number" value="Default" />
       <updated>1456542677470</updated>
-    </task>
-    <task id="LOCAL-00052" summary="update input processing server">
-      <created>1457856453127</created>
-      <option name="number" value="00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1457856453127</updated>
-    </task>
-    <task id="LOCAL-00053" summary="update input processing server">
-      <created>1457879598003</created>
-      <option name="number" value="00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1457879598004</updated>
-    </task>
-    <task id="LOCAL-00054" summary="update input processing server">
-      <created>1457880372433</created>
-      <option name="number" value="00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1457880372433</updated>
     </task>
     <task id="LOCAL-00055" summary="update input processing server">
       <created>1457880856961</created>
@@ -752,7 +722,25 @@
       <option name="project" value="LOCAL" />
       <updated>1459023095112</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="Update sample player file">
+      <created>1459025728660</created>
+      <option name="number" value="00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1459025728660</updated>
+    </task>
+    <task id="LOCAL-00102" summary="Update sample player file">
+      <created>1459026466756</created>
+      <option name="number" value="00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1459026466756</updated>
+    </task>
+    <task id="LOCAL-00103" summary="Update sample player file">
+      <created>1459029861061</created>
+      <option name="number" value="00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1459029861061</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -761,21 +749,21 @@
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12908325" sideWeight="0.4960981" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32924107" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32552955" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3325893" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3169643" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12961012" sideWeight="0.5039019" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39869988" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33370537" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328125" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39869988" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -834,11 +822,11 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/Server.js</url>
-          <line>466</line>
+          <line>469</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="5" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -856,10 +844,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="195" column="5" selection-start-line="195" selection-start-column="5" selection-end-line="195" selection-end-column="5" />
           <folding>
-            <element signature="n#!!doc;n#inputProcessing#0" expanded="false" />
-            <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
-            <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
-            <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
+            <marker date="1459035629723" expanded="true" signature="2454:2510" placeholder="{...}" />
+            <marker date="1459035629723" expanded="true" signature="7999:8115" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -924,25 +910,19 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="62" column="13" selection-start-line="62" selection-start-column="13" selection-end-line="62" selection-end-column="13" />
           <folding>
-            <element signature="n#!!doc;n#Player#0" expanded="false" />
-            <element signature="n#!!block;n#Player#0" expanded="false" />
-            <element signature="e#1309#1425#0" expanded="false" />
-            <element signature="e#1649#1732#0" expanded="false" />
             <element signature="e#1768#2557#0" expanded="false" />
-            <element signature="e#2560#2633#0" expanded="false" />
-            <element signature="e#3281#3419#0" expanded="false" />
-            <element signature="e#3516#3678#0" expanded="false" />
-            <element signature="e#3911#4509#0" expanded="false" />
-            <element signature="n#!!doc;n#Missile#0" expanded="false" />
-            <element signature="n#!!block;n#Missile#0" expanded="false" />
-            <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!doc;n#updateTree#0" expanded="false" />
-            <element signature="n#!!block;n#updateTree#0" expanded="false" />
-            <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
+            <marker date="1459035629784" expanded="false" signature="1309:1425" placeholder="/** Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false. ...*/" />
+            <marker date="1459035629784" expanded="false" signature="2560:2633" placeholder="/** When player is killed ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3281:3419" placeholder="/** the reward for killing another player. This comes in the form of accumulating size ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3516:3678" placeholder="/** When the player takes damage ...*/" />
+            <marker date="1459035629784" expanded="true" signature="3911:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="3940:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="4019:4296" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18401" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18636" placeholder="{...}" />
+            <marker date="1459035629784" expanded="false" signature="18639:18665" placeholder="/** Update the tree ...*/" />
+            <marker date="1459035629784" expanded="false" signature="18865:18968" placeholder="/** Create a hex array which is a map of locations that contain hex obstacle ...*/" />
           </folding>
         </state>
       </provider>
@@ -1016,25 +996,19 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc;n#Player#0" expanded="false" />
-            <element signature="n#!!block;n#Player#0" expanded="false" />
-            <element signature="e#1309#1425#0" expanded="false" />
-            <element signature="e#1649#1732#0" expanded="false" />
             <element signature="e#1768#2557#0" expanded="false" />
-            <element signature="e#2560#2633#0" expanded="false" />
-            <element signature="e#3281#3419#0" expanded="false" />
-            <element signature="e#3516#3678#0" expanded="false" />
-            <element signature="e#3911#4509#0" expanded="false" />
-            <element signature="n#!!doc;n#Missile#0" expanded="false" />
-            <element signature="n#!!block;n#Missile#0" expanded="false" />
-            <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!doc;n#updateTree#0" expanded="false" />
-            <element signature="n#!!block;n#updateTree#0" expanded="false" />
-            <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
+            <marker date="1459035629784" expanded="false" signature="1309:1425" placeholder="/** Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false. ...*/" />
+            <marker date="1459035629784" expanded="false" signature="2560:2633" placeholder="/** When player is killed ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3281:3419" placeholder="/** the reward for killing another player. This comes in the form of accumulating size ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3516:3678" placeholder="/** When the player takes damage ...*/" />
+            <marker date="1459035629784" expanded="true" signature="3911:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="3940:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="4019:4296" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18401" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18636" placeholder="{...}" />
+            <marker date="1459035629784" expanded="false" signature="18639:18665" placeholder="/** Update the tree ...*/" />
+            <marker date="1459035629784" expanded="false" signature="18865:18968" placeholder="/** Create a hex array which is a map of locations that contain hex obstacle ...*/" />
           </folding>
         </state>
       </provider>
@@ -1158,13 +1132,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Client/Constants.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/views/index.jade">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
@@ -1225,56 +1192,56 @@
     <entry file="file://$PROJECT_DIR$/src/SampleData.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <caret line="91" column="13" selection-start-line="91" selection-start-column="13" selection-end-line="91" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Client/Constants.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-10.5">
+          <caret line="15" column="25" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Server.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="314" column="29" selection-start-line="314" selection-start-column="29" selection-end-line="314" selection-end-column="29" />
+        <state vertical-scroll-proportion="-18.8">
+          <caret line="216" column="0" selection-start-line="216" selection-start-column="0" selection-end-line="216" selection-end-column="0" />
           <folding>
-            <element signature="n#!!doc;n#Player#0" expanded="false" />
-            <element signature="n#!!block;n#Player#0" expanded="false" />
-            <element signature="e#1309#1425#0" expanded="false" />
-            <element signature="e#1649#1732#0" expanded="false" />
             <element signature="e#1768#2557#0" expanded="false" />
-            <element signature="e#2560#2633#0" expanded="false" />
-            <element signature="e#3281#3419#0" expanded="false" />
-            <element signature="e#3516#3678#0" expanded="false" />
-            <element signature="e#3911#4509#0" expanded="false" />
-            <element signature="n#!!doc;n#Missile#0" expanded="false" />
-            <element signature="n#!!block;n#Missile#0" expanded="false" />
-            <element signature="n#!!doc;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!block;n#gamePhysicsLoop#0" expanded="false" />
-            <element signature="n#!!doc;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!block;n#updateGamePhysics#0" expanded="false" />
-            <element signature="n#!!doc;n#updateTree#0" expanded="false" />
-            <element signature="n#!!block;n#updateTree#0" expanded="false" />
-            <element signature="n#!!doc;n#createHexMap#0" expanded="false" />
             <element signature="n#!!block;n#createHexMap#0" expanded="false" />
+            <marker date="1459035629784" expanded="false" signature="1309:1425" placeholder="/** Check of the Player collide with anything. Return true of collide with obstacles, otherwise return false. ...*/" />
+            <marker date="1459035629784" expanded="false" signature="2560:2633" placeholder="/** When player is killed ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3281:3419" placeholder="/** the reward for killing another player. This comes in the form of accumulating size ...*/" />
+            <marker date="1459035629784" expanded="false" signature="3516:3678" placeholder="/** When the player takes damage ...*/" />
+            <marker date="1459035629784" expanded="true" signature="3911:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="3940:4467" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="4019:4296" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18401" placeholder="{...}" />
+            <marker date="1459035629784" expanded="true" signature="18395:18636" placeholder="{...}" />
+            <marker date="1459035629784" expanded="false" signature="18639:18665" placeholder="/** Update the tree ...*/" />
+            <marker date="1459035629784" expanded="false" signature="18865:18968" placeholder="/** Create a hex array which is a map of locations that contain hex obstacle ...*/" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/client.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="276" column="0" selection-start-line="276" selection-start-column="0" selection-end-line="276" selection-end-column="0" />
+        <state vertical-scroll-proportion="-11.9">
+          <caret line="104" column="34" selection-start-line="104" selection-start-column="34" selection-end-line="104" selection-end-column="34" />
           <folding>
-            <element signature="n#!!doc;n#inputProcessing#0" expanded="false" />
-            <element signature="n#!!block;n#inputProcessing#0" expanded="false" />
-            <element signature="n#!!doc;n#inputUpdate#0" expanded="false" />
-            <element signature="n#!!block;n#inputUpdate#0" expanded="false" />
+            <marker date="1459035629723" expanded="true" signature="2454:2510" placeholder="{...}" />
+            <marker date="1459035629723" expanded="true" signature="7999:8115" placeholder="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Client/ClientCore.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43548387">
-          <caret line="145" column="16" selection-start-line="145" selection-start-column="16" selection-end-line="145" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.32616487">
+          <caret line="58" column="32" selection-start-line="58" selection-start-column="32" selection-end-line="58" selection-end-column="32" />
           <folding />
         </state>
       </provider>
