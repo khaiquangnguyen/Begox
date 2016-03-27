@@ -99,12 +99,13 @@ Player.prototype.killSelf = function(){
     if(this.lastEnemy != null){
         this.lastEnemy.getRewardForKill(this.size);
     }
-    utilities.removeItemWithIDFromArray(this.id,players);
+    sockets[this.id].emit('killPlayer', this.id);
     utilities.removeItemWithIDFromArray(this.id,sockets);
+    utilities.removeItemWithIDFromArray(this.id,players);
     utilities.removeItemWithIDFromArray(this.id, inputs);
-    for (let aMissileKey in missiles){
-        if(missiles[aMissileKey].shooterID == this.id) delete(missiles[aMissileKey]);
-    }
+    //for (let aMissileKey in missiles){
+    //    if(missiles[aMissileKey].shooterID == this.id) delete(missiles[aMissileKey]);
+    //}
 };
 
 Player.prototype.update = function(){
@@ -208,7 +209,6 @@ Missile.prototype.move = function(){
     this.checkCollision();
     this.distanceMoved += this.speed / FPS_PHYSICS_CHECK;
     if (this.distanceMoved >= 600) this.killSelf();
-
 };
 
 Missile.prototype.dealDamage = function(target){
@@ -225,13 +225,11 @@ Missile.prototype.checkCollision = function(){
     this.colBound = new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
     let potentialColObjs = quadTree.retrieve(this);
     for (let aObject of potentialColObjs){
-        if (aObject != undefined) {
+        if (aObject != undefined && aObject.id != this.shooterID && aObject.id != this.id) {
+            console.log(this.colBound, aObject.colBound);
             if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
-                if(aObject.id != this.shooterID && aObject.id != this.id) {
                     this.dealDamage(aObject);
                     this.killSelf();
-
-                }
                 return true;
             }
         }
@@ -401,7 +399,6 @@ var previousTickPhysicsLoop = Date.now();
 //==============================================================
 
 
-
 //start listening on the server
 http.listen(process.env.PORT || 3000, function(){
     console.log('listening on port ',process.env.PORT || 3000);
@@ -489,8 +486,6 @@ var connectionHandler = function(socket){
             inputs[socket.id] = new Input(info.id);
             //initiate new worldSnapshot list to dictionary
             worldSnapshots[socket.id] = [];
-
-
         }
         else{
             console.log('player existed. Terminate initializing new player.')
@@ -502,11 +497,10 @@ var connectionHandler = function(socket){
      */
     var disconnect = function(){
         console.log(socket.id, "disconnected");
+        //remove the socket from socket list
+        utilities.removeItemWithIDFromArray(socket.id,sockets);
         //remove the player from players list
         utilities.removeItemWithIDFromArray(socket.id,players);
-        console.log("Number of players left:",Object.keys(players).length);
-        ////remove the socket from socket list
-        utilities.removeItemWithIDFromArray(socket.id,sockets);
         //remove the corresponding input list from the list of all inputs
         utilities.removeItemWithIDFromArray(socket.id, inputs);
         //remove all missiles fired by the disconnected player from the game

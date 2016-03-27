@@ -141,6 +141,10 @@ socket.on('anotherPlayerConnect',function(playerAttributes){
     otherPlayers[anotherPlayer.id] = anotherPlayer;
 });
 
+socket.on('killPlayer',function(playerID){
+    delete otherPlayers[playerID];
+});
+
 
 //=============================================================================
 
@@ -287,7 +291,6 @@ function animate() {
     window.setTimeout(function() {
         requestAnimationFrame(animate)
     }, 8);
-
 }
 
 
