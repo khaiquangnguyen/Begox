@@ -26,6 +26,6 @@ module.exports.getItemWithIDFromArray = function(ID, dictionary){
 module.exports.removeItemWithIDFromArray = function(ID,dictionary){
    if(dictionary[ID] === undefined) return -1;
     else{
-       if(dictionary[ID].id == ID) delete dictionary[ID];
+       if(dictionary[ID].id === ID) delete dictionary[ID];
    }
 };
