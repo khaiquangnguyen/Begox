@@ -107,6 +107,13 @@ socket.on('worldSnapshot',function(aWorldSnapshot){
         newMissile.shape = new PIXI.Graphics();
         missiles.push(newMissile);
     }
+    for (let aRemoveMissileID of aWorldSnapshot.destroyedMissiles){
+        for (let i = 0; i < missiles.length; i ++){
+            if (missiles[i].id === aRemoveMissileID){
+                missiles.splice(i,1);
+            }
+        }
+    }
 });
 
 socket.on('updatePosition',function(serverX,serverY, serverVelX, serverVelY,lastSequenceNumber){
@@ -139,6 +146,14 @@ socket.on('map',function(map){
 socket.on('anotherPlayerConnect',function(playerAttributes){
     var anotherPlayer = new ShadowPlayer(playerAttributes);
     otherPlayers[anotherPlayer.id] = anotherPlayer;
+});
+
+socket.on('killPlayer',function(playerID){
+    delete otherPlayers[playerID];
+});
+
+socket.on('isKilled', function(){
+    console.log("lose");
 });
 
 
@@ -242,14 +257,17 @@ function interpolatePlayers(){
                     for (let j = 0; j < prevPlayerSnapshot.length; j++) {
                         if (currPlayerSnapshot[i].id == prevPlayerSnapshot[j].id) {
                             let aPlayer = otherPlayers[currPlayerSnapshot[i].id];
-                            let xCenter = prevPlayerSnapshot[j].xCenter;
-                            let yCenter = prevPlayerSnapshot[j].yCenter;
-                            let velX = currPlayerSnapshot[i].xCenter - prevPlayerSnapshot[j].xCenter ;
-                            let velY =  currPlayerSnapshot[i].yCenter - prevPlayerSnapshot[j].yCenter;
-                            let interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
-                            aPlayer.update({xCenter,yCenter,velX,velY,interpolateFactor});
-                            stage.addChild(aPlayer.shape);
-                            playersToDraw.push(aPlayer);
+                            if (aPlayer !== undefined){
+                                let xCenter = prevPlayerSnapshot[j].xCenter;
+                                let yCenter = prevPlayerSnapshot[j].yCenter;
+                                let velX = currPlayerSnapshot[i].xCenter - prevPlayerSnapshot[j].xCenter ;
+                                let velY =  currPlayerSnapshot[i].yCenter - prevPlayerSnapshot[j].yCenter;
+                                let interpolateFactor = (delayedTimeStamp - prevTimeStamp) / (nextTimeStamp - prevTimeStamp);
+                                let size = aPlayer.size;
+                                aPlayer.update({xCenter,yCenter,velX,velY,interpolateFactor,size});
+                                stage.addChild(aPlayer.shape);
+                                playersToDraw.push(aPlayer);
+                            }
                         }
                     }
                 }
@@ -287,7 +305,6 @@ function animate() {
     window.setTimeout(function() {
         requestAnimationFrame(animate)
     }, 8);
-
 }
 
 

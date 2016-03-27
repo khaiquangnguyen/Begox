@@ -40,6 +40,7 @@ function ShadowPlayer(attributes){
     this.interpolateFactor = 0;
     this.velX = 0;
     this.velY = 0;
+    this.size = attributes.size;
 }
 
 /**
@@ -52,6 +53,7 @@ ShadowPlayer.prototype.update = function(updateData){
     this.velX = updateData.velX;
     this.velY = updateData.velY;
     this.interpolateFactor = updateData.interpolateFactor;
+    this.size = updateData.size;
 };
 
 function Wall(attributes){
@@ -133,7 +135,7 @@ var drawWithRespectToMainPlayer = function(other, player) {
     other.shape.clear();
     other.shape.lineStyle(0);
     other.shape.beginFill(other.color);
-    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, 20);
+    other.shape.drawCircle(other.xCenter - player.xCenter + WIDTH / 2, other.yCenter - player.yCenter + HEIGHT / 2, other.size);
     other.shape.endFill();
 };
 
@@ -144,7 +146,7 @@ var drawWithRespectToMainPlayerInterpolation = function(other, player) {
     other.shape.beginFill(other.color);
     let newX = (other.xCenter - player.xCenter + WIDTH / 2 + other.velX * other.interpolateFactor);
     let newY = (other.yCenter - player.yCenter + HEIGHT / 2 + other.velY * other.interpolateFactor);
-    other.shape.drawCircle(newX, newY, 20);
+    other.shape.drawCircle(newX, newY, other.size);
     other.shape.endFill();
 };
 

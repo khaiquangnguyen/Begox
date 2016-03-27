@@ -39,7 +39,6 @@ function Player(id, xCenter, yCenter, size, type, direction, maxSpeed){
     this.velX = 0;
     this.velY = 0;
     this.lastEnemy = null;
-    this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);;
 }
 
 /**
@@ -96,15 +95,21 @@ Player.prototype.move = function() {
  */
 Player.prototype.killSelf = function(){
     // killed by anything, the reward go to the last killer
+    sockets[this.id].emit("isKilled");
     if(this.lastEnemy != null){
         this.lastEnemy.getRewardForKill(this.size);
     }
+    //remove this player from other client's list
+    for (let aSocketKey in sockets){
+        sockets[aSocketKey].emit("killPlayer",this.id);
+    }
     utilities.removeItemWithIDFromArray(this.id,players);
-    utilities.removeItemWithIDFromArray(this.id,sockets);
     utilities.removeItemWithIDFromArray(this.id, inputs);
+    utilities.removeItemWithIDFromArray(this.id,sockets);
     for (let aMissileKey in missiles){
         if(missiles[aMissileKey].shooterID == this.id) delete(missiles[aMissileKey]);
     }
+
 };
 
 Player.prototype.update = function(){
@@ -152,7 +157,7 @@ Player.prototype.shoot = function(direction){
                 speed = SQUARE_BULLET_SPEED;
                 break;
         }
-        missiles[bulletSequenceNumber] = new Missile(this.id, bulletSequenceNumber, this.xCenter, this.yCenter, this.size / 2 | 0, this.type,
+        missiles[bulletSequenceNumber] = new Missile(this.id, bulletSequenceNumber, this.xCenter, this.yCenter, this.size, this.type,
             direction, speed,this.color);
         bulletSequenceNumber++;
     }
@@ -186,7 +191,6 @@ function Missile(shooterID,id, xCenter, yCenter, size, type, direction,speed,col
     this.distanceMoved = 0;
     this.color = color;
     //TODO; different missile types
-    this.colBound =  new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
     this.new = true;
 }
 
@@ -208,7 +212,6 @@ Missile.prototype.move = function(){
     this.checkCollision();
     this.distanceMoved += this.speed / FPS_PHYSICS_CHECK;
     if (this.distanceMoved >= 600) this.killSelf();
-
 };
 
 Missile.prototype.dealDamage = function(target){
@@ -225,19 +228,27 @@ Missile.prototype.checkCollision = function(){
     this.colBound = new SAT.Circle(new SAT.Vector(this.xCenter,this.yCenter),this.size);
     let potentialColObjs = quadTree.retrieve(this);
     for (let aObject of potentialColObjs){
-        if (aObject != undefined) {
-            if (SAT.testCircleCircle(this.colBound, aObject.colBound)) {
-                if(aObject.id != this.shooterID && aObject.id != this.id) {
-                    this.dealDamage(aObject);
-                    this.killSelf();
-
-                }
+        if (aObject != undefined && aObject.shooterID != this.shooterID && aObject.id != this.shooterID && aObject.id != this.id) {
+            if (collide(this, aObject) === true) {
+                this.dealDamage(aObject);
+                this.killSelf();
                 return true;
             }
         }
     }
     return false;
 };
+
+function collide(firstObj, secondObj){
+    let distance = (firstObj.xCenter - secondObj.xCenter) *  (firstObj.xCenter - secondObj.xCenter)  + (firstObj.yCenter - secondObj.yCenter) *  (firstObj.yCenter - secondObj.yCenter);
+    let sumRadius =  (firstObj.size + secondObj.size) *  (firstObj.size + secondObj.size);
+    if (distance < sumRadius){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 Missile.prototype.takeDamage = function(shooterID, damage){
     this.killSelf();
@@ -252,6 +263,7 @@ Missile.prototype.update = function(){
 };
 
 Missile.prototype.killSelf = function(){
+    removeMissiles.push(this.id);
     delete (missiles[this.id]);
 };
 
@@ -393,13 +405,14 @@ var previousTickServerLoop = Date.now();
 var tickLengthMs = 1000/FPS_PHYSICS_CHECK;
 //time of last physics update
 var previousTickPhysicsLoop = Date.now();
+//array of missiles to remove
+var removeMissiles = [];
 
 //==============================================================
 
 //NETWORKING
 
 //==============================================================
-
 
 
 //start listening on the server
@@ -489,8 +502,6 @@ var connectionHandler = function(socket){
             inputs[socket.id] = new Input(info.id);
             //initiate new worldSnapshot list to dictionary
             worldSnapshots[socket.id] = [];
-
-
         }
         else{
             console.log('player existed. Terminate initializing new player.')
@@ -502,11 +513,10 @@ var connectionHandler = function(socket){
      */
     var disconnect = function(){
         console.log(socket.id, "disconnected");
+        //remove the socket from socket list
+        utilities.removeItemWithIDFromArray(socket.id,sockets);
         //remove the player from players list
         utilities.removeItemWithIDFromArray(socket.id,players);
-        console.log("Number of players left:",Object.keys(players).length);
-        ////remove the socket from socket list
-        utilities.removeItemWithIDFromArray(socket.id,sockets);
         //remove the corresponding input list from the list of all inputs
         utilities.removeItemWithIDFromArray(socket.id, inputs);
         //remove all missiles fired by the disconnected player from the game
@@ -587,6 +597,8 @@ var sendWorldSnapshotToAllClients = function() {
             missiles[missileKey].new = false;
         }
     }
+    //reset list of remove missiles
+    removeMissiles = [];
 };
 
 /**
@@ -609,6 +621,7 @@ var takeWorldSnapshot = function(socketID){
             aWorldSnapshot.newMissiles.push(new MissileSnapshot(missiles[missileKey]));
         }
     }
+    aWorldSnapshot.destroyedMissiles = removeMissiles;
     worldSnapshots[socketID].push(aWorldSnapshot);
     // maintain the length of worldSnapshots to be 60 only
     if (worldSnapshots[socketID].length > MAX_WORLD_SNAPSHOT) worldSnapshots[socketID].shift();
