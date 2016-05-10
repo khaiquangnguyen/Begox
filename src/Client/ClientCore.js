@@ -65,15 +65,28 @@ function ClientMissile(attributes){
     this.id = attributes.id;
     this.xCenter = attributes.xCenter;
     this.yCenter = attributes.yCenter;
-    this.shape = attributes.shape;
+    this.type = attributes.type;
+    this.shape = 0;
     this.color = attributes.color;
     this.size = attributes.size;
     this.direction = attributes.direction;
 }
 
 ClientMissile.prototype.update = function(delta){
-    let xSpeed = Math.cos(this.direction) * 720 * delta | 0;
-    let ySpeed = Math.sin(this.direction) * 720 * delta | 0;
+    let speed = CIRCLE_BULLET_SPEED;
+    switch(this.type){
+        case 0:
+             speed = CIRCLE_BULLET_SPEED;
+            break;
+        case 1:
+             speed   = TRIANGLE_BULLET_SPEED;
+            break;
+        default:
+             speed   = SQUARE_BULLET_SPEED;
+            break;
+    }
+    let xSpeed = Math.cos(this.direction) * speed * delta | 0;
+    let ySpeed = Math.sin(this.direction) * speed * delta | 0;
     this.xCenter += xSpeed;
     this.yCenter += ySpeed;
 };

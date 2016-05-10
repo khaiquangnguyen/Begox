@@ -11,7 +11,13 @@ document.body.addEventListener("click", function (e) {
     let xPosition = e.clientX;
     let yPosition = e.clientY;
     let direction = Math.atan2(yPosition - HEIGHT/2, xPosition - WIDTH / 2);
+    let aMissile = new ClientMissile({id:0, xCenter:mainPlayer.xCenter, yCenter: mainPlayer.yCenter, type:mainPlayer.type, size: mainPlayer.size,color: mainPlayer.color,direction:direction});
+    aMissile.shape = new PIXI.Graphics();
+    missiles.push(aMissile);
     socket.emit("shoot",direction);
+    //Predict the shooting by create a missile
+
+
 }, false);
 
 //=============================================================================
